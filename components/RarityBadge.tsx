@@ -1,1 +1,10 @@
-import type {Rarity} from "@/types";export function RarityBadge({rarity}:{rarity:Rarity}){return <span className={`badge ${rarity}`}>{rarity}</span>}
+import type { Rarity } from "@/types";
+
+/** The tier label in the card's top-left corner. */
+export function RarityBadge({ rarity }: { rarity: Rarity }) {
+  return (
+    <span className="rarity-badge" title={`${rarity} card`}>
+      {rarity}
+    </span>
+  );
+}
