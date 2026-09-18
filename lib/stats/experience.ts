@@ -1,0 +1,1 @@
+import type {WalletProfile} from "@/types";import {result} from "./scoring";export const scoreExperience=(p:WalletProfile)=>result("experience",.4*p.walletAgeDays+.4*p.distinctActiveMonths*30+.2*p.totalTxCount,[`Active for ${p.walletAgeDays.toLocaleString()} days`,`${p.distinctActiveMonths} active months`,`${p.totalTxCount.toLocaleString()} transactions`]);

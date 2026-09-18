@@ -1,0 +1,1 @@
+import type {WalletProfile} from "@/types";import {result} from "./scoring";export const scoreTrading=(p:WalletProfile)=>result("trading",p.swapCount*2+p.uniqueTokensTraded*3+p.txsPerActiveMonth+p.dexProtocolsUsed.length*12,[`${p.swapCount} swaps`,`${p.uniqueTokensTraded} tokens traded`,`${p.dexProtocolsUsed.length} DEX protocols`]);

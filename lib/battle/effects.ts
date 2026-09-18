@@ -1,0 +1,1 @@
+import type {Card,StatKey} from "@/types";export function boost(card:Card,key:StatKey){const e=card.ability.battleEffect;return e.kind==="boostStat"&&e.stat===key?e.amount||0:0}export function variance(card:Card){return card.ability.battleEffect.kind==="doubleVariance"?16:8}

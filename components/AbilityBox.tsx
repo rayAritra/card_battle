@@ -1,0 +1,1 @@
+import type {Ability} from "@/types";export function AbilityBox({ability}:{ability:Ability}){return <section className="ability"><small>SPECIAL ABILITY</small><h3>{ability.name}</h3><p>{ability.flavor}</p></section>}

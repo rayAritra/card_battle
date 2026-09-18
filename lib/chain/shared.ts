@@ -1,0 +1,2 @@
+export async function resilient<T>(name:string,fn:()=>Promise<T>,fallback:T):Promise<T>{for(let i=0;i<3;i++){try{return await fn()}catch(error){if(i<2)await new Promise(r=>setTimeout(r,200*2**i));else console.warn(JSON.stringify({level:"warn",scope:"chain",endpoint:name,error:error instanceof Error?error.message:String(error)}))}}return fallback}
+export interface RawTx { hash:string; from:string; to:string; timeStamp:string; input?:string; contractAddress?:string; tokenSymbol?:string; tokenName?:string; value?:string }

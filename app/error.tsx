@@ -1,0 +1,1 @@
+"use client";export default function ErrorPage({reset}:{reset:()=>void}){return <main className="page hero"><p className="kicker">THE CHAIN FLICKERED</p><h1>FORGE INTERRUPTED</h1><p className="hero-copy">A provider failed to answer. Nothing was charged.</p><button className="primary" onClick={reset}>TRY AGAIN</button></main>}

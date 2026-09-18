@@ -1,0 +1,1 @@
+import type {Rarity,Stats} from "@/types";export function computeRarity(level:number,stats:Stats):Rarity{const peak=Math.max(...Object.values(stats).map(s=>s.score));if(level>=88&&peak>=95)return "mythic";if(level>=75)return "legendary";if(level>=58)return "epic";if(level>=35)return "rare";return "common"}

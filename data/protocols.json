@@ -1,0 +1,19 @@
+[
+{"address":"0x7a250d5630b4cf539739df2c5dacab4c659f2488","chainId":1,"protocol":"Uniswap V2","category":"dex","riskWeight":0.25},
+{"address":"0xe592427a0aece92de3edee1f18e0157c05861564","chainId":1,"protocol":"Uniswap V3","category":"dex","riskWeight":0.25},
+{"address":"0x66a9893cc07d91d95644aedd05d03f95e1dba8af","chainId":1,"protocol":"Uniswap V4","category":"dex","riskWeight":0.3},
+{"address":"0x87870bca3f3fd6335c3f4ce8392d69350b4fa4e2","chainId":1,"protocol":"Aave V3","category":"lending","riskWeight":0.3},
+{"address":"0xc3d688b66703497daa19211eedff47f25384cdc3","chainId":1,"protocol":"Compound","category":"lending","riskWeight":0.3},
+{"address":"0xae7ab96520de3a18e5e111b5eaab095312d7fe84","chainId":1,"protocol":"Lido","category":"staking","riskWeight":0.2},
+{"address":"0xae78736cd615f374d3085123a210448e74fc6393","chainId":1,"protocol":"Rocket Pool","category":"staking","riskWeight":0.2},
+{"address":"0x858646372cc42e1a627fce94aa7a7033e7cf075a","chainId":1,"protocol":"EigenLayer","category":"staking","riskWeight":0.45},
+{"address":"0x16c6521dff6bab339122a0fe25a9116693265353","chainId":1,"protocol":"Curve","category":"dex","riskWeight":0.25},
+{"address":"0xba12222222228d8ba445958a75a0704d566bf2c8","chainId":1,"protocol":"Balancer","category":"dex","riskWeight":0.25},
+{"address":"0x888888888889758f76e7103c6cbf23abbf58f946","chainId":1,"protocol":"Pendle","category":"derivatives","riskWeight":0.55},
+{"address":"0x7452c558d45f8af0a4434bfbc522b0e77dd2f36a","chainId":1,"protocol":"GMX","category":"derivatives","riskWeight":0.7},
+{"address":"0x00000000006c3852cbef3e08e8df289169ede581","chainId":1,"protocol":"Seaport","category":"nft","riskWeight":0.35},
+{"address":"0x000000000000ad05ccc4f10045630fb830b95127","chainId":1,"protocol":"Blur","category":"nft","riskWeight":0.4},
+{"address":"0xcf77a3ba9a5ca399b7c97c74d54e5b1b3b8a5c2f","chainId":8453,"protocol":"Aerodrome","category":"dex","riskWeight":0.35},
+{"address":"0x3154cf16ccdb4c6d922629664174b904d80f2c35","chainId":1,"protocol":"Base Bridge","category":"bridge","riskWeight":0.25},
+{"address":"0x4200000000000000000000000000000000000010","chainId":8453,"protocol":"Base Bridge","category":"bridge","riskWeight":0.25}
+]
