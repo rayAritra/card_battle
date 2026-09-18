@@ -1,0 +1,17 @@
+{
+  "stablecoins": [
+    "USDC", "USDT", "DAI", "USDbC", "FRAX", "LUSD", "GUSD", "TUSD", "USDP", "sUSD",
+    "crvUSD", "USDe", "sDAI", "USDS", "PYUSD", "BUSD", "MIM", "DOLA", "USD+", "EURC"
+  ],
+  "bluechips": [
+    "WETH", "ETH", "stETH", "wstETH", "rETH", "cbETH", "weETH", "ezETH", "swETH", "frxETH",
+    "sfrxETH", "mETH", "WBTC", "cbBTC", "tBTC", "LINK", "UNI", "AAVE", "MKR", "LDO", "CRV",
+    "CVX", "COMP", "SNX", "BAL", "RPL", "ENS", "GRT", "ARB", "OP", "MATIC", "PENDLE", "AERO"
+  ],
+  "memecoins": [
+    "PEPE", "SHIB", "DOGE", "FLOKI", "BONK", "WIF", "MOG", "TURBO", "BRETT", "TOSHI",
+    "DEGEN", "HIGHER", "MFER", "WOJAK", "ELON", "KISHU", "AKITA", "LEASH", "BONE", "SPX",
+    "ANDY", "LANDWOLF", "APU", "BITCOIN", "HPOS10I", "NORMIE", "KEYCAT", "MIGGLES", "BASED", "MEME"
+  ],
+  "memePattern": "(INU|DOGE|PEPE|SHIB|WOJAK|CHAD|MOON|ELON|BABY|FLOKI|MEME|CAT$|FROG|WIF)"
+}

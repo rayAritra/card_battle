@@ -1,19 +1,751 @@
 [
-{"address":"0x7a250d5630b4cf539739df2c5dacab4c659f2488","chainId":1,"protocol":"Uniswap V2","category":"dex","riskWeight":0.25},
-{"address":"0xe592427a0aece92de3edee1f18e0157c05861564","chainId":1,"protocol":"Uniswap V3","category":"dex","riskWeight":0.25},
-{"address":"0x66a9893cc07d91d95644aedd05d03f95e1dba8af","chainId":1,"protocol":"Uniswap V4","category":"dex","riskWeight":0.3},
-{"address":"0x87870bca3f3fd6335c3f4ce8392d69350b4fa4e2","chainId":1,"protocol":"Aave V3","category":"lending","riskWeight":0.3},
-{"address":"0xc3d688b66703497daa19211eedff47f25384cdc3","chainId":1,"protocol":"Compound","category":"lending","riskWeight":0.3},
-{"address":"0xae7ab96520de3a18e5e111b5eaab095312d7fe84","chainId":1,"protocol":"Lido","category":"staking","riskWeight":0.2},
-{"address":"0xae78736cd615f374d3085123a210448e74fc6393","chainId":1,"protocol":"Rocket Pool","category":"staking","riskWeight":0.2},
-{"address":"0x858646372cc42e1a627fce94aa7a7033e7cf075a","chainId":1,"protocol":"EigenLayer","category":"staking","riskWeight":0.45},
-{"address":"0x16c6521dff6bab339122a0fe25a9116693265353","chainId":1,"protocol":"Curve","category":"dex","riskWeight":0.25},
-{"address":"0xba12222222228d8ba445958a75a0704d566bf2c8","chainId":1,"protocol":"Balancer","category":"dex","riskWeight":0.25},
-{"address":"0x888888888889758f76e7103c6cbf23abbf58f946","chainId":1,"protocol":"Pendle","category":"derivatives","riskWeight":0.55},
-{"address":"0x7452c558d45f8af0a4434bfbc522b0e77dd2f36a","chainId":1,"protocol":"GMX","category":"derivatives","riskWeight":0.7},
-{"address":"0x00000000006c3852cbef3e08e8df289169ede581","chainId":1,"protocol":"Seaport","category":"nft","riskWeight":0.35},
-{"address":"0x000000000000ad05ccc4f10045630fb830b95127","chainId":1,"protocol":"Blur","category":"nft","riskWeight":0.4},
-{"address":"0xcf77a3ba9a5ca399b7c97c74d54e5b1b3b8a5c2f","chainId":8453,"protocol":"Aerodrome","category":"dex","riskWeight":0.35},
-{"address":"0x3154cf16ccdb4c6d922629664174b904d80f2c35","chainId":1,"protocol":"Base Bridge","category":"bridge","riskWeight":0.25},
-{"address":"0x4200000000000000000000000000000000000010","chainId":8453,"protocol":"Base Bridge","category":"bridge","riskWeight":0.25}
+  {
+    "address": "0x7a250d5630b4cf539739df2c5dacb4c659f2488d",
+    "chainId": 1,
+    "protocol": "Uniswap V2",
+    "category": "dex",
+    "riskWeight": 0.3
+  },
+  {
+    "address": "0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f",
+    "chainId": 1,
+    "protocol": "Uniswap V2",
+    "category": "dex",
+    "riskWeight": 0.3
+  },
+  {
+    "address": "0xe592427a0aece92de3edee1f18e0157c05861564",
+    "chainId": 1,
+    "protocol": "Uniswap V3",
+    "category": "dex",
+    "riskWeight": 0.3
+  },
+  {
+    "address": "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45",
+    "chainId": 1,
+    "protocol": "Uniswap V3",
+    "category": "dex",
+    "riskWeight": 0.3
+  },
+  {
+    "address": "0x1f98431c8ad98523631ae4a59f267346ea31f984",
+    "chainId": 1,
+    "protocol": "Uniswap V3",
+    "category": "dex",
+    "riskWeight": 0.3
+  },
+  {
+    "address": "0xef1c6e67703c7bd7107eed8303fbe6ec2554bf6b",
+    "chainId": 1,
+    "protocol": "Uniswap Universal Router",
+    "category": "dex",
+    "riskWeight": 0.32
+  },
+  {
+    "address": "0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad",
+    "chainId": 1,
+    "protocol": "Uniswap Universal Router",
+    "category": "dex",
+    "riskWeight": 0.32
+  },
+  {
+    "address": "0x66a9893cc07d91d95644aedd05d03f95e1dba8af",
+    "chainId": 1,
+    "protocol": "Uniswap V4",
+    "category": "dex",
+    "riskWeight": 0.35
+  },
+  {
+    "address": "0x000000000004444c5dc75cb358380d2e3de08a90",
+    "chainId": 1,
+    "protocol": "Uniswap V4",
+    "category": "dex",
+    "riskWeight": 0.35
+  },
+  {
+    "address": "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f",
+    "chainId": 1,
+    "protocol": "SushiSwap",
+    "category": "dex",
+    "riskWeight": 0.35
+  },
+  {
+    "address": "0x1111111254eeb25477b68fb85ed929f73a960582",
+    "chainId": 1,
+    "protocol": "1inch",
+    "category": "dex",
+    "riskWeight": 0.35
+  },
+  {
+    "address": "0x111111125421ca6dc452d289314280a0f8842a65",
+    "chainId": 1,
+    "protocol": "1inch",
+    "category": "dex",
+    "riskWeight": 0.35
+  },
+  {
+    "address": "0xdef1c0ded9bec7f1a1670819833240f027b25eff",
+    "chainId": 1,
+    "protocol": "0x Protocol",
+    "category": "dex",
+    "riskWeight": 0.35
+  },
+  {
+    "address": "0xdef171fe48cf0115b1d80b88dc8eab59176fee57",
+    "chainId": 1,
+    "protocol": "ParaSwap",
+    "category": "dex",
+    "riskWeight": 0.35
+  },
+  {
+    "address": "0x9008d19f58aabd9ed0d60971565aa8510560ab41",
+    "chainId": 1,
+    "protocol": "CoW Protocol",
+    "category": "dex",
+    "riskWeight": 0.25
+  },
+  {
+    "address": "0x881d40237659c251811cec9c364ef91dc08d300c",
+    "chainId": 1,
+    "protocol": "MetaMask Swaps",
+    "category": "dex",
+    "riskWeight": 0.35
+  },
+  {
+    "address": "0xbebc44782c7db0a1a60cb6fe97d0b483032ff1c7",
+    "chainId": 1,
+    "protocol": "Curve",
+    "category": "dex",
+    "riskWeight": 0.2
+  },
+  {
+    "address": "0xd51a44d3fae010294c616388b506acda1bfaae46",
+    "chainId": 1,
+    "protocol": "Curve",
+    "category": "dex",
+    "riskWeight": 0.28
+  },
+  {
+    "address": "0xdc24316b9ae028f1497c275eb9192a3ea0f67022",
+    "chainId": 1,
+    "protocol": "Curve",
+    "category": "dex",
+    "riskWeight": 0.2
+  },
+  {
+    "address": "0x99a58482bd75cbab83b27ec03ca68ff489b5788f",
+    "chainId": 1,
+    "protocol": "Curve",
+    "category": "dex",
+    "riskWeight": 0.22
+  },
+  {
+    "address": "0xba12222222228d8ba445958a75a0704d566bf2c8",
+    "chainId": 1,
+    "protocol": "Balancer V2",
+    "category": "dex",
+    "riskWeight": 0.28
+  },
+  {
+    "address": "0x87870bca3f3fd6335c3f4ce8392d69350b4fa4e2",
+    "chainId": 1,
+    "protocol": "Aave V3",
+    "category": "lending",
+    "riskWeight": 0.45
+  },
+  {
+    "address": "0x7d2768de32b0b80b7a3454c06bdac94a69ddc7a9",
+    "chainId": 1,
+    "protocol": "Aave V2",
+    "category": "lending",
+    "riskWeight": 0.45
+  },
+  {
+    "address": "0x3d9819210a31b4961b30ef54be2aed79b9c9cd3b",
+    "chainId": 1,
+    "protocol": "Compound V2",
+    "category": "lending",
+    "riskWeight": 0.45
+  },
+  {
+    "address": "0xc3d688b66703497daa19211eedff47f25384cdc3",
+    "chainId": 1,
+    "protocol": "Compound V3",
+    "category": "lending",
+    "riskWeight": 0.45
+  },
+  {
+    "address": "0xa17581a9e3356d9a858b789d68b4d866e593ae94",
+    "chainId": 1,
+    "protocol": "Compound V3",
+    "category": "lending",
+    "riskWeight": 0.45
+  },
+  {
+    "address": "0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb",
+    "chainId": 1,
+    "protocol": "Morpho Blue",
+    "category": "lending",
+    "riskWeight": 0.5
+  },
+  {
+    "address": "0xc13e21b648a5ee794902342038ff3adab66be987",
+    "chainId": 1,
+    "protocol": "Spark",
+    "category": "lending",
+    "riskWeight": 0.45
+  },
+  {
+    "address": "0x5ef30b9986345249bc32d8928b7ee64de9435e39",
+    "chainId": 1,
+    "protocol": "MakerDAO",
+    "category": "lending",
+    "riskWeight": 0.4
+  },
+  {
+    "address": "0x9759a6ac90977b93b58547b4a71c78317f391a28",
+    "chainId": 1,
+    "protocol": "MakerDAO",
+    "category": "lending",
+    "riskWeight": 0.4
+  },
+  {
+    "address": "0x35d1b3f3d7966a1dfe207aa4514c12a259a0492b",
+    "chainId": 1,
+    "protocol": "MakerDAO",
+    "category": "lending",
+    "riskWeight": 0.4
+  },
+  {
+    "address": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
+    "chainId": 1,
+    "protocol": "Lido",
+    "category": "staking",
+    "riskWeight": 0.12
+  },
+  {
+    "address": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0",
+    "chainId": 1,
+    "protocol": "Lido",
+    "category": "staking",
+    "riskWeight": 0.12
+  },
+  {
+    "address": "0xae78736cd615f374d3085123a210448e74fc6393",
+    "chainId": 1,
+    "protocol": "Rocket Pool",
+    "category": "staking",
+    "riskWeight": 0.15
+  },
+  {
+    "address": "0xdd3f50f8a6cafbe9b31a427582963f465e745af8",
+    "chainId": 1,
+    "protocol": "Rocket Pool",
+    "category": "staking",
+    "riskWeight": 0.15
+  },
+  {
+    "address": "0x858646372cc42e1a627fce94aa7a7033e7cf075a",
+    "chainId": 1,
+    "protocol": "EigenLayer",
+    "category": "staking",
+    "riskWeight": 0.35
+  },
+  {
+    "address": "0x39053d51b77dc0d36036fc1fcc8cb819df8ef37a",
+    "chainId": 1,
+    "protocol": "EigenLayer",
+    "category": "staking",
+    "riskWeight": 0.35
+  },
+  {
+    "address": "0x00000000219ab540356cbb839cbe05303d7705fa",
+    "chainId": 1,
+    "protocol": "ETH2 Deposit",
+    "category": "staking",
+    "riskWeight": 0.05
+  },
+  {
+    "address": "0xbafa44efe7901e04e39dad13167d089c559c1138",
+    "chainId": 1,
+    "protocol": "Frax Ether",
+    "category": "staking",
+    "riskWeight": 0.2
+  },
+  {
+    "address": "0xbe9895146f7af43049ca1c1ae358b0541ea49704",
+    "chainId": 1,
+    "protocol": "Coinbase cbETH",
+    "category": "staking",
+    "riskWeight": 0.12
+  },
+  {
+    "address": "0xf951e335afb289353dc249e82926178eac7ded78",
+    "chainId": 1,
+    "protocol": "Swell",
+    "category": "staking",
+    "riskWeight": 0.22
+  },
+  {
+    "address": "0x308861a430be4cce5502d0a12724771fc6daf216",
+    "chainId": 1,
+    "protocol": "Ether.fi",
+    "category": "staking",
+    "riskWeight": 0.25
+  },
+  {
+    "address": "0xd5f7838f5c461feff7fe49ea5ebaf7728bb0adfa",
+    "chainId": 1,
+    "protocol": "Mantle mETH",
+    "category": "staking",
+    "riskWeight": 0.22
+  },
+  {
+    "address": "0xa1290d69c65a6fe4df752f95823fae25cb99e5a7",
+    "chainId": 1,
+    "protocol": "Renzo",
+    "category": "staking",
+    "riskWeight": 0.3
+  },
+  {
+    "address": "0x888888888889758f76e7103c6cbf23abbf58f946",
+    "chainId": 1,
+    "protocol": "Pendle",
+    "category": "derivatives",
+    "riskWeight": 0.7
+  },
+  {
+    "address": "0x00000000005bbb0ef59571e58418f9a4357b68a0",
+    "chainId": 1,
+    "protocol": "Pendle",
+    "category": "derivatives",
+    "riskWeight": 0.7
+  },
+  {
+    "address": "0xd54f502e184b6b739d7d27a6410a67dc462d69c8",
+    "chainId": 1,
+    "protocol": "dYdX v3",
+    "category": "derivatives",
+    "riskWeight": 0.9
+  },
+  {
+    "address": "0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f",
+    "chainId": 1,
+    "protocol": "Synthetix",
+    "category": "derivatives",
+    "riskWeight": 0.8
+  },
+  {
+    "address": "0xc011a72400e58ecd99ee497cf89e3775d4bd732f",
+    "chainId": 1,
+    "protocol": "Synthetix",
+    "category": "derivatives",
+    "riskWeight": 0.8
+  },
+  {
+    "address": "0x00000000006c3852cbef3e08e8df289169ede581",
+    "chainId": 1,
+    "protocol": "Seaport",
+    "category": "nft",
+    "riskWeight": 0.45
+  },
+  {
+    "address": "0x00000000000001ad428e4906ae43d8f9852d0dd6",
+    "chainId": 1,
+    "protocol": "Seaport",
+    "category": "nft",
+    "riskWeight": 0.45
+  },
+  {
+    "address": "0x00000000000000adc04c56bf30ac9d3c0aaf14dc",
+    "chainId": 1,
+    "protocol": "Seaport",
+    "category": "nft",
+    "riskWeight": 0.45
+  },
+  {
+    "address": "0x0000000000000068f116a894984e2db1123eb395",
+    "chainId": 1,
+    "protocol": "Seaport",
+    "category": "nft",
+    "riskWeight": 0.45
+  },
+  {
+    "address": "0x7be8076f4ea4a4ad08075c2508e481d6c946d12b",
+    "chainId": 1,
+    "protocol": "OpenSea Wyvern",
+    "category": "nft",
+    "riskWeight": 0.45
+  },
+  {
+    "address": "0x000000000000ad05ccc4f10045630fb830b95127",
+    "chainId": 1,
+    "protocol": "Blur",
+    "category": "nft",
+    "riskWeight": 0.6
+  },
+  {
+    "address": "0xb2ecfe4e4d61f8790bbb9de2d1259b9e2410cea5",
+    "chainId": 1,
+    "protocol": "Blur",
+    "category": "nft",
+    "riskWeight": 0.6
+  },
+  {
+    "address": "0x0000000000a39bb272e79075ade125fd351887ac",
+    "chainId": 1,
+    "protocol": "Blur Lending",
+    "category": "nft",
+    "riskWeight": 0.75
+  },
+  {
+    "address": "0x59728544b08ab483533076417fbbb2fd0b17ce3a",
+    "chainId": 1,
+    "protocol": "LooksRare",
+    "category": "nft",
+    "riskWeight": 0.5
+  },
+  {
+    "address": "0x74312363e45dcaba76c59ec49a7aa8a65a67eed3",
+    "chainId": 1,
+    "protocol": "X2Y2",
+    "category": "nft",
+    "riskWeight": 0.5
+  },
+  {
+    "address": "0x495f947276749ce646f68ac8c248420045cb7b5e",
+    "chainId": 1,
+    "protocol": "OpenSea Storefront",
+    "category": "nft",
+    "riskWeight": 0.45
+  },
+  {
+    "address": "0x3154cf16ccdb4c6d922629664174b904d80f2c35",
+    "chainId": 1,
+    "protocol": "Base Bridge",
+    "category": "bridge",
+    "riskWeight": 0.2
+  },
+  {
+    "address": "0x49048044d57e1c92a77f79988d21fa8faf74e97e",
+    "chainId": 1,
+    "protocol": "Base Portal",
+    "category": "bridge",
+    "riskWeight": 0.2
+  },
+  {
+    "address": "0x866e82a600a1414e583f7f13623f1ac5d58b0afa",
+    "chainId": 1,
+    "protocol": "Base Bridge",
+    "category": "bridge",
+    "riskWeight": 0.2
+  },
+  {
+    "address": "0x4dbd4fc535ac27206064b68ffcf827b0a60bab3f",
+    "chainId": 1,
+    "protocol": "Arbitrum Bridge",
+    "category": "bridge",
+    "riskWeight": 0.25
+  },
+  {
+    "address": "0xa0c68c638235ee32657e8f720a23cec1bfc77c77",
+    "chainId": 1,
+    "protocol": "Polygon PoS Bridge",
+    "category": "bridge",
+    "riskWeight": 0.3
+  },
+  {
+    "address": "0x99c9fc46f92e8a1c0dec1b1747d010903e884be1",
+    "chainId": 1,
+    "protocol": "Optimism Bridge",
+    "category": "bridge",
+    "riskWeight": 0.22
+  },
+  {
+    "address": "0x5c7bcd6e7de5423a257d81b442095a1a6ced35c5",
+    "chainId": 1,
+    "protocol": "Across",
+    "category": "bridge",
+    "riskWeight": 0.35
+  },
+  {
+    "address": "0x8731d54e9d02c286767d56ac03e8037c07e01e98",
+    "chainId": 1,
+    "protocol": "Stargate",
+    "category": "bridge",
+    "riskWeight": 0.4
+  },
+  {
+    "address": "0x3ee18b2214aff97000d974cf647e7c347e8fa585",
+    "chainId": 1,
+    "protocol": "Wormhole",
+    "category": "bridge",
+    "riskWeight": 0.45
+  },
+  {
+    "address": "0xbd3fa81b58ba92a82136038b25adec7066af3155",
+    "chainId": 1,
+    "protocol": "Circle CCTP",
+    "category": "bridge",
+    "riskWeight": 0.15
+  },
+  {
+    "address": "0xb8901acb165ed027e32754e0ffe830802919727f",
+    "chainId": 1,
+    "protocol": "Hop Protocol",
+    "category": "bridge",
+    "riskWeight": 0.35
+  },
+  {
+    "address": "0x253553366da8546fc250f225fe3d25d0c782303b",
+    "chainId": 1,
+    "protocol": "ENS",
+    "category": "other",
+    "riskWeight": 0.05
+  },
+  {
+    "address": "0x00000000000c2e074ec69a0dfb2997ba6c7d2e1e",
+    "chainId": 1,
+    "protocol": "ENS",
+    "category": "other",
+    "riskWeight": 0.05
+  },
+  {
+    "address": "0x283af0b28c62c092c9727f1ee09c02ca627eb7f5",
+    "chainId": 1,
+    "protocol": "ENS",
+    "category": "other",
+    "riskWeight": 0.05
+  },
+  {
+    "address": "0xa6b71e26c5e0845f74c812102ca7114b6a896ab2",
+    "chainId": 1,
+    "protocol": "Safe",
+    "category": "other",
+    "riskWeight": 0.05
+  },
+  {
+    "address": "0xd152f549545093347a162dce210e7293f1452150",
+    "chainId": 1,
+    "protocol": "Disperse",
+    "category": "other",
+    "riskWeight": 0.2
+  },
+  {
+    "address": "0x4e59b44847b379578588920ca78fbf26c0b4956c",
+    "chainId": 1,
+    "protocol": "Create2 Deployer",
+    "category": "other",
+    "riskWeight": 0.3
+  },
+  {
+    "address": "0xcf77a3ba9a5ca399b7c97c74d54e5b1beb874e43",
+    "chainId": 8453,
+    "protocol": "Aerodrome",
+    "category": "dex",
+    "riskWeight": 0.35
+  },
+  {
+    "address": "0x16613524e02ad97edfef371bc883f2f5d6c480a5",
+    "chainId": 8453,
+    "protocol": "Aerodrome",
+    "category": "dex",
+    "riskWeight": 0.35
+  },
+  {
+    "address": "0x420dd381b31aef6683db6b902084cb0ffece40da",
+    "chainId": 8453,
+    "protocol": "Aerodrome",
+    "category": "dex",
+    "riskWeight": 0.35
+  },
+  {
+    "address": "0x2626664c2603336e57b271c5c0b26f421741e481",
+    "chainId": 8453,
+    "protocol": "Uniswap V3",
+    "category": "dex",
+    "riskWeight": 0.3
+  },
+  {
+    "address": "0x33128a8fc17869897dce68ed026d694621f6fdfd",
+    "chainId": 8453,
+    "protocol": "Uniswap V3",
+    "category": "dex",
+    "riskWeight": 0.3
+  },
+  {
+    "address": "0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad",
+    "chainId": 8453,
+    "protocol": "Uniswap Universal Router",
+    "category": "dex",
+    "riskWeight": 0.32
+  },
+  {
+    "address": "0x498581ff718922c3f8e6a244956af099b2652b2b",
+    "chainId": 8453,
+    "protocol": "Uniswap V4",
+    "category": "dex",
+    "riskWeight": 0.35
+  },
+  {
+    "address": "0x327df1e6de05895d2ab08513aadd9313fe505d86",
+    "chainId": 8453,
+    "protocol": "BaseSwap",
+    "category": "dex",
+    "riskWeight": 0.45
+  },
+  {
+    "address": "0x6bded42c6da8fbf0d2ba55b2fa120c5e0c8d7891",
+    "chainId": 8453,
+    "protocol": "SushiSwap",
+    "category": "dex",
+    "riskWeight": 0.35
+  },
+  {
+    "address": "0x8c1a3cf8f83074169fe5d7ad50b978e1cd6b37c7",
+    "chainId": 8453,
+    "protocol": "AlienBase",
+    "category": "dex",
+    "riskWeight": 0.55
+  },
+  {
+    "address": "0xba12222222228d8ba445958a75a0704d566bf2c8",
+    "chainId": 8453,
+    "protocol": "Balancer V2",
+    "category": "dex",
+    "riskWeight": 0.28
+  },
+  {
+    "address": "0x111111125421ca6dc452d289314280a0f8842a65",
+    "chainId": 8453,
+    "protocol": "1inch",
+    "category": "dex",
+    "riskWeight": 0.35
+  },
+  {
+    "address": "0x9008d19f58aabd9ed0d60971565aa8510560ab41",
+    "chainId": 8453,
+    "protocol": "CoW Protocol",
+    "category": "dex",
+    "riskWeight": 0.25
+  },
+  {
+    "address": "0xa238dd80c259a72e81d7e4664a9801593f98d1c5",
+    "chainId": 8453,
+    "protocol": "Aave V3",
+    "category": "lending",
+    "riskWeight": 0.45
+  },
+  {
+    "address": "0x9c4ec768c28520b50860ea7a15bd7213a9ff58bf",
+    "chainId": 8453,
+    "protocol": "Compound V3",
+    "category": "lending",
+    "riskWeight": 0.45
+  },
+  {
+    "address": "0x46e6b214b524310239732d51387075e0e70970bf",
+    "chainId": 8453,
+    "protocol": "Compound V3",
+    "category": "lending",
+    "riskWeight": 0.45
+  },
+  {
+    "address": "0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb",
+    "chainId": 8453,
+    "protocol": "Morpho Blue",
+    "category": "lending",
+    "riskWeight": 0.5
+  },
+  {
+    "address": "0xfbb21d0380bee3312b33c4353c8936a0f13ef26c",
+    "chainId": 8453,
+    "protocol": "Moonwell",
+    "category": "lending",
+    "riskWeight": 0.5
+  },
+  {
+    "address": "0x00000000000000adc04c56bf30ac9d3c0aaf14dc",
+    "chainId": 8453,
+    "protocol": "Seaport",
+    "category": "nft",
+    "riskWeight": 0.45
+  },
+  {
+    "address": "0x0000000000000068f116a894984e2db1123eb395",
+    "chainId": 8453,
+    "protocol": "Seaport",
+    "category": "nft",
+    "riskWeight": 0.45
+  },
+  {
+    "address": "0x777777c338d93e2c7adf08d102d45ca7cc4ed021",
+    "chainId": 8453,
+    "protocol": "Zora",
+    "category": "nft",
+    "riskWeight": 0.5
+  },
+  {
+    "address": "0xcf205808ed36593aa40a44f10c7f7c2f67d4a4d4",
+    "chainId": 8453,
+    "protocol": "friend.tech",
+    "category": "nft",
+    "riskWeight": 0.85
+  },
+  {
+    "address": "0x4200000000000000000000000000000000000010",
+    "chainId": 8453,
+    "protocol": "Base Bridge",
+    "category": "bridge",
+    "riskWeight": 0.2
+  },
+  {
+    "address": "0x4200000000000000000000000000000000000016",
+    "chainId": 8453,
+    "protocol": "Base Bridge",
+    "category": "bridge",
+    "riskWeight": 0.2
+  },
+  {
+    "address": "0xbd3fa81b58ba92a82136038b25adec7066af3155",
+    "chainId": 8453,
+    "protocol": "Circle CCTP",
+    "category": "bridge",
+    "riskWeight": 0.15
+  },
+  {
+    "address": "0x1682ae6375c4e4a97e4b583bc394c861a46d8962",
+    "chainId": 8453,
+    "protocol": "Stargate",
+    "category": "bridge",
+    "riskWeight": 0.4
+  },
+  {
+    "address": "0x09aea4b2242abc8bb4bb78d537a67a245a7bec64",
+    "chainId": 8453,
+    "protocol": "Across",
+    "category": "bridge",
+    "riskWeight": 0.35
+  },
+  {
+    "address": "0x827922686190790b37229fd06084350e74485b72",
+    "chainId": 8453,
+    "protocol": "Synthetix",
+    "category": "derivatives",
+    "riskWeight": 0.8
+  },
+  {
+    "address": "0xabbc5f99639c9b6bcb58544ddf04efa6802f4064",
+    "chainId": 42161,
+    "protocol": "GMX",
+    "category": "derivatives",
+    "riskWeight": 0.9
+  },
+  {
+    "address": "0x3d6ba331e3d9702c5e8a8d254e5d8a285f223aba",
+    "chainId": 42161,
+    "protocol": "GMX",
+    "category": "derivatives",
+    "riskWeight": 0.9
+  }
 ]
