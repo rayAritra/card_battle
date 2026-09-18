@@ -1,1 +1,8 @@
-{"experience":[0,10,50,150,400,900,1600,2600,5000,9000],"trading":[0,2,8,20,50,120,300,700,1500,4000],"defi":[0,1,3,6,10,18,30,50,80,140],"holding":[0,10,30,60,120,240,400,700,1100,1800],"risk":[0,1,3,6,12,20,35,60,100,180]}
+{
+  "_comment": "Raw-composite value at each decile of the reference population. Every scorer emits raw in [0,1], so these are shaped by the saturating curves in the scorers, not by absolute counts. Hand-written starting values; replace with recomputeBaseline(profiles) output once real population data exists.",
+  "experience": [0, 0.04, 0.09, 0.15, 0.22, 0.3, 0.39, 0.5, 0.62, 0.75, 0.95],
+  "trading": [0, 0.01, 0.03, 0.06, 0.1, 0.15, 0.22, 0.32, 0.45, 0.62, 0.92],
+  "defi": [0, 0.005, 0.02, 0.04, 0.07, 0.11, 0.17, 0.25, 0.36, 0.52, 0.88],
+  "holding": [0, 0.05, 0.11, 0.18, 0.26, 0.34, 0.43, 0.53, 0.64, 0.77, 0.97],
+  "risk": [0, 0.01, 0.03, 0.06, 0.09, 0.14, 0.2, 0.28, 0.39, 0.55, 0.9]
+}
