@@ -1,1 +1,79 @@
-import {NextRequest,NextResponse} from "next/server";import {isAddress} from "viem";import {getCard} from "@/lib/server/card";import {battle} from "@/lib/battle/engine";import {allow} from "@/lib/server/rate";import {db} from "@/lib/db/client";export async function POST(req:NextRequest){if(!await allow(req,60))return NextResponse.json({error:"The arena is full. Try again soon."},{status:429});const x=await req.json() as {addrA?:unknown;addrB?:unknown;nonce?:unknown};if(typeof x.addrA!=="string"||typeof x.addrB!=="string"||!isAddress(x.addrA)||!isAddress(x.addrB))return NextResponse.json({error:"Two valid addresses required"},{status:400});const a=x.addrA.toLowerCase(),b=x.addrB.toLowerCase(),nonce=typeof x.nonce==="number"?x.nonce:0,[ca,cb]=await Promise.all([getCard(a),getCard(b)]),date=new Date().toISOString().slice(0,10),result=battle(ca,cb,date,nonce);await db()?.from("battles").insert({addr_a:a,addr_b:b,date_utc:date,nonce,winner:result.winner,result});return NextResponse.json(result)}
+import { NextResponse } from "next/server";
+import { battle } from "@/lib/battle/engine";
+import { log, errorMessage } from "@/lib/log";
+import { getOrComputeCard, isValidAddress, normalizeAddress } from "@/lib/server/card";
+import { checkRateLimit } from "@/lib/server/rate";
+import { persistBattle } from "@/lib/server/battle";
+import { isRecord } from "@/lib/chain/shared";
+import { utcDate } from "@/lib/utils/format";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+const LIMIT_PER_HOUR = 60;
+
+export async function POST(request: Request) {
+  const verdict = await checkRateLimit("battle", LIMIT_PER_HOUR, request);
+  if (!verdict.allowed) {
+    return NextResponse.json(
+      {
+        error: "rate_limited",
+        message: `The arena is full. ${LIMIT_PER_HOUR} matches per hour.`,
+        retryAt: verdict.reset,
+      },
+      { status: 429, headers: { "retry-after": "3600" } },
+    );
+  }
+
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "bad_json", message: "Malformed request." }, { status: 400 });
+  }
+
+  if (!isRecord(body)) {
+    return NextResponse.json({ error: "bad_json", message: "Malformed request." }, { status: 400 });
+  }
+
+  const { addrA, addrB, nonce } = body;
+
+  if (
+    typeof addrA !== "string" ||
+    typeof addrB !== "string" ||
+    !isValidAddress(addrA) ||
+    !isValidAddress(addrB)
+  ) {
+    return NextResponse.json(
+      { error: "invalid_address", message: "Two valid EVM addresses are required." },
+      { status: 400 },
+    );
+  }
+
+  const a = normalizeAddress(addrA);
+  const b = normalizeAddress(addrB);
+
+  if (a === b) {
+    return NextResponse.json(
+      { error: "same_address", message: "A wallet cannot battle itself." },
+      { status: 400 },
+    );
+  }
+
+  try {
+    const [cardA, cardB] = await Promise.all([getOrComputeCard(a), getOrComputeCard(b)]);
+    const dateUtc = utcDate();
+    const safeNonce = typeof nonce === "number" && Number.isFinite(nonce) ? Math.floor(nonce) : 0;
+
+    const result = battle(cardA.card, cardB.card, dateUtc, safeNonce);
+    await persistBattle(result, a, b);
+
+    return NextResponse.json(result);
+  } catch (error) {
+    log("error", "api.battle", { addrA: a, addrB: b, error: errorMessage(error) });
+    return NextResponse.json(
+      { error: "battle_failed", message: "The arena did not answer. Try again shortly." },
+      { status: 500 },
+    );
+  }
+}

@@ -1,1 +1,40 @@
-import {AddressInput} from "@/components/AddressInput";const examples=["0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045","0x00000000219ab540356cBB839Cbe05303d7705Fa","0x4200000000000000000000000000000000000006"];export default function Home(){return <main className="page hero"><p className="kicker">YOUR HISTORY. YOUR STATS. YOUR LEGEND.</p><h1>FORGE YOUR<br/>ONCHAIN CARD</h1><p className="hero-copy">Every transaction leaves a mark. Turn any Ethereum or Base wallet into a collectible card—and put it to battle.</p><AddressInput/><div className="examples">{examples.map((a,i)=><a className="chip" key={a} href={`/card/${a.toLowerCase()}`}>{["vitalik.eth","ETH2 depositor","Base WETH"][i]}</a>)}</div></main>}
+import { AddressInput } from "@/components/AddressInput";
+
+export default function HomePage() {
+  return (
+    <main className="page">
+      <section className="hero">
+        <p className="eyebrow">Generated from real onchain history</p>
+
+        <h1 className="hero__title display">
+          Every wallet
+          <br />
+          is a card
+        </h1>
+
+        <p className="hero__copy">
+          Paste any EVM address. Get a collectible card with a level, five stats, an archetype and
+          one ability — all derived from what that wallet has actually done on Ethereum and Base.
+          Then send it into battle.
+        </p>
+
+        <AddressInput />
+
+        <ol className="how">
+          <li>
+            <span className="how__step mono">01</span>
+            <span>We read the wallet&rsquo;s history across Ethereum and Base.</span>
+          </li>
+          <li>
+            <span className="how__step mono">02</span>
+            <span>Stats are scored against a population baseline, not arbitrary thresholds.</span>
+          </li>
+          <li>
+            <span className="how__step mono">03</span>
+            <span>Any two cards fight a deterministic, replayable match.</span>
+          </li>
+        </ol>
+      </section>
+    </main>
+  );
+}

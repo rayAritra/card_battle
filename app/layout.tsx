@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Link from "next/link";
 import { Inter, JetBrains_Mono, Oswald } from "next/font/google";
 import "./globals.css";
 
@@ -43,14 +44,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${inter.variable} ${oswald.variable} ${jetbrainsMono.variable}`}>
       <body>
         <header className="site-header">
-          <a href="/" className="logo">
+          <Link href="/" className="logo">
             Onchain
             <br />
             Battle Cards
-          </a>
+          </Link>
           <nav>
-            <a href="/leaderboard">Leaderboard</a>
-            <a href="/settings">Settings</a>
+            <Link href="/leaderboard">Leaderboard</Link>
+            <Link href="/settings">Settings</Link>
           </nav>
         </header>
 
