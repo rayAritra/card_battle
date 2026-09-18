@@ -17,6 +17,8 @@ export interface FrameMetaOptions {
   buttonLabel: string;
   /** Where the button posts to; the frame route resolves the challenger. */
   target: string;
+  /** The card being challenged, passed to the frame handler. */
+  cardAddress?: string;
 }
 
 /**
@@ -27,9 +29,10 @@ export function farcasterFrameMeta({
   image,
   buttonLabel,
   target,
+  cardAddress,
 }: FrameMetaOptions): Record<string, string> {
   const imageUrl = absolute(image);
-  const postUrl = absolute("/api/frame");
+  const postUrl = absolute(cardAddress ? `/api/frame?a=${cardAddress}` : "/api/frame");
   const targetUrl = absolute(target);
 
   const miniapp = {

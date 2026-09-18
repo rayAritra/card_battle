@@ -1,1 +1,12 @@
-import {NextResponse} from "next/server";import {db} from "@/lib/db/client";export async function GET(){const client=db();if(!client)return NextResponse.json({levels:[],wins:[]});const [{data:cards},{data:battles}]=await Promise.all([client.from("wallet_cards").select("address,card").eq("no_index",false).limit(100),client.from("battles").select("winner")]);const levels=(cards||[]).sort((a,b)=>Number((b.card as {level:number}).level)-Number((a.card as {level:number}).level)).slice(0,20);const counts=new Map<string,number>();for(const x of battles||[])counts.set(x.winner,(counts.get(x.winner)||0)+1);return NextResponse.json({levels,wins:[...counts].sort((a,b)=>b[1]-a[1]).slice(0,20)})}
+import { NextResponse } from "next/server";
+import { loadLeaderboard } from "@/lib/server/leaderboard";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+export async function GET() {
+  const leaderboard = await loadLeaderboard();
+  return NextResponse.json(leaderboard, {
+    headers: { "cache-control": "public, max-age=60, stale-while-revalidate=600" },
+  });
+}

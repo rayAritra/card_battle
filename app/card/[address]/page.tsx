@@ -52,6 +52,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       image,
       buttonLabel: "Battle this wallet",
       target: `/card/${wallet}`,
+      cardAddress: wallet,
     }),
   };
 }
