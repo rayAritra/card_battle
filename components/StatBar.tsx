@@ -22,21 +22,27 @@ interface StatBarProps {
  */
 export function StatBar({ name, stat, delay = 0, animate = true }: StatBarProps) {
   const reduced = useReducedMotion();
-  const [open, setOpen] = useState(false);
+
+  // Hover and tap are tracked separately. Sharing one flag means a pointer
+  // user hovers (which opens the row) and then clicks — toggling it shut
+  // again the instant they try to pin it open.
+  const [hovered, setHovered] = useState(false);
+  const [pinned, setPinned] = useState(false);
+  const open = hovered || pinned;
 
   const fillTo = stat.score / 99;
 
   return (
     <div
       className="stat-wrap"
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
       <button
         type="button"
         className="stat"
         aria-expanded={open}
-        onClick={() => setOpen((value) => !value)}
+        onClick={() => setPinned((value) => !value)}
       >
         <span className="stat__row">
           <span className="stat__name">{name}</span>
