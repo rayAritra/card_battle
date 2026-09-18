@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import { Inter, JetBrains_Mono, Oswald } from "next/font/google";
+import { appOriginUrl } from "@/lib/utils/origin";
 import "./globals.css";
 
 const inter = Inter({
@@ -30,7 +31,7 @@ export const metadata: Metadata = {
   },
   description:
     "Turn any EVM wallet into a collectible battle card generated from its real onchain history. Entertainment only.",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
+  metadataBase: appOriginUrl(),
 };
 
 export const viewport: Viewport = {
