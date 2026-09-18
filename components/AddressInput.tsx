@@ -6,8 +6,12 @@ import { useState, type FormEvent } from "react";
 import { isAddress } from "viem";
 
 interface AddressInputProps {
-  /** Where to send a valid address. Defaults to the card page. */
-  destination?: (address: string) => string;
+  /**
+   * Path prefix the validated address is appended to. A string, not a
+   * function: this component is a Client Component, and function props cannot
+   * cross the server boundary.
+   */
+  destinationPrefix?: string;
   label?: string;
   cta?: string;
   /** One-tap example wallets. */
@@ -25,7 +29,7 @@ const DEFAULT_EXAMPLES = [
  * never costs a round trip.
  */
 export function AddressInput({
-  destination = (address) => `/card/${address}`,
+  destinationPrefix = "/card/",
   label = "Wallet address",
   cta = "Generate card",
   examples = DEFAULT_EXAMPLES,
@@ -46,7 +50,7 @@ export function AddressInput({
 
     setError(null);
     setPending(true);
-    router.push(destination(candidate.toLowerCase()));
+    router.push(`${destinationPrefix}${candidate.toLowerCase()}`);
   };
 
   return (

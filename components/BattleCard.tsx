@@ -52,7 +52,6 @@ export function BattleCard({
           "--accent": palette.accent,
           "--accent-soft": palette.accentSoft,
           "--glow": palette.glow,
-          containerType: "inline-size",
         } as React.CSSProperties
       }
     >

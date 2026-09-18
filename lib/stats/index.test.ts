@@ -7,6 +7,7 @@ import {
   ALL_FIXTURES,
   emptyWallet,
   freshWallet,
+  highFrequencyTrader,
   nftOnlyWallet,
   stablecoinOnlyWallet,
   whale2017,
@@ -242,5 +243,14 @@ describe("portfolio-composition overrides", () => {
 
   it("does not apply the override to a mixed portfolio", () => {
     expect(computeCard(whale2017).archetype).not.toBe("STABLECOIN MONK");
+  });
+});
+
+describe("the stablecoin override does not swallow traders", () => {
+  it("keeps a high-frequency trader out of STABLECOIN MONK when it is parked in cash", () => {
+    // This wallet holds nothing but USDC, but it has 1,400 swaps and 41% of its
+    // flow in memecoins. Composition alone must not rename it.
+    expect(highFrequencyTrader.currentHoldings.every((h) => h.symbol === "USDC")).toBe(true);
+    expect(computeCard(highFrequencyTrader).archetype).not.toBe("STABLECOIN MONK");
   });
 });

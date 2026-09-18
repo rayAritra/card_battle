@@ -65,7 +65,15 @@ export function classifyArchetype(stats: Stats, profile: WalletProfile): string 
   const totalActivity = profile.totalTxCount + profile.nftTxCount;
   if (profile.nftTxCount >= 5 && profile.nftTxCount > totalActivity * 0.5) return "NFT WARLOCK";
 
-  if (stablecoinShare(profile) > 0.85 && profile.holdingsCount > 0) return "STABLECOIN MONK";
+  // A dollar-heavy portfolio only makes a MONK when the wallet also behaves
+  // like one. A high-frequency trader parked in USDC between positions is not
+  // a monk, it is a trader holding cash.
+  const monkish =
+    stablecoinShare(profile) > 0.85 &&
+    profile.holdingsCount > 0 &&
+    stats.holding.score >= 55 &&
+    stats.trading.score < stats.holding.score;
+  if (monkish) return "STABLECOIN MONK";
 
   const point = STAT_KEYS.map((key) => normalize(stats[key].score));
 

@@ -26,7 +26,7 @@ export function GET() {
     miniapp: {
       version: "1",
       name: "Onchain Battle Cards",
-      iconUrl: `${base}/icon.png`,
+      iconUrl: `${base}/api/icon`,
       homeUrl: base,
       imageUrl: `${base}/api/og/generic`,
       buttonTitle: "Battle a wallet",

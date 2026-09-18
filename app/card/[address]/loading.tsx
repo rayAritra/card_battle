@@ -1,0 +1,14 @@
+import { CardSkeleton } from "@/components/CardSkeleton";
+
+/**
+ * The loading state is the face-down card, not a spinner (§9). The address is
+ * not available to a loading file, so the skeleton seeds its art from a
+ * constant — the reveal replaces it with the wallet's own art.
+ */
+export default function CardLoading() {
+  return (
+    <main className="page card-page">
+      <CardSkeleton address="0x0000000000000000000000000000000000000000" />
+    </main>
+  );
+}

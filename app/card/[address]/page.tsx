@@ -91,7 +91,7 @@ export default async function CardPage({ params }: PageProps) {
         </p>
 
         <AddressInput
-          destination={(challenger) => `/battle/${wallet}/${challenger}`}
+          destinationPrefix={`/battle/${wallet}/`}
           label="Your address"
           cta="Fight"
           examples={[]}
