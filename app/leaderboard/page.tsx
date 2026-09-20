@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { FightButton } from "@/components/FightButton";
 import { loadLeaderboard } from "@/lib/server/leaderboard";
 import { truncateAddress, ordinal } from "@/lib/utils/format";
 import type { LeaderboardEntry } from "@/types";
@@ -7,8 +8,8 @@ import type { LeaderboardEntry } from "@/types";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Leaderboard",
-  description: "The highest-level cards and the best win records. Never ranked by net worth.",
+  title: "Rankings",
+  description: "The strongest cards and fiercest arena records. Power earns rank. Wealth never does.",
 };
 
 function Table({
@@ -26,7 +27,7 @@ function Table({
 
       {entries.length === 0 ? (
         <p className="board__empty">
-          Nothing here yet. Generate the first card and it will appear.
+          No legends yet. Forge the first card and claim the top position.
         </p>
       ) : (
         <ol className="board__list">
@@ -40,6 +41,7 @@ function Table({
               </Link>
               <span className="board__archetype">{entry.archetype}</span>
               <span className="board__metric mono">{metric(entry)}</span>
+              <FightButton opponent={entry.address} />
             </li>
           ))}
         </ol>
@@ -54,24 +56,24 @@ export default async function LeaderboardPage() {
   return (
     <main className="page">
       <header className="board-head">
-        <p className="eyebrow">Standings</p>
-        <h1 className="board-head__title display">Leaderboard</h1>
+        <p className="eyebrow">Hall of legends</p>
+        <h1 className="board-head__title display">The rankings</h1>
         <p className="board-head__copy">
-          Two rankings, and only two. There is no net-worth ranking here and there will not be one —
-          how much a wallet holds is not an achievement.
+          The strongest wallets rise through power and arena performance. Portfolio size buys no
+          glory here.
         </p>
       </header>
 
       <div className="boards">
         <Table
-          title="Highest level"
-          caption="Weighted across all five stats, with experience carrying the most."
+          title="Power rankings"
+          caption="The highest-rated cards across all five onchain powers."
           entries={byLevel}
           metric={(entry) => `LVL ${entry.level}`}
         />
         <Table
-          title="Best record"
-          caption="Wins and losses across every battle fought so far."
+          title="Arena champions"
+          caption="The fiercest win records from every clash fought so far."
           entries={byRecord}
           metric={(entry) => `${entry.wins}W ${entry.losses}L`}
         />

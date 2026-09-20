@@ -17,7 +17,7 @@ import {
   getNftTransfers,
   getTokenTransfers,
   getTransactions,
-} from "./etherscan";
+} from "./history";
 import { getPrices, priceKey } from "./prices";
 import { num, type RawNftTransfer, type RawTokenTransfer, type RawTx } from "./shared";
 

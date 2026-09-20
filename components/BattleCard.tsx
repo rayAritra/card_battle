@@ -106,7 +106,7 @@ export function BattleCard({
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: baseDelay + 0.65, duration: 0.4 }}
             >
-              <span className="vital__label">Level</span>
+              <span className="vital__label">Power level</span>
               <span className="vital__value">
                 <CountUp
                   value={card.level}
@@ -123,7 +123,7 @@ export function BattleCard({
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: baseDelay + 0.7, duration: 0.4 }}
             >
-              <span className="vital__label">Net worth</span>
+              <span className="vital__label">Vault</span>
               <span className="vital__value">{netWorth}</span>
             </motion.div>
           </div>
@@ -149,7 +149,7 @@ export function BattleCard({
           </motion.div>
 
           <div className="card-foot">
-            <span>Onchain Battle Cards</span>
+            <span>Forged onchain</span>
             <span className="card-foot__serial">{card.serial}</span>
           </div>
         </div>

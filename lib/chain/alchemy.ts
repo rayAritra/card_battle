@@ -1,5 +1,5 @@
 import type { ChainId } from "@/types";
-import { isRecord, num, resilient, str } from "./shared";
+import { isRecord, mapWithConcurrency, num, resilient, str } from "./shared";
 
 /**
  * Alchemy's enhanced token APIs, called over plain JSON-RPC.
@@ -16,6 +16,9 @@ const HOSTS: Record<ChainId, string> = {
 
 /** Cap on positions priced per chain — keeps a whale's dust from blowing up latency. */
 const MAX_POSITIONS = 40;
+
+/** Simultaneous metadata lookups. Above this Alchemy throttles and undici drops sockets. */
+const METADATA_CONCURRENCY = 6;
 
 export interface RawBalance {
   contract: string;
@@ -78,13 +81,11 @@ export async function getBalances(address: string, chainId: ChainId): Promise<Ra
         .filter((row) => row.contract !== "" && /^0x[0-9a-f]*$/.test(row.raw) && BigInt(row.raw) > 0n)
         .slice(0, MAX_POSITIONS);
 
-      const metadata = await Promise.all(
-        nonZero.map((row) =>
-          resilient(
-            `alchemy:metadata:${chainId}`,
-            () => rpc<{ symbol?: unknown; decimals?: unknown }>(chainId, "alchemy_getTokenMetadata", [row.contract]),
-            {} as { symbol?: unknown; decimals?: unknown },
-          ),
+      const metadata = await mapWithConcurrency(nonZero, METADATA_CONCURRENCY, (row) =>
+        resilient(
+          `alchemy:metadata:${chainId}`,
+          () => rpc<{ symbol?: unknown; decimals?: unknown }>(chainId, "alchemy_getTokenMetadata", [row.contract]),
+          {} as { symbol?: unknown; decimals?: unknown },
         ),
       );
 

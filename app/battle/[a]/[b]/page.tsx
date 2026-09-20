@@ -11,6 +11,7 @@ import { getOrComputeCard, isValidAddress, normalizeAddress, readStoredCard } fr
 import { checkRateLimit } from "@/lib/server/rate";
 import { farcasterFrameMeta } from "@/lib/server/frame";
 import { persistBattle } from "@/lib/server/battle";
+import { headToHead } from "@/lib/server/history";
 import { truncateAddress, utcDate } from "@/lib/utils/format";
 
 export const dynamic = "force-dynamic";
@@ -29,7 +30,7 @@ const parseNonce = (raw: string | undefined): number => {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { a, b } = await params;
-  if (!isValidAddress(a) || !isValidAddress(b)) return { title: "Battle" };
+  if (!isValidAddress(a) || !isValidAddress(b)) return { title: "The Arena" };
 
   const [cardA, cardB] = await Promise.all([
     readStoredCard(normalizeAddress(a)),
@@ -39,7 +40,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const nameA = cardA?.card.archetype ?? truncateAddress(a);
   const nameB = cardB?.card.archetype ?? truncateAddress(b);
   const title = `${nameA} vs ${nameB}`;
-  const description = "A deterministic match between two onchain wallets. Get your own card.";
+  const description = "Two wallets enter a deterministic five-round clash. One legend leaves victorious.";
   const image = `/api/og/${normalizeAddress(a)}`;
 
   return {
@@ -49,7 +50,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     twitter: { card: "summary_large_image", title, description, images: [image] },
     other: farcasterFrameMeta({
       image,
-      buttonLabel: "Get your own card",
+      buttonLabel: "Enter the arena",
       target: `/battle/${normalizeAddress(a)}/${normalizeAddress(b)}`,
     }),
   };
@@ -68,11 +69,11 @@ export default async function BattlePage({ params, searchParams }: PageProps) {
   if (addrA === addrB) {
     return (
       <main className="page state-page">
-        <p className="eyebrow">Impossible</p>
-        <h1 className="state-page__title display">A wallet cannot fight itself</h1>
-        <p className="state-page__copy">Pick a different challenger.</p>
+        <p className="eyebrow">Battle rejected</p>
+        <h1 className="state-page__title display">A legend cannot fight itself</h1>
+        <p className="state-page__copy">Choose another wallet worthy of the challenge.</p>
         <Link className="button" href={`/card/${addrA}`}>
-          Back to the card
+          Return to the card
         </Link>
       </main>
     );
@@ -92,6 +93,10 @@ export default async function BattlePage({ params, searchParams }: PageProps) {
     getOrComputeCard(addrB),
   ]);
 
+  // Read the record BEFORE this match is stored, so the line below describes
+  // the history the two wallets brought into the fight rather than including it.
+  const priorRecord = await headToHead(addrA, addrB);
+
   const result = battle(storedA.card, storedB.card, utcDate(), nonce);
   await persistBattle(result, addrA, addrB);
 
@@ -104,7 +109,7 @@ export default async function BattlePage({ params, searchParams }: PageProps) {
     result.margin,
   );
 
-  const shareText = `${winner.archetype} (lvl ${winner.level}) beat ${loser.archetype} (lvl ${loser.level}) ${
+  const shareText = `${winner.archetype} (LVL ${winner.level}) defeated ${loser.archetype} (LVL ${loser.level}) ${
     (result.rounds.length + result.margin) / 2
   }-${(result.rounds.length - result.margin) / 2}.`;
 
@@ -116,14 +121,28 @@ export default async function BattlePage({ params, searchParams }: PageProps) {
         result={result}
         commentary={commentary}
       >
+        {priorRecord.total > 0 && (
+          <p className="replay__h2h">
+            These two have met {priorRecord.total}{" "}
+            {priorRecord.total === 1 ? "time" : "times"} before ·{" "}
+            <span className="mono">
+              {priorRecord.wins}W {priorRecord.losses}L
+            </span>{" "}
+            for {truncateAddress(addrA)}
+          </p>
+        )}
+
         <div className="replay__actions">
           <Link className="button button--ghost" href={`/battle/${addrA}/${addrB}?n=${nonce + 1}`}>
-            Rematch
+            Run it back
+          </Link>
+          <Link className="button button--ghost" href={`/history/${addrA}`}>
+            History
           </Link>
           <ShareBar
             url={`/battle/${addrA}/${addrB}${nonce ? `?n=${nonce}` : ""}`}
             text={shareText}
-            primary={{ href: "/", label: "Get your own card" }}
+            primary={{ href: "/", label: "Forge your card" }}
           />
         </div>
       </BattleReplay>

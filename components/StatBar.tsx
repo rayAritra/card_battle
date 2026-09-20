@@ -14,6 +14,14 @@ interface StatBarProps {
   animate?: boolean;
 }
 
+const PREMIUM_STAT_NAMES: Record<StatKey, string> = {
+  experience: "legacy",
+  trading: "velocity",
+  defi: "protocol",
+  holding: "conviction",
+  risk: "volatility",
+};
+
 /**
  * One stat row: label, fill, value.
  *
@@ -45,7 +53,7 @@ export function StatBar({ name, stat, delay = 0, animate = true }: StatBarProps)
         onClick={() => setPinned((value) => !value)}
       >
         <span className="stat__row">
-          <span className="stat__name">{name}</span>
+          <span className="stat__name">{PREMIUM_STAT_NAMES[name]}</span>
 
           <span className="stat__track">
             <motion.span

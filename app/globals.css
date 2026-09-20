@@ -1239,3 +1239,260 @@ input {
   color: #6ee7a8;
   font-size: 12px;
 }
+
+/* ── Recently viewed ──────────────────────────────────────────────────────── */
+
+.recents {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--hairline);
+  text-align: left;
+}
+
+.recents__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.recents__title {
+  margin: 0;
+  color: #6f6f79;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.recents__clear {
+  border: 0;
+  background: transparent;
+  color: #4f4f59;
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+  transition: color 160ms ease;
+}
+
+.recents__clear:hover {
+  color: var(--muted);
+}
+
+.recents__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.recents__item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 9px 14px;
+  border: 1px solid #23232a;
+  border-radius: 10px;
+  background: var(--surface);
+  transition: border-color 160ms ease;
+}
+
+.recents__item:hover {
+  border-color: var(--accent);
+}
+
+.recents__name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text);
+}
+
+.recents__meta {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6f6f79;
+}
+
+/* ── Claim, discovery ─────────────────────────────────────────────────────── */
+
+.claim {
+  align-self: flex-start;
+  margin-bottom: 18px;
+  padding: 6px 12px;
+  border: 1px solid #292930;
+  border-radius: 99px;
+  background: transparent;
+  color: #90909a;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  cursor: pointer;
+  transition: border-color 160ms ease, color 160ms ease, background 160ms ease;
+}
+
+.claim:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.claim--on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.random-opponent {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.random-opponent .button {
+  width: 100%;
+}
+
+.card-aside__record {
+  display: inline-block;
+  margin-top: 16px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  transition: color 160ms ease;
+}
+
+.card-aside__record:hover {
+  color: var(--accent);
+}
+
+/* ── Leaderboard fight action ─────────────────────────────────────────────── */
+
+.board__list li {
+  grid-template-columns: 26px 1fr auto auto;
+}
+
+.board__fight {
+  padding: 5px 11px;
+  border: 1px solid #292930;
+  border-radius: 99px;
+  color: #90909a;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: border-color 160ms ease, color 160ms ease;
+}
+
+.board__fight:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+/* ── Battle history ───────────────────────────────────────────────────────── */
+
+.record {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin: 20px 0 24px;
+}
+
+.record__wins,
+.record__losses {
+  font-family: var(--font-display);
+  font-size: 34px;
+  letter-spacing: -0.01em;
+}
+
+.record__wins {
+  color: var(--accent);
+}
+
+.record__losses {
+  color: #4f4f59;
+}
+
+.record__rate {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.replay__h2h {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+.history {
+  display: grid;
+  gap: 1px;
+  max-width: 640px;
+  margin: 28px auto 0;
+  padding: 0;
+  list-style: none;
+}
+
+.history li {
+  display: grid;
+  grid-template-columns: 52px 1fr auto auto auto;
+  gap: 14px;
+  align-items: baseline;
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--hairline);
+  font-size: 13px;
+}
+
+.history__badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: #4f4f59;
+}
+
+.history__badge--won {
+  color: var(--accent);
+}
+
+.history__opponent {
+  font-family: var(--font-mono);
+  color: var(--text);
+  transition: color 160ms ease;
+}
+
+.history__opponent:hover {
+  color: var(--accent);
+}
+
+.history__score,
+.history__date {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.history__replay {
+  color: #6f6f79;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: color 160ms ease;
+}
+
+.history__replay:hover {
+  color: var(--accent);
+}
+
+@media (max-width: 560px) {
+  .history li {
+    grid-template-columns: 46px 1fr auto;
+    row-gap: 6px;
+  }
+
+  .history__date {
+    grid-column: 2;
+  }
+
+  .history__replay {
+    grid-column: 3;
+  }
+}

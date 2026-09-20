@@ -28,6 +28,14 @@ interface Beat {
   at: number;
 }
 
+const BATTLE_CATEGORY_NAMES: Record<RoundLog["category"], string> = {
+  experience: "Legacy clash",
+  trading: "Velocity clash",
+  defi: "Protocol clash",
+  holding: "Conviction clash",
+  risk: "Volatility clash",
+};
+
 /**
  * The battle replay.
  *
@@ -126,7 +134,7 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
               >
-                {current.category}
+                {BATTLE_CATEGORY_NAMES[current.category]}
               </motion.div>
             )}
           </AnimatePresence>
@@ -154,7 +162,7 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: reduced ? 0.12 : 0.2, ease: [0.22, 1, 0.36, 1] }}
             >
-              Victory
+              Arena victory
               <span className="replay__verdict-name">
                 {(result.winner === cardA.address ? cardA : cardB).archetype}
               </span>
@@ -208,7 +216,7 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
             exit={{ x: "100%", opacity: 0 }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
-            {current.abilitiesTriggered.join(" · ")}
+              Ability activated · {current.abilitiesTriggered.join(" · ")}
           </motion.div>
         )}
       </AnimatePresence>
@@ -230,7 +238,7 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
           return (
             <li key={index}>
               <span className="replay__log-round mono">R{index + 1}</span>
-              <span className="replay__log-category">{round.category}</span>
+              <span className="replay__log-category">{BATTLE_CATEGORY_NAMES[round.category]}</span>
               <span className="mono">
                 {round.rollA} — {round.rollB}
               </span>

@@ -16,7 +16,7 @@ export async function GET(
 
   if (!isValidAddress(address)) {
     return NextResponse.json(
-      { error: "invalid_address", message: "That is not a valid EVM address." },
+      { error: "invalid_address", message: "The chain knows no such wallet." },
       { status: 400 },
     );
   }
@@ -26,7 +26,7 @@ export async function GET(
     return NextResponse.json(
       {
         error: "rate_limited",
-        message: `The forge is cooling. ${LIMIT_PER_HOUR} cards per hour.`,
+        message: `The forge is at capacity. ${LIMIT_PER_HOUR} reveals per hour.`,
         retryAt: verdict.reset,
       },
       { status: 429, headers: { "retry-after": "3600" } },
@@ -41,7 +41,7 @@ export async function GET(
   } catch (error) {
     log("error", "api.card", { address, error: errorMessage(error) });
     return NextResponse.json(
-      { error: "card_failed", message: "The chain did not answer. Try again shortly." },
+      { error: "card_failed", message: "The chain went silent. Return to the forge shortly." },
       { status: 500 },
     );
   }

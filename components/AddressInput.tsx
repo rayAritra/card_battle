@@ -24,14 +24,21 @@ const DEFAULT_EXAMPLES = [
   { label: "Base builder", address: "0x8c8F1a1e1bFdb15E7ed562efc84e5A588E68aD73" },
 ];
 
+const looksLikeName = (value: string): boolean =>
+  value.length > 2 && value.includes(".") && !value.startsWith("0x");
+
 /**
- * The front door. Validates with viem before navigating, so an invalid address
- * never costs a round trip.
+ * The front door. Accepts an address, an ENS name or a basename.
+ *
+ * Addresses are validated with viem before navigating, so a typo never costs a
+ * round trip. Names are resolved through /api/resolve, which is the only case
+ * that needs the network — people think in names, so rejecting them outright
+ * was losing visitors at the first field.
  */
 export function AddressInput({
   destinationPrefix = "/card/",
-  label = "Wallet address",
-  cta = "Generate card",
+  label = "Enter the arena",
+  cta = "Forge my card",
   examples = DEFAULT_EXAMPLES,
 }: AddressInputProps) {
   const router = useRouter();
@@ -39,18 +46,61 @@ export function AddressInput({
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
-  const submit = (event: FormEvent) => {
+  const go = (address: string) => {
+    setPending(true);
+    router.push(`${destinationPrefix}${address.toLowerCase()}`);
+  };
+
+  const submit = async (event: FormEvent) => {
     event.preventDefault();
     const candidate = value.trim();
 
-    if (!isAddress(candidate, { strict: false })) {
-      setError("That is not a valid EVM address. It should start with 0x and be 42 characters.");
+    if (isAddress(candidate, { strict: false })) {
+      setError(null);
+      go(candidate);
+      return;
+    }
+
+    if (!looksLikeName(candidate.toLowerCase())) {
+      setError("Enter a valid wallet address or ENS name to unlock its legend.");
       return;
     }
 
     setError(null);
     setPending(true);
-    router.push(`${destinationPrefix}${candidate.toLowerCase()}`);
+
+    try {
+      const response = await fetch(`/api/resolve?q=${encodeURIComponent(candidate)}`);
+
+      if (response.status === 429) {
+        setError("The forge is at capacity. Paste the wallet address or return in a moment.");
+        setPending(false);
+        return;
+      }
+
+      if (!response.ok) {
+        setError(`The chain knows no wallet named “${candidate}”. Check the spelling.`);
+        setPending(false);
+        return;
+      }
+
+      const data: unknown = await response.json();
+      const address =
+        typeof data === "object" && data !== null && "address" in data
+          ? (data as { address: unknown }).address
+          : null;
+
+      if (typeof address !== "string" || !isAddress(address, { strict: false })) {
+        setError(`The chain knows no wallet named “${candidate}”. Check the spelling.`);
+        setPending(false);
+        return;
+      }
+
+      go(address);
+    } catch {
+      setError("The chain went quiet. Paste the wallet address directly to continue.");
+      setPending(false);
+    }
   };
 
   return (
@@ -64,8 +114,9 @@ export function AddressInput({
           id="address"
           name="address"
           className="mono"
-          placeholder="0x…"
+          placeholder="Wallet address or ENS"
           autoComplete="off"
+          autoCapitalize="none"
           spellCheck={false}
           value={value}
           onChange={(event) => {
@@ -82,7 +133,7 @@ export function AddressInput({
           whileTap={{ scale: 0.97 }}
           transition={{ duration: 0.12 }}
         >
-          {pending ? "Reading…" : cta}
+          {pending ? "Reading the chain…" : cta}
         </motion.button>
       </div>
 

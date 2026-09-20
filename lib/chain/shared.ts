@@ -87,3 +87,33 @@ export function num(value: unknown): number {
   const parsed = typeof value === "number" ? value : Number(str(value));
   return Number.isFinite(parsed) ? parsed : 0;
 }
+
+/**
+ * Maps over items with a ceiling on how many run at once.
+ *
+ * `Promise.all` over a per-item fetcher is a trap here: a whale with 40 token
+ * positions, each retried up to 3 times, opens ~120 sockets at once. Undici
+ * gives up with a bare "fetch failed" and the provider throttles the rest, so
+ * the retries make the failure worse rather than better. Results stay in input
+ * order regardless of completion order.
+ */
+export async function mapWithConcurrency<T, R>(
+  items: readonly T[],
+  limit: number,
+  fn: (item: T, index: number) => Promise<R>,
+): Promise<R[]> {
+  const results = new Array<R>(items.length);
+  let cursor = 0;
+
+  const worker = async (): Promise<void> => {
+    while (cursor < items.length) {
+      const index = cursor++;
+      results[index] = await fn(items[index] as T, index);
+    }
+  };
+
+  const workers = Array.from({ length: Math.min(Math.max(1, limit), items.length) }, worker);
+  await Promise.all(workers);
+
+  return results;
+}

@@ -52,7 +52,7 @@ export function CardSkeleton({ address }: { address: string }) {
               className="display"
               style={{ fontSize: 26, color: palette.accent, letterSpacing: "0.18em" }}
             >
-              Reading the chain
+              The chain remembers
             </span>
             <span className="mono" style={{ fontSize: 11, color: "var(--muted)" }}>
               {truncateAddress(address)}

@@ -23,7 +23,7 @@ export async function POST(request: Request) {
   const verdict = await checkRateLimit("settings", LIMIT_PER_HOUR, request);
   if (!verdict.allowed) {
     return NextResponse.json(
-      { error: "rate_limited", message: "Too many changes. Try again later." },
+      { error: "rate_limited", message: "Your privacy controls are cooling down. Try again later." },
       { status: 429 },
     );
   }
@@ -43,13 +43,13 @@ export async function POST(request: Request) {
 
   if (typeof address !== "string" || !isValidAddress(address)) {
     return NextResponse.json(
-      { error: "invalid_address", message: "A valid EVM address is required." },
+      { error: "invalid_address", message: "A valid wallet identity is required." },
       { status: 400 },
     );
   }
   if (typeof signature !== "string" || !signature.startsWith("0x")) {
     return NextResponse.json(
-      { error: "missing_signature", message: "A wallet signature is required." },
+      { error: "missing_signature", message: "Your free wallet signature is required." },
       { status: 400 },
     );
   }
@@ -69,7 +69,7 @@ export async function POST(request: Request) {
   const age = Date.now() - issuedAt;
   if (age < -60_000 || age > SIGNATURE_WINDOW_MS) {
     return NextResponse.json(
-      { error: "expired", message: "That signature has expired. Sign again." },
+      { error: "expired", message: "That signature has faded. Verify again." },
       { status: 400 },
     );
   }
@@ -90,7 +90,7 @@ export async function POST(request: Request) {
 
   if (!valid) {
     return NextResponse.json(
-      { error: "bad_signature", message: "That signature does not match the address." },
+      { error: "bad_signature", message: "That signature does not match this wallet." },
       { status: 401 },
     );
   }
@@ -98,7 +98,7 @@ export async function POST(request: Request) {
   const client = db();
   if (!client) {
     return NextResponse.json(
-      { error: "no_storage", message: "Settings storage is not configured." },
+      { error: "no_storage", message: "Privacy storage is unavailable right now." },
       { status: 503 },
     );
   }
@@ -116,7 +116,7 @@ export async function POST(request: Request) {
   } catch (error) {
     log("error", "settings.write", { address: wallet, error: errorMessage(error) });
     return NextResponse.json(
-      { error: "write_failed", message: "Could not save those settings." },
+      { error: "write_failed", message: "Your privacy preferences could not be secured." },
       { status: 500 },
     );
   }

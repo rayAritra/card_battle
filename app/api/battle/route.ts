@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error: "rate_limited",
-        message: `The arena is full. ${LIMIT_PER_HOUR} matches per hour.`,
+        message: `The arena is at capacity. ${LIMIT_PER_HOUR} clashes per hour.`,
         retryAt: verdict.reset,
       },
       { status: 429, headers: { "retry-after": "3600" } },
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
     !isValidAddress(addrB)
   ) {
     return NextResponse.json(
-      { error: "invalid_address", message: "Two valid EVM addresses are required." },
+      { error: "invalid_address", message: "Two valid wallet identities must enter the arena." },
       { status: 400 },
     );
   }
@@ -55,7 +55,7 @@ export async function POST(request: Request) {
 
   if (a === b) {
     return NextResponse.json(
-      { error: "same_address", message: "A wallet cannot battle itself." },
+      { error: "same_address", message: "A legend cannot battle itself." },
       { status: 400 },
     );
   }
@@ -72,7 +72,7 @@ export async function POST(request: Request) {
   } catch (error) {
     log("error", "api.battle", { addrA: a, addrB: b, error: errorMessage(error) });
     return NextResponse.json(
-      { error: "battle_failed", message: "The arena did not answer. Try again shortly." },
+      { error: "battle_failed", message: "The arena went silent. Call for a rematch shortly." },
       { status: 500 },
     );
   }

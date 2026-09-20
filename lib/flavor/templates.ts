@@ -42,9 +42,9 @@ export function marginBucket(margin: number): MarginBucket {
 }
 
 const COMMENTARY: Record<MarginBucket, string> = {
-  narrow: "{WINNER} edges out {LOSER} on the final exchange.",
-  clear: "{WINNER} controls the middle rounds and never gives them back.",
-  dominant: "{WINNER} dismantles {LOSER} without a contested round.",
+  narrow: "One final exchange decides it. {WINNER} escapes {LOSER} by the finest margin.",
+  clear: "{WINNER} seizes the arena early and never gives {LOSER} a way back.",
+  dominant: "Total domination. {WINNER} dismantles {LOSER} without surrendering the arena.",
 };
 
 export function staticCommentary(

@@ -35,7 +35,7 @@ psql "$DATABASE_URL" -f lib/db/schema.sql     # or paste into the Supabase SQL e
 | Command | What it does |
 | --- | --- |
 | `npm run dev` / `build` / `start` | Next.js |
-| `npm test` | vitest — stat engine, battle engine, art generator |
+| `npm test` | vitest — stat engine, battle engine, art generator, history parsing |
 | `npm run typecheck` | `tsc --noEmit`, strict |
 | `npm run lint` | ESLint, including the no-randomness rule for `lib/battle` |
 | `npm run profile -- <address>` | Prints the derived `WalletProfile` for a wallet |
@@ -49,7 +49,8 @@ psql "$DATABASE_URL" -f lib/db/schema.sql     # or paste into the Supabase SQL e
 The layering is a hard rule, not a preference. Violations are bugs.
 
 ```
-lib/chain/**    I/O only. API clients plus one normalizer. No scoring.
+lib/chain/**    I/O only. API clients, a per-chain source selector, and one
+                normalizer. No scoring.
 lib/stats/**    PURE. No fetch, no Date.now(), no process.env, no randomness.
 lib/battle/**   PURE and DETERMINISTIC. Math.random() is banned here.
 lib/art/**      PURE. Deterministic SVG from the address bytes.
@@ -65,6 +66,10 @@ an ESLint rule that bans `Math.random` and `Date.now` under `lib/battle`.
 
 ### The pipeline
 
+0. **`resolveIdentity(input)`** turns whatever was typed into an address. A raw
+   `0x` address passes through; an ENS name or a basename is resolved against
+   mainnet, with `name.base.eth` handled by the same call through CCIP-read.
+   Results are cached in `api_cache` under chain `0` for a week.
 1. **`buildWalletProfile(address)`** fetches both chains in parallel — normal
    transactions, ERC-20 transfers, NFT transfers, token balances, prices and a
    reverse ENS lookup — and returns *only derived metrics*. No raw API payload
@@ -82,11 +87,94 @@ an ESLint rule that bans `Math.random` and `Date.now` under `lib/battle`.
 - Every external API response is cached in Postgres for 24h, keyed
   `(address, chain, endpoint)`. A wallet is never fetched twice in one UTC day.
 - Computed cards are cached in `wallet_cards` with the same TTL.
+- `/api/og` serves the 1200x630 share image, and `?v=portrait` a 5:7 760x1064
+  version behind the card page's "Save card" action — the card is a collectible,
+  so it has to be saveable as the object rather than as a share banner.
 - `/api/og` **reads cache only** and never triggers a chain fetch — a crawler
   unfurling a cold link must not cost a full profile build. On a miss it renders
   a generic "generate your card" image.
 - There is also a per-process memo, so one request never hits Postgres twice for
   the same key.
+
+### Finding an opponent
+
+Generating a card is only half the loop — the other half is having someone to
+fight. Three paths, in descending order of how much the visitor already knows:
+
+- **Type an address or a name.** `/card/vitalik.eth` redirects to the canonical
+  `/card/0xd8dA…`, so the shared link, the OG image and the battle URL all key
+  off one address rather than off whichever spelling was typed.
+- **Draw a random opponent.** `/api/random` returns a stored card, level-matched
+  within ±12 where the pool allows. Reads cache only, and never returns a
+  wallet that set `noIndex`.
+- **Challenge from the leaderboard.** A visitor who has claimed a card gets a
+  direct match link; everyone else lands on the opponent's card page.
+
+"Claiming" a card writes the address to `localStorage` and nothing else. It is
+not a login and proves nothing — anything that needs proof of ownership goes
+through `/settings`, which verifies a signature. Keeping those separate is what
+lets claiming be one tap with no wallet connection.
+
+Recently viewed cards are also `localStorage` only. Which wallets someone
+looked at is not something this app stores server-side.
+
+### Match history
+
+Every resolved match is already written to `battles`; `lib/server/history.ts`
+reads it back. `/history/<address>` lists a wallet's matches with a replay link
+each, and the battle page shows the head-to-head record the two wallets brought
+*into* the fight — read before the current match is persisted, so it describes
+the past rather than including the present.
+
+Rounds won are derived from the stored round log rather than from `margin`,
+because margin is signed from the winner's side and says nothing about who is
+viewing. The parser treats the column as untrusted and degrades to zero on any
+shape it does not recognise.
+
+### Where history comes from
+
+Etherscan V2 is multichain, but **access to chains other than Ethereum is a
+paid feature**. A free key asking for Base is refused with "Free API access is
+not supported for this chain" — which arrives as `status: 0` and a string
+`result`, the same shape Etherscan uses for "no transactions found".
+
+`lib/chain/history.ts` picks the source per chain. Etherscan is preferred
+wherever it is allowed, because it returns calldata. On a refusal the same
+history is read from Alchemy's `alchemy_getAssetTransfers`, which every chain
+the app's Alchemy key has enabled will serve on the free plan.
+
+The fallback is driven by Etherscan's own refusal, not by a hardcoded chain
+list: upgrading the Etherscan plan needs no code change, because the refusal
+simply stops arriving.
+
+**What the fallback cannot see.** `getAssetTransfers` reports transfers of
+value, not transactions, so there is no calldata. Two metrics are decoded from
+calldata and therefore read 0 on a chain served this way:
+
+- `openApprovalCount`
+- `newContractInteractionCount` (frontier exploration in RISK)
+
+Everything driven by transfers is fully present — trading, distinct tokens,
+holdings, NFTs, memecoin share, protocol touches, first-seen date. Nothing is
+estimated to fill the gap: an absent signal reads as zero rather than as an
+invented number.
+
+### Rate limiting the upstreams
+
+Etherscan's free plan allows **5 calls/second**. One card fans out to 8 calls
+across two chains and they all start at once, so without pacing roughly a third
+come back throttled — and a throttled reply is `status: 0` with a string
+`result`, which is indistinguishable from an empty wallet unless you match the
+message. Unpaced, the same wallet scored differently on consecutive runs: 4,010
+days old on one and 900 on the next.
+
+`lib/chain/etherscan.ts` admits one request every 220ms and treats
+"Max rate limit reached" as a retryable error rather than as an empty history.
+Only admission is serialized, so the fan-out still overlaps.
+
+Alchemy token metadata is capped at 6 concurrent lookups for the same reason:
+40 positions times 3 retries opened ~120 sockets at once, and undici answered
+with a bare `fetch failed`. Pacing it took a cold card from 102s to 8s.
 
 ### Resilience
 
@@ -278,10 +366,11 @@ holds is not an achievement.
 fails open rather than taking the product down. A limited visitor gets a themed
 page, never raw 429 JSON.
 
-**Which free tier breaks first:** Etherscan, comfortably. Its free plan allows
-5 calls/second and 100,000 calls/day; each *uncached* wallet costs 8 calls
-(4 endpoints × 2 chains), so roughly **12,000 new wallets per day** before you
-are throttled. Repeat views are free for 24h thanks to the Postgres cache.
+**Which free tier breaks first:** Supabase, until `api_cache` is pruned — see
+Future work. After that Etherscan: its free plan allows 5 calls/second and
+100,000 calls/day, and each *uncached* wallet costs 4 calls on Ethereum (Base
+is served by Alchemy), so roughly **25,000 new wallets per day** before you are
+throttled. Repeat views are free for 24h thanks to the Postgres cache.
 
 After that, in order: Supabase's 500MB database (the `api_cache` payloads
 dominate — prune rows older than 24h, the schema indexes `fetched_at` for
@@ -316,6 +405,10 @@ These are real implementations with real limits, not placeholders.
 - **Protocol labelling covers ~107 contracts across 60 protocols.** This reaches
   most meaningful activity for free; unlabelled contract calls are counted as
   frontier exploration in RISK rather than being ignored.
+- **Base history comes from Alchemy, not Etherscan**, because Etherscan's free
+  plan covers Ethereum only. Approvals and unlabelled-contract counts are
+  therefore unavailable on Base — see "Where history comes from". Upgrading the
+  Etherscan plan restores them with no code change.
 - **The Farcaster manifest needs `FARCASTER_ACCOUNT_ASSOCIATION`** — a
   per-domain signature from the app's custody account. Without it the link still
   renders as a frame; it just cannot be installed as a Mini App.
@@ -328,6 +421,8 @@ Ideas deliberately **not** built, recorded here instead:
 - Decode swap events properly rather than inferring them from the `to` address.
 - Per-category protocol transaction counts, which would let DEFI distinguish
   depth within a category from depth on one contract.
-- A battle history page per wallet, and head-to-head records between two cards.
 - Server-side image caching for OG responses, which currently re-render per
   request.
+- Pruning `api_cache` rows older than 24h. The schema indexes `fetched_at` for
+  exactly this and nothing deletes yet, which makes Supabase's 500MB the first
+  ceiling you hit rather than Etherscan's daily quota.

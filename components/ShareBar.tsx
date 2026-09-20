@@ -10,13 +10,15 @@ interface ShareBarProps {
   text: string;
   /** The primary call to action that keeps the loop turning. */
   primary?: { href: string; label: string };
+  /** When set, offers the rendered card as a downloadable image. */
+  download?: { href: string; filename: string };
 }
 
 const press = { scale: 0.97 };
 const pressTransition = { duration: 0.12 };
 
-/** Copy link, post to X, and the loop's primary CTA. */
-export function ShareBar({ url, text, primary }: ShareBarProps) {
+/** Copy link, save the card, post to X, and the loop's primary CTA. */
+export function ShareBar({ url, text, primary, download }: ShareBarProps) {
   const [copied, setCopied] = useState(false);
 
   const absolute =
@@ -57,8 +59,20 @@ export function ShareBar({ url, text, primary }: ShareBarProps) {
           whileTap={press}
           transition={pressTransition}
         >
-          {copied ? "Link copied" : "Copy link"}
+          {copied ? "Challenge copied" : "Copy challenge"}
         </motion.button>
+
+        {download && (
+          <motion.a
+            className="button button--ghost"
+            href={download.href}
+            download={download.filename}
+            whileTap={press}
+            transition={pressTransition}
+          >
+            Save card
+          </motion.a>
+        )}
 
         <motion.a
           className="button button--ghost"
@@ -68,7 +82,7 @@ export function ShareBar({ url, text, primary }: ShareBarProps) {
           whileTap={press}
           transition={pressTransition}
         >
-          Post to X
+          Share to X
         </motion.a>
       </div>
     </div>

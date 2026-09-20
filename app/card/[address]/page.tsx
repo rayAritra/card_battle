@@ -1,12 +1,19 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { AddressInput } from "@/components/AddressInput";
+import { ClaimCard } from "@/components/ClaimCard";
+import { RandomOpponent } from "@/components/RandomOpponent";
+import { RecordVisit } from "@/components/RecordVisit";
 import { RevealSequence } from "@/components/RevealSequence";
 import { ShareBar } from "@/components/ShareBar";
 import { RateLimited } from "@/components/RateLimited";
 import { InvalidAddress } from "@/components/InvalidAddress";
 import { getOrComputeCard, isValidAddress, normalizeAddress, readStoredCard } from "@/lib/server/card";
 import { checkRateLimit } from "@/lib/server/rate";
+import { resolveIdentity } from "@/lib/server/resolve";
+import { walletHistory } from "@/lib/server/history";
 import { truncateAddress } from "@/lib/utils/format";
 import { farcasterFrameMeta } from "@/lib/server/frame";
 
@@ -24,22 +31,34 @@ interface PageProps {
  */
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { address } = await params;
-  if (!isValidAddress(address)) return { title: "Unknown wallet" };
 
-  const wallet = normalizeAddress(address);
+  // The URL may carry a name rather than an address; the page redirects to the
+  // canonical form, but a crawler may unfurl the name directly.
+  const identity = isValidAddress(address)
+    ? { address: normalizeAddress(address) }
+    : await resolveIdentity(address);
+
+  if (!identity) return { title: "Unknown identity" };
+
+  const wallet = identity.address;
   const stored = await readStoredCard(wallet);
   const name = stored?.card.ensName ?? truncateAddress(wallet);
 
-  const title = stored ? `${name} · ${stored.card.archetype} · Level ${stored.card.level}` : name;
+  const title = stored ? `${name} · ${stored.card.archetype} · LVL ${stored.card.level}` : name;
   const description = stored
-    ? `${stored.card.archetype}, level ${stored.card.level}. ${stored.card.tagline}. Battle this wallet.`
-    : "Generate a battle card from any EVM wallet.";
+    ? `${stored.card.archetype}, LVL ${stored.card.level}. ${stored.card.tagline}. Enter the arena.`
+    : "Forge a battle card from any EVM wallet and enter the arena.";
 
   const image = `/api/og/${wallet}`;
 
   return {
     title,
     description,
+    // A card is reachable as /card/vitalik.eth as well as by address. The page
+    // redirects, but `loading.tsx` opens a Suspense boundary, so the response
+    // has already begun streaming and the redirect resolves on the client
+    // rather than as a 307. This keeps one canonical URL for crawlers.
+    alternates: { canonical: `/card/${wallet}` },
     robots: stored?.noIndex ? { index: false, follow: false } : undefined,
     openGraph: {
       title,
@@ -50,7 +69,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     twitter: { card: "summary_large_image", title, description, images: [image] },
     other: farcasterFrameMeta({
       image,
-      buttonLabel: "Battle this wallet",
+      buttonLabel: "Challenge this wallet",
       target: `/card/${wallet}`,
       cardAddress: wallet,
     }),
@@ -60,7 +79,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function CardPage({ params }: PageProps) {
   const { address } = await params;
 
-  if (!isValidAddress(address)) return <InvalidAddress value={address} />;
+  // /card/vitalik.eth works, and lands on /card/0xd8dA… so the shared link,
+  // the OG image and the battle URL all key off one canonical address.
+  if (!isValidAddress(address)) {
+    const identity = await resolveIdentity(address);
+    if (!identity) return <InvalidAddress value={address} />;
+    redirect(`/card/${identity.address}`);
+  }
 
   const wallet = normalizeAddress(address);
 
@@ -72,44 +97,71 @@ export default async function CardPage({ params }: PageProps) {
   );
   if (!verdict.allowed) return <RateLimited perHour={LIMIT_PER_HOUR} retryAt={verdict.reset} />;
 
-  const { card } = await getOrComputeCard(wallet);
+  const [{ card }, record] = await Promise.all([
+    getOrComputeCard(wallet),
+    walletHistory(wallet),
+  ]);
   const name = card.ensName ?? truncateAddress(card.address);
+  const fought = record.wins + record.losses;
 
-  const shareText = `${name} is a ${card.archetype} — level ${card.level}. Battle this wallet.`;
+  const shareText = `${name} unlocked ${card.archetype} — LVL ${card.level}. Think your wallet can beat it?`;
 
   return (
     <main className="page card-page">
       <RevealSequence card={card} />
 
+      <RecordVisit
+        address={card.address}
+        name={card.ensName}
+        archetype={card.archetype}
+        level={card.level}
+      />
+
       <aside className="card-aside">
-        <p className="eyebrow">Challenge</p>
-        <h1 className="card-aside__title display">Battle this wallet</h1>
+        <ClaimCard address={card.address} />
+
+        <p className="eyebrow">The arena is open</p>
+        <h1 className="card-aside__title display">Think you can beat it?</h1>
         <p className="card-aside__copy">
-          Enter your address. The match is seeded from both addresses and today&rsquo;s date, so the
-          result is the same for everyone who opens the link — and the order of the two wallets
-          never changes the outcome.
+          Bring another wallet into the arena. Five rounds. Five powers. One winner. Every clash is
+          locked by both wallets and today&rsquo;s battle seed.
         </p>
 
         <AddressInput
           destinationPrefix={`/battle/${wallet}/`}
-          label="Your address"
-          cta="Fight"
+          label="Choose your challenger"
+          cta="Enter battle"
           examples={[]}
         />
 
-        <ShareBar url={`/card/${wallet}`} text={shareText} />
+        <RandomOpponent address={wallet} level={card.level} />
+
+        <ShareBar
+          url={`/card/${wallet}`}
+          text={shareText}
+          download={{
+            href: `/api/og/${wallet}?v=portrait`,
+            filename: `${name.replace(/[^a-z0-9.-]/gi, "-")}-card.png`,
+          }}
+        />
+
+        {fought > 0 && (
+          <Link className="card-aside__record" href={`/history/${wallet}`}>
+            Arena record: {record.wins}W {record.losses}L · {fought} {fought === 1 ? "clash" : "clashes"} →
+          </Link>
+        )}
 
         <dl className="card-aside__facts">
           <div>
-            <dt>Archetype</dt>
+            <dt>Battle class</dt>
             <dd>{card.archetype}</dd>
           </div>
           <div>
-            <dt>Rarity</dt>
+            <dt>Card rarity</dt>
             <dd>{card.rarity}</dd>
           </div>
           <div>
-            <dt>Serial</dt>
+            <dt>Card ID</dt>
             <dd className="mono">{card.serial}</dd>
           </div>
         </dl>

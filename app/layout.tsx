@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     template: "%s · Onchain Battle Cards",
   },
   description:
-    "Turn any EVM wallet into a collectible battle card generated from its real onchain history. Entertainment only.",
+    "Every wallet has a legend. Forge a collectible battle card from real onchain history and enter the arena.",
   metadataBase: appOriginUrl(),
 };
 
@@ -51,16 +51,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             Battle Cards
           </Link>
           <nav>
-            <Link href="/leaderboard">Leaderboard</Link>
-            <Link href="/settings">Settings</Link>
+            <Link href="/leaderboard">Rankings</Link>
+            <Link href="/settings">Privacy</Link>
           </nav>
         </header>
 
         {children}
 
         <footer className="legal">
-          Entertainment only. Stats are heuristics derived from public onchain data, not financial
-          advice.
+          Forged from public onchain history. Built for entertainment, never financial advice.
         </footer>
       </body>
     </html>

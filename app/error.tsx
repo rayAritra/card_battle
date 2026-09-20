@@ -24,17 +24,17 @@ export default function GlobalError({
 
   return (
     <main className="page state-page">
-      <p className="eyebrow">Something broke</p>
-      <h1 className="state-page__title display">The chain went quiet</h1>
+      <p className="eyebrow">Connection interrupted</p>
+      <h1 className="state-page__title display">The chain went silent</h1>
       <p className="state-page__copy">
-        This one is on us. The card was not generated. Try again — cards already made are unaffected.
+        We could not complete the reveal. Your existing cards and battles are safe.
       </p>
       <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
         <button type="button" className="button" onClick={reset}>
           Try again
         </button>
         <Link className="button button--ghost" href="/">
-          Start over
+          Return home
         </Link>
       </div>
     </main>

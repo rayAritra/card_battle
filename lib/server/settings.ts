@@ -23,13 +23,13 @@ export function settingsMessage({
   issuedAt,
 }: SettingsClaim): string {
   return [
-    "Onchain Battle Cards — card settings",
+    "Onchain Battle Cards — privacy preferences",
     "",
     `Wallet: ${address.toLowerCase()}`,
-    `Hide net worth: ${hideNetWorth ? "yes" : "no"}`,
-    `Hide from leaderboard and search: ${noIndex ? "yes" : "no"}`,
+    `Seal displayed vault value: ${hideNetWorth ? "yes" : "no"}`,
+    `Leave rankings and discovery: ${noIndex ? "yes" : "no"}`,
     `Issued at: ${new Date(issuedAt).toISOString()}`,
     "",
-    "Signing costs nothing and sends no transaction.",
+    "This free signature sends no transaction and grants no permissions.",
   ].join("\n");
 }
