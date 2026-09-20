@@ -15,9 +15,82 @@ export interface PriceRequest {
   chainId: ChainId;
 }
 
-/** Key used by both the request and the returned map: "ethereum:0xabc…". */
+/**
+ * The zero address, used to represent a chain's native coin.
+ *
+ * Native ETH is not an ERC-20 and has no contract, but it still has to flow
+ * through the same holdings pipeline as every token, so it travels under the
+ * conventional sentinel and is translated here.
+ */
+export const NATIVE_CONTRACT = "0x0000000000000000000000000000000000000000";
+
+/**
+ * Key used by both the request and the returned map: "ethereum:0xabc…".
+ *
+ * Native balances resolve to one shared coingecko key rather than a per-chain
+ * one: ETH on Base is the same asset at the same price as ETH on mainnet, so
+ * giving them separate keys would only cost an extra lookup for one answer.
+ */
 export const priceKey = ({ contract, chainId }: PriceRequest): string =>
-  `${LLAMA_CHAIN[chainId]}:${contract.toLowerCase()}`;
+  contract.toLowerCase() === NATIVE_CONTRACT
+    ? "coingecko:ethereum"
+    : `${LLAMA_CHAIN[chainId]}:${contract.toLowerCase()}`;
+
+/** Everything DefiLlama returns for a coin, not just the price. */
+export interface CoinInfo {
+  price: number;
+  symbol: string;
+  decimals: number;
+}
+
+/**
+ * Full coin data keyed by `priceKey`.
+ *
+ * DefiLlama returns `symbol` and `decimals` alongside `price` in the same
+ * response, which is worth using: it identifies a token in one free call with
+ * no key, where the equivalent per-token metadata lookup costs a paid request
+ * each. A token absent from the response is simply unpriced.
+ */
+export async function getCoinInfo(requests: PriceRequest[]): Promise<Record<string, CoinInfo>> {
+  const keys = [...new Set(requests.map(priceKey))];
+  if (keys.length === 0) return {};
+
+  const batches: string[][] = [];
+  for (let i = 0; i < keys.length; i += BATCH_SIZE) batches.push(keys.slice(i, i + BATCH_SIZE));
+
+  const results = await Promise.all(
+    batches.map((batch) =>
+      resilient<Record<string, CoinInfo>>(
+        "defillama:coins",
+        async () => {
+          const response = await fetch(
+            `https://coins.llama.fi/prices/current/${batch.join(",")}`,
+            { cache: "no-store" },
+          );
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+          const json: unknown = await response.json();
+          const coins = isRecord(json) && isRecord(json.coins) ? json.coins : {};
+
+          const info: Record<string, CoinInfo> = {};
+          for (const [key, value] of Object.entries(coins)) {
+            if (!isRecord(value)) continue;
+            const decimals = num(value.decimals);
+            info[key.toLowerCase()] = {
+              price: num(value.price),
+              symbol: typeof value.symbol === "string" ? value.symbol : "",
+              decimals: Number.isFinite(decimals) && decimals > 0 ? decimals : 18,
+            };
+          }
+          return info;
+        },
+        {},
+      ),
+    ),
+  );
+
+  return Object.assign({}, ...results) as Record<string, CoinInfo>;
+}
 
 /**
  * USD prices keyed by `priceKey`. Missing entries simply mean "unpriced" —

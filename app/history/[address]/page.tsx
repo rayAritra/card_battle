@@ -24,6 +24,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: `${name} · battle history`,
     description: `Every clash this wallet has fought in the arena.`,
+    alternates: { canonical: `/history/${wallet}` },
     // History is derived from the card, so it inherits the card's visibility.
     robots: stored?.noIndex ? { index: false, follow: false } : undefined,
   };

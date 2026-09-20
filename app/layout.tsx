@@ -51,7 +51,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             Battle Cards
           </Link>
           <nav>
+            <Link href="/archetypes">Archetypes</Link>
             <Link href="/leaderboard">Rankings</Link>
+            <Link href="/how-it-works">How it works</Link>
             <Link href="/settings">Privacy</Link>
           </nav>
         </header>
@@ -59,7 +61,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
 
         <footer className="legal">
-          Forged from public onchain history. Built for entertainment, never financial advice.
+          <span>
+            Forged from public onchain history. Built for entertainment, never financial advice.
+          </span>
+          <span className="legal__links">
+            <Link href="/how-it-works">Methodology</Link>
+            <Link href="/archetypes">Archetypes</Link>
+            <Link href="/abilities">Abilities</Link>
+            <Link href="/settings">Privacy</Link>
+          </span>
         </footer>
       </body>
     </html>

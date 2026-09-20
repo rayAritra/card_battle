@@ -1,4 +1,5 @@
 import type { ChainId } from "@/types";
+import { NATIVE_CONTRACT, getCoinInfo, priceKey } from "./prices";
 import { isRecord, mapWithConcurrency, num, resilient, str } from "./shared";
 
 /**
@@ -14,8 +15,19 @@ const HOSTS: Record<ChainId, string> = {
   8453: "base-mainnet",
 };
 
-/** Cap on positions priced per chain — keeps a whale's dust from blowing up latency. */
+/** Cap on positions kept per chain — keeps a whale's dust from blowing up latency. */
 const MAX_POSITIONS = 40;
+
+/**
+ * How many non-zero positions are valued before the cap is applied.
+ *
+ * The cap used to be applied to Alchemy's own ordering, which is arbitrary. For
+ * a wallet holding a hundred tokens that meant the kept 40 were mostly spam
+ * airdrops and the real positions were discarded — net worth read "—" for
+ * wallets that plainly had one. Valuing first and cutting afterwards fixes
+ * that; this bound keeps the price call itself cheap.
+ */
+const MAX_VALUED = 200;
 
 /** Simultaneous metadata lookups. Above this Alchemy throttles and undici drops sockets. */
 const METADATA_CONCURRENCY = 6;
@@ -62,8 +74,37 @@ const hexToNumber = (hex: string): number => {
  * Returns [] when the key is missing or Alchemy is down — the card then renders
  * with an unpriced portfolio rather than failing.
  */
+/**
+ * The chain's native coin balance, as a position.
+ *
+ * `alchemy_getTokenBalances` returns ERC-20s only, so without this the most
+ * valuable thing most wallets hold is invisible and net worth reads as "—" for
+ * a wallet that plainly has one. Fails soft to null like every other fetcher.
+ */
+async function getNativeBalance(address: string, chainId: ChainId): Promise<RawBalance | null> {
+  return resilient<RawBalance | null>(
+    `alchemy:native:${chainId}`,
+    async () => {
+      const hex = await rpc<string>(chainId, "eth_getBalance", [address, "latest"]);
+      const wei = /^0x[0-9a-fA-F]+$/.test(hex) ? BigInt(hex) : 0n;
+      if (wei === 0n) return null;
+
+      const amount = Number(wei) / 1e18;
+
+      return {
+        contract: NATIVE_CONTRACT,
+        amount: Number.isFinite(amount) ? amount : 0,
+        symbol: "ETH",
+      };
+    },
+    null,
+  );
+}
+
 export async function getBalances(address: string, chainId: ChainId): Promise<RawBalance[]> {
-  return resilient(
+  const native = await getNativeBalance(address, chainId);
+
+  const tokens = await resilient(
     `alchemy:balances:${chainId}`,
     async () => {
       const data = await rpc<{ tokenBalances?: unknown }>(chainId, "alchemy_getTokenBalances", [
@@ -79,9 +120,41 @@ export async function getBalances(address: string, chainId: ChainId): Promise<Ra
           raw: str(row.tokenBalance),
         }))
         .filter((row) => row.contract !== "" && /^0x[0-9a-f]*$/.test(row.raw) && BigInt(row.raw) > 0n)
+        .slice(0, MAX_VALUED);
+
+      // One free, keyless call identifies and values the whole candidate set,
+      // so the cap below can keep what the wallet actually holds rather than
+      // whichever tokens the balance endpoint happened to list first.
+      const coins = await getCoinInfo(nonZero.map((row) => ({ contract: row.contract, chainId })));
+
+      const valued = nonZero.map((row) => {
+        const coin = coins[priceKey({ contract: row.contract, chainId })];
+        const decimals = coin?.decimals ?? 18;
+        const amount = hexToNumber(row.raw) / 10 ** (decimals || 18);
+        const safeAmount = Number.isFinite(amount) ? amount : 0;
+        const usdValue = safeAmount * (coin?.price ?? 0);
+
+        return {
+          contract: row.contract,
+          raw: row.raw,
+          amount: safeAmount,
+          symbol: coin?.symbol ?? "",
+          usdValue: Number.isFinite(usdValue) ? usdValue : 0,
+          priced: coin !== undefined,
+        };
+      });
+
+      // Priced positions first, largest first; unpriced tokens keep the
+      // remaining slots so a wallet holding nothing DefiLlama knows about
+      // still shows a portfolio.
+      const kept = valued
+        .sort((a, b) => Number(b.priced) - Number(a.priced) || b.usdValue - a.usdValue)
         .slice(0, MAX_POSITIONS);
 
-      const metadata = await mapWithConcurrency(nonZero, METADATA_CONCURRENCY, (row) =>
+      // Only the kept positions that DefiLlama could not identify need a paid
+      // metadata lookup, which is a small fraction of what this used to cost.
+      const unresolved = kept.filter((row) => row.symbol === "");
+      const metadata = await mapWithConcurrency(unresolved, METADATA_CONCURRENCY, (row) =>
         resilient(
           `alchemy:metadata:${chainId}`,
           () => rpc<{ symbol?: unknown; decimals?: unknown }>(chainId, "alchemy_getTokenMetadata", [row.contract]),
@@ -89,10 +162,19 @@ export async function getBalances(address: string, chainId: ChainId): Promise<Ra
         ),
       );
 
-      return nonZero.map((row, index) => {
-        const meta = metadata[index] ?? {};
+      const resolved = new Map(
+        unresolved.map((row, index) => [row.contract, metadata[index] ?? {}]),
+      );
+
+      return kept.map((row) => {
+        if (row.symbol !== "") {
+          return { contract: row.contract, amount: row.amount, symbol: row.symbol };
+        }
+
+        const meta = resolved.get(row.contract) ?? {};
         const decimals = Number.isFinite(num(meta.decimals)) ? num(meta.decimals) : 18;
         const amount = hexToNumber(row.raw) / 10 ** (decimals || 18);
+
         return {
           contract: row.contract,
           amount: Number.isFinite(amount) ? amount : 0,
@@ -102,4 +184,8 @@ export async function getBalances(address: string, chainId: ChainId): Promise<Ra
     },
     [],
   );
+
+  // Native first: it is the position most wallets hold the most of, and the
+  // holdings list is sorted by value downstream anyway.
+  return native ? [native, ...tokens] : tokens;
 }
