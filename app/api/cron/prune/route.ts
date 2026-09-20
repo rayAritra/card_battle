@@ -15,6 +15,16 @@ export const dynamic = "force-dynamic";
  *
  * Name resolutions are kept: they live under chain 0 with a week-long TTL, so
  * pruning them on the 24h schedule would evict entries that are still valid.
+ *
+ * SCHEDULE. Vercel's Hobby plan allows a cron to run at most once per day, so
+ * `vercel.json` schedules this daily rather than hourly. A row is therefore
+ * deleted somewhere between 24 and 48 hours after it was written, which costs
+ * some storage headroom but never correctness: the 24h TTL is enforced on read
+ * by `getCached`, so a stale row is ignored long before it is deleted.
+ *
+ * At high volume a single daily delete can outgrow one request. If that
+ * happens, move this into the database with pg_cron — see the README — which
+ * has no plan limit and no HTTP timeout. This route stays useful either way.
  */
 const TTL_HOURS = 24;
 

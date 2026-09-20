@@ -176,6 +176,41 @@ Alchemy token metadata is capped at 6 concurrent lookups for the same reason:
 40 positions times 3 retries opened ~120 sockets at once, and undici answered
 with a bare `fetch failed`. Pacing it took a cold card from 102s to 8s.
 
+### Pruning the cache
+
+`api_cache` is the largest thing this app stores and nothing else deletes from
+it, so without a prune the database quota is the first ceiling you hit — well
+before any API rate limit. Two ways to run it; pick one.
+
+**Vercel cron** (already wired). `vercel.json` calls `/api/cron/prune` daily and
+the route refuses to run without `CRON_SECRET`, because Vercel cron paths are
+publicly reachable.
+
+> Hobby plans allow a cron to run **at most once per day**, and at most two per
+> project. An hourly expression is rejected at deploy time and **fails the
+> build**, which is why the schedule here is `0 4 * * *` rather than hourly.
+
+Daily pruning means a row is deleted 24-48h after it was written rather than
+24-25h. That costs storage headroom, never correctness: the 24h TTL is enforced
+on read in `getCached`, so a stale row is ignored long before it is removed.
+
+**Postgres pg_cron** (no plan limit, no HTTP timeout). Run this in the Supabase
+SQL editor instead, and delete the `crons` block from `vercel.json`:
+
+```sql
+create extension if not exists pg_cron;
+
+select cron.schedule('prune-api-cache', '0 * * * *', $$
+  delete from api_cache
+  where fetched_at < now() - interval '24 hours'
+    and chain <> 0
+$$);
+```
+
+`chain <> 0` is not optional in either version: name resolutions live under
+chain 0 with a week-long TTL, and a 24h prune would evict entries that are
+still valid.
+
 ### Resilience
 
 Every fetcher retries three times with exponential backoff and then fails soft:
@@ -423,6 +458,5 @@ Ideas deliberately **not** built, recorded here instead:
   depth within a category from depth on one contract.
 - Server-side image caching for OG responses, which currently re-render per
   request.
-- Pruning `api_cache` rows older than 24h. The schema indexes `fetched_at` for
-  exactly this and nothing deletes yet, which makes Supabase's 500MB the first
-  ceiling you hit rather than Etherscan's daily quota.
+- Batched pruning. The daily delete is one statement; at high volume it would
+  be better to page through the backlog, or to move it into pg_cron entirely.
