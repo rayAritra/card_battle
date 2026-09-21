@@ -438,6 +438,7 @@ input {
   perspective: 1000px;
   width: min(100%, 380px);
   margin: 0 auto;
+  overflow: visible;
 }
 
 .battle-card {
@@ -445,6 +446,7 @@ input {
   --ry: 0deg;
   --mx: 50%;
   --my: 50%;
+  --lift: 0;
 
   position: relative;
   width: 100%;
@@ -454,8 +456,10 @@ input {
   box-shadow:
     0 24px 60px rgba(0, 0, 0, 0.55),
     0 0 0 1px rgba(0, 0, 0, 0.6),
-    0 0 60px color-mix(in srgb, var(--glow) 16%, transparent);
-  transform: perspective(1000px) rotateX(var(--rx)) rotateY(var(--ry));
+    0 0 calc(60px + var(--lift) * 40px)
+      color-mix(in srgb, var(--glow) calc(16% + var(--lift) * 18%), transparent);
+  transform: perspective(1000px) rotateX(var(--rx)) rotateY(var(--ry))
+    scale(calc(1 + var(--lift) * 0.028));
   transform-style: preserve-3d;
   overflow: hidden;
   isolation: isolate;
@@ -984,7 +988,7 @@ input {
 
 .card-page {
   display: grid;
-  grid-template-columns: minmax(300px, 380px) minmax(280px, 460px);
+  grid-template-columns: minmax(340px, 420px) minmax(280px, 460px);
   gap: 64px;
   align-items: center;
   justify-content: center;

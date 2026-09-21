@@ -42,9 +42,9 @@ export function HoloLayer({ targetRef, maxTilt = 12, enabled = true }: HoloLayer
 
     // Target values, written by input handlers; current values, interpolated
     // by the animation frame loop.
-    const target = { rx: 0, ry: 0, mx: 50, my: 50 };
-    const current = { rx: 0, ry: 0, mx: 50, my: 50 };
-    const velocity = { rx: 0, ry: 0 };
+    const target = { rx: 0, ry: 0, mx: 50, my: 50, lift: 0 };
+    const current = { rx: 0, ry: 0, mx: 50, my: 50, lift: 0 };
+    const velocity = { rx: 0, ry: 0, lift: 0 };
 
     let pointerInside = false;
     let idlePhase = 0;
@@ -63,6 +63,7 @@ export function HoloLayer({ targetRef, maxTilt = 12, enabled = true }: HoloLayer
 
     const onPointerMove = (event: PointerEvent) => {
       pointerInside = true;
+      target.lift = 1;
       setFromPoint(event.clientX, event.clientY);
     };
 
@@ -72,6 +73,7 @@ export function HoloLayer({ targetRef, maxTilt = 12, enabled = true }: HoloLayer
       target.ry = 0;
       target.mx = 50;
       target.my = 50;
+      target.lift = 0;
     };
 
     const onOrientation = (event: DeviceOrientationEvent) => {
@@ -96,7 +98,7 @@ export function HoloLayer({ targetRef, maxTilt = 12, enabled = true }: HoloLayer
         target.my = 50 + Math.cos(idlePhase * 0.8) * 16;
       }
 
-      for (const axis of ["rx", "ry"] as const) {
+      for (const axis of ["rx", "ry", "lift"] as const) {
         const displacement = target[axis] - current[axis];
         const acceleration = SPRING_STIFFNESS * displacement - SPRING_DAMPING * velocity[axis];
         velocity[axis] += acceleration * dt;
@@ -118,6 +120,7 @@ export function HoloLayer({ targetRef, maxTilt = 12, enabled = true }: HoloLayer
       element.style.setProperty("--ry", `${current.ry.toFixed(2)}deg`);
       element.style.setProperty("--mx", `${current.mx.toFixed(1)}%`);
       element.style.setProperty("--my", `${current.my.toFixed(1)}%`);
+      element.style.setProperty("--lift", current.lift.toFixed(3));
 
       frameRef.current = requestAnimationFrame(tick);
     };
@@ -147,6 +150,7 @@ export function HoloLayer({ targetRef, maxTilt = 12, enabled = true }: HoloLayer
       if (orientationBound) window.removeEventListener("deviceorientation", onOrientation);
       element.style.removeProperty("--rx");
       element.style.removeProperty("--ry");
+      element.style.removeProperty("--lift");
     };
   }, [targetRef, maxTilt, enabled]);
 

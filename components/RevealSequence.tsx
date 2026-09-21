@@ -20,6 +20,12 @@ import { BattleCard } from "./BattleCard";
 export function RevealSequence({ card, children }: { card: Card; children?: React.ReactNode }) {
   const reduced = useReducedMotion();
   const [flipped, setFlipped] = useState(false);
+  // The front face stays `backface-visibility: hidden` only for the flip
+  // itself. Left on permanently, it clips the interactive tilt's corners on
+  // hover in Chrome/WebKit, which compute a backface-hidden element's
+  // compositing bounds from its own (untransformed) box rather than the
+  // child's live rotated extent.
+  const [settled, setSettled] = useState(false);
 
   const palette = paletteFor(card.archetype);
   const backArt = cardArtDataUri(card.address, palette, card.rarity);
@@ -50,6 +56,7 @@ export function RevealSequence({ card, children }: { card: Card; children?: Reac
         initial={{ rotateY: 180 }}
         animate={{ rotateY: flipped ? 0 : 180 }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        onAnimationComplete={() => setSettled(true)}
       >
         {/* Face-down back, hidden once the flip passes 90 degrees. */}
         <div
@@ -66,7 +73,7 @@ export function RevealSequence({ card, children }: { card: Card; children?: Reac
           }}
         />
 
-        <div style={{ backfaceVisibility: "hidden" }}>
+        <div style={{ backfaceVisibility: settled ? "visible" : "hidden" }}>
           {/* Frame sweep: a clip-path wipe that draws the border in at 350ms. */}
           <motion.div
             initial={{ clipPath: "inset(0 100% 0 0)" }}
