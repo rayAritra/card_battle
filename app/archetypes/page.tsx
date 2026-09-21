@@ -50,48 +50,67 @@ export default function ArchetypesPage() {
       <div className="seam-grid mt-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {archetypes.map(([name, centroid], index) => {
           const palette = paletteFor(name);
+          const ranked = STAT_KEYS
+            .map((key, statIndex) => ({ key, statIndex, weight: centroid[statIndex] ?? 0 }))
+            .sort((a, b) => b.weight - a.weight);
+          const top = ranked.slice(0, 2);
 
           return (
             <div
               key={name}
-              className="seam-cell stagger-item flex flex-col gap-4 p-6"
+              className="seam-cell archetype-card stagger-item flex flex-col gap-4 p-6"
               style={{ "--accent": palette.accent, "--i": index } as React.CSSProperties}
             >
-              <div className="flex items-center justify-between gap-3">
+              <div className="archetype-card__head">
+                <span className="archetype-card__dot" aria-hidden="true" />
+                <h2 className="display text-[19px] text-[var(--accent)]">{name}</h2>
                 <Badge
                   variant="outline"
-                  className="border-[var(--accent)] text-[var(--accent)]"
+                  className="ml-auto border-[var(--accent)] text-[var(--accent)]"
                 >
                   {leadStat(centroid)}-led
                 </Badge>
               </div>
 
-              <div>
-                <h2 className="display text-[19px] text-[var(--accent)]">{name}</h2>
-                <p className="mt-1.5 text-[12px] leading-relaxed text-[var(--muted)]">
-                  {taglineFor(name)}
-                </p>
+              <p className="text-[12px] leading-relaxed text-[var(--muted)]">{taglineFor(name)}</p>
+
+              <div className="archetype-card__highlights">
+                {top.map(({ key, weight }) => (
+                  <div key={key} className="archetype-card__highlight">
+                    <span className="archetype-card__highlight-label">{key}</span>
+                    <span className="archetype-card__highlight-value mono">
+                      {Math.round(weight * 100)}%
+                    </span>
+                  </div>
+                ))}
               </div>
 
-              <dl className="mt-auto grid gap-2">
-                {STAT_KEYS.map((key, statIndex) => {
-                  const weight = centroid[statIndex] ?? 0;
-
-                  return (
-                    <div key={key} className="grid grid-cols-[74px_1fr] items-center gap-2.5">
+              <div className="mt-auto grid gap-2.5">
+                <p className="archetype-card__breakdown-title">Stat shape</p>
+                <dl className="grid gap-2">
+                  {ranked.map(({ key, statIndex, weight }) => (
+                    <div key={key} className="grid grid-cols-[74px_1fr_30px] items-center gap-2.5">
                       <dt className="text-[9px] tracking-wide text-[#74748a]">{key}</dt>
                       <dd className="m-0">
                         <span className="archetype__meter">
                           <span
                             className="archetype__fill"
-                            style={{ width: `${Math.round(weight * 100)}%` }}
+                            style={
+                              {
+                                width: `${Math.round(weight * 100)}%`,
+                                "--si": statIndex,
+                              } as React.CSSProperties
+                            }
                           />
                         </span>
                       </dd>
+                      <dd className="m-0 text-right font-mono text-[9px] text-[#797990]">
+                        {Math.round(weight * 100)}%
+                      </dd>
                     </div>
-                  );
-                })}
-              </dl>
+                  ))}
+                </dl>
+              </div>
             </div>
           );
         })}

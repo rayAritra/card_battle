@@ -880,6 +880,11 @@ input {
   .hero-bg__grain {
     animation: none !important;
   }
+
+  .archetype__fill {
+    animation: none !important;
+    transform: scaleX(1) !important;
+  }
 }
 
 /* ── Address form ─────────────────────────────────────────────────────────── */
@@ -1708,6 +1713,60 @@ input {
 
 /* ── Compendium: archetypes ───────────────────────────────────────────────── */
 
+.archetype-card__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.archetype-card__dot {
+  width: 11px;
+  height: 11px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+.archetype-card__highlights {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.archetype-card__highlight {
+  padding: 10px 12px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-inner);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.archetype-card__highlight-label {
+  display: block;
+  color: #797990;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.archetype-card__highlight-value {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+
+.archetype-card__breakdown-title {
+  margin: 0 0 2px;
+  color: #797990;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .archetype__meter {
   display: block;
   height: 5px;
@@ -1720,6 +1779,18 @@ input {
   height: 100%;
   border-radius: 999px;
   background: var(--accent);
+  transform-origin: left center;
+  animation: barPop 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 45ms + var(--si, 0) * 80ms + 260ms);
+}
+
+@keyframes barPop {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
 }
 
 /* ── Compendium: abilities ────────────────────────────────────────────────── */
