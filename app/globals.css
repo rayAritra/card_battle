@@ -1852,4 +1852,151 @@ input {
 .tier__pip--2 { background: #6fd3ff; }
 .tier__pip--1 { background: #74748a; }
 
+/* ── How it works ─────────────────────────────────────────────────────────── */
+
+.how-stepper {
+  display: flex;
+  align-items: center;
+  max-width: 920px;
+  margin: 40px auto 0;
+  padding: 0;
+  list-style: none;
+}
+
+.how-stepper__step {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.how-stepper__step:last-child {
+  flex: 0 0 auto;
+}
+
+.how-stepper__num {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--surface-alt);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.how-stepper__line {
+  flex: 1;
+  height: 2px;
+  margin: 0 4px;
+  background: var(--line-strong);
+}
+
+.how-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.how-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 26px;
+  border: 2px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  transition: border-color 180ms ease, transform 180ms ease, background 180ms ease;
+}
+
+.how-card:hover {
+  border-color: var(--brand);
+  background: var(--surface-alt);
+  transform: translateY(-3px);
+}
+
+.how-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.how-card__icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 13px;
+  background: var(--surface-alt);
+  color: var(--brand);
+}
+
+.how-card__num {
+  color: #52526a;
+  font-size: 11px;
+}
+
+.how-card__title {
+  margin: 0;
+  font-size: 17px;
+  color: var(--text);
+}
+
+.how-card__desc {
+  margin: 0;
+  color: #b6b6c8;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.how-card__list {
+  display: grid;
+  gap: 9px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.how-card__list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  color: #9c9cb2;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+.how-card__list a {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.how-card__dot {
+  flex-shrink: 0;
+  width: 5px;
+  height: 5px;
+  margin-top: 7px;
+  border-radius: 999px;
+  background: var(--line-strong);
+}
+
+@media (max-width: 900px) {
+  .how-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .how-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .how-stepper {
+    display: none;
+  }
+}
+
 }
