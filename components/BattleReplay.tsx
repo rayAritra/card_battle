@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useAnimate, useReducedMotion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import type { BattleResult, Card, RoundLog } from "@/types";
 import { paletteFor } from "@/lib/art/palettes";
@@ -85,6 +85,19 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
   const settled = phase === "result";
   const current = visibleRounds > 0 ? result.rounds[visibleRounds - 1] : null;
 
+  // Every round result lands with an impact frame: a brief arena jolt plus a
+  // white flash, so a win reads as a hit rather than a number changing.
+  const [arenaScope, animateArena] = useAnimate();
+  const [flashScope, animateFlash] = useAnimate();
+
+  useEffect(() => {
+    if (reduced || settled || visibleRounds === 0) return;
+    animateArena(arenaScope.current, { x: [0, -6, 6, -3, 3, 0] }, { duration: 0.32, ease: "easeOut" });
+    animateFlash(flashScope.current, { opacity: [0.28, 0] }, { duration: 0.35, ease: "easeOut" });
+    // Fires once per round change; the animate() functions are stable.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visibleRounds]);
+
   const scoreFor = (address: string) =>
     result.rounds.slice(0, visibleRounds).filter((round) => round.winner === address).length;
 
@@ -108,7 +121,9 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
 
   return (
     <div className="replay">
-      <div className="replay__arena">
+      <div className="replay__arena" ref={arenaScope}>
+        <div className="replay__flash" ref={flashScope} style={{ opacity: 0 }} aria-hidden />
+
         <motion.div
           className="replay__side"
           initial={reduced ? false : { x: -80, opacity: 0, rotateY: 0 }}
@@ -121,10 +136,38 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
             score={scoreFor(first.address)}
             total={result.rounds.length}
           />
+          {settled && first.address === result.winner && (
+            <motion.div
+              className="replay__victory-burst"
+              style={{ "--glow": paletteFor(first.archetype).glow } as React.CSSProperties}
+              initial={{ opacity: 0, scale: 0.6 }}
+              animate={{ opacity: [0, 0.9, 0.5], scale: [0.6, 1.3, 1.15] }}
+              transition={{ duration: reduced ? 0.15 : 1, ease: "easeOut" }}
+              aria-hidden
+            />
+          )}
         </motion.div>
 
         <div className="replay__center">
           <AnimatePresence mode="wait">
+            {phase === "entrance" && (
+              <motion.div
+                key="vs"
+                className="replay__intro"
+                initial={{ opacity: 0, scale: 0.85 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1.1 }}
+                transition={{ duration: 0.3 }}
+              >
+                <span className="replay__intro-mark display">VS</span>
+                <span className="replay__intro-names">
+                  <span className="mono">{first.ensName ?? truncateAddress(first.address)}</span>
+                  <span>×</span>
+                  <span className="mono">{second.ensName ?? truncateAddress(second.address)}</span>
+                </span>
+              </motion.div>
+            )}
+
             {current && !settled && (
               <motion.div
                 key={`${visibleRounds}-${current.category}`}
@@ -202,6 +245,16 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
             score={scoreFor(second.address)}
             total={result.rounds.length}
           />
+          {settled && second.address === result.winner && (
+            <motion.div
+              className="replay__victory-burst"
+              style={{ "--glow": paletteFor(second.archetype).glow } as React.CSSProperties}
+              initial={{ opacity: 0, scale: 0.6 }}
+              animate={{ opacity: [0, 0.9, 0.5], scale: [0.6, 1.3, 1.15] }}
+              transition={{ duration: reduced ? 0.15 : 1, ease: "easeOut" }}
+              aria-hidden
+            />
+          )}
         </motion.div>
       </div>
 

@@ -5,13 +5,12 @@ import { truncateAddress } from "@/lib/utils/format";
 export function InvalidAddress({ value }: { value: string }) {
   return (
     <main className="page state-page">
-      <p className="eyebrow">Unknown identity</p>
-      <h1 className="state-page__title display">The chain knows no such wallet</h1>
-      <p className="state-page__copy">
+      <h1 className="state-page__title display enter enter-1">The chain knows no such wallet</h1>
+      <p className="state-page__copy enter enter-2">
         <span className="mono">{truncateAddress(value)}</span> could not be found. Enter a valid EVM
         address or ENS name to continue.
       </p>
-      <AddressInput cta="Try another wallet" />
+      <AddressInput id="address-invalid" cta="Try another wallet" />
     </main>
   );
 }

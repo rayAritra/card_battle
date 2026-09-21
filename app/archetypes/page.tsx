@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ARCHETYPE_CENTROIDS } from "@/lib/stats/archetypes";
 import { paletteFor } from "@/lib/art/palettes";
 import { taglineFor } from "@/lib/flavor/templates";
+import { Badge } from "@/components/ui/badge";
 import { STAT_KEYS } from "@/types";
 
 export const metadata: Metadata = {
@@ -11,6 +12,15 @@ export const metadata: Metadata = {
     "All sixteen archetypes a wallet can be classified as, and the stat shape that produces each one.",
   alternates: { canonical: "/archetypes" },
 };
+
+/** The stat with the highest weight in an archetype's centroid — its "lead". */
+function leadStat(centroid: readonly number[]): string {
+  const topIndex = centroid.reduce(
+    (best, value, index) => (value > centroid[best] ? index : best),
+    0,
+  );
+  return STAT_KEYS[topIndex];
+}
 
 /**
  * The archetype compendium.
@@ -26,37 +36,51 @@ export default function ArchetypesPage() {
 
   return (
     <main className="page">
-      <header className="board-head">
-        <p className="eyebrow">Compendium</p>
-        <h1 className="board-head__title display">Archetypes</h1>
-        <p className="board-head__copy">
+      <header className="mx-auto max-w-[620px] text-center">
+        <h1 className="display enter enter-2 text-[clamp(38px,6.5vw,62px)] text-[var(--text)]">
+          Archetypes
+        </h1>
+        <p className="enter enter-3 mt-4 text-[14px] leading-relaxed text-[var(--muted)]">
           Every card is classified as one of {archetypes.length} archetypes by finding the closest
           match to its five stats. The bars below are each archetype&rsquo;s ideal shape — the
           pattern a wallet is measured against, not a threshold it has to clear.
         </p>
       </header>
 
-      <ul className="archetypes">
-        {archetypes.map(([name, centroid]) => {
+      <div className="seam-grid mt-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        {archetypes.map(([name, centroid], index) => {
           const palette = paletteFor(name);
 
           return (
-            <li
+            <div
               key={name}
-              className="archetype"
-              style={{ ["--accent" as string]: palette.accent }}
+              className="seam-cell stagger-item flex flex-col gap-4 p-6"
+              style={{ "--accent": palette.accent, "--i": index } as React.CSSProperties}
             >
-              <h2 className="archetype__name display">{name}</h2>
-              <p className="archetype__tagline">{taglineFor(name)}</p>
+              <div className="flex items-center justify-between gap-3">
+                <Badge
+                  variant="outline"
+                  className="border-[var(--accent)] text-[var(--accent)]"
+                >
+                  {leadStat(centroid)}-led
+                </Badge>
+              </div>
 
-              <dl className="archetype__stats">
-                {STAT_KEYS.map((key, index) => {
-                  const weight = centroid[index] ?? 0;
+              <div>
+                <h2 className="display text-[19px] text-[var(--accent)]">{name}</h2>
+                <p className="mt-1.5 text-[12px] leading-relaxed text-[var(--muted)]">
+                  {taglineFor(name)}
+                </p>
+              </div>
+
+              <dl className="mt-auto grid gap-2">
+                {STAT_KEYS.map((key, statIndex) => {
+                  const weight = centroid[statIndex] ?? 0;
 
                   return (
-                    <div key={key} className="archetype__stat">
-                      <dt>{key}</dt>
-                      <dd>
+                    <div key={key} className="grid grid-cols-[74px_1fr] items-center gap-2.5">
+                      <dt className="text-[9px] tracking-wide text-[#74748a]">{key}</dt>
+                      <dd className="m-0">
                         <span className="archetype__meter">
                           <span
                             className="archetype__fill"
@@ -68,12 +92,12 @@ export default function ArchetypesPage() {
                   );
                 })}
               </dl>
-            </li>
+            </div>
           );
         })}
-      </ul>
+      </div>
 
-      <p className="compendium__foot">
+      <p className="mt-10 text-center">
         <Link className="button button--ghost" href="/how-it-works">
           How the stats are scored
         </Link>

@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
-import { Inter, JetBrains_Mono, Oswald } from "next/font/google";
+import { Baloo_2, Inter, JetBrains_Mono } from "next/font/google";
 import { appOriginUrl } from "@/lib/utils/origin";
 import "./globals.css";
 
@@ -10,10 +10,13 @@ const inter = Inter({
   display: "swap",
 });
 
-const oswald = Oswald({
+// A genuinely rounded display face — soft terminals instead of the condensed,
+// square-cut Big Shoulders the site opened with — to match the rounded-corner
+// UI system rather than fight it.
+const baloo = Baloo_2({
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  variable: "--font-oswald",
+  weight: ["500", "600", "700", "800"],
+  variable: "--font-display-face",
   display: "swap",
 });
 
@@ -35,20 +38,33 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#08080b",
+  themeColor: "#0a0a12",
   width: "device-width",
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${oswald.variable} ${jetbrainsMono.variable}`}>
+    <html
+      lang="en"
+      className={`${inter.variable} ${baloo.variable} ${jetbrainsMono.variable}`}
+    >
       <body>
+        <div className="arena-grid" aria-hidden="true" />
+
         <header className="site-header">
-          <Link href="/" className="logo">
-            Onchain
-            <br />
-            Battle Cards
+          <Link href="/" className="logo flex items-center gap-2.5">
+            <span
+              aria-hidden
+              className="grid h-8 w-8 shrink-0 place-items-center rounded-2xl border-2 border-[var(--brand)] bg-[var(--brand)] text-[13px] font-black text-white shadow-[0_4px_14px_rgba(61,90,255,0.45)]"
+            >
+              OB
+            </span>
+            <span>
+              Onchain
+              <br />
+              Battle Cards
+            </span>
           </Link>
           <nav>
             <Link href="/archetypes">Archetypes</Link>

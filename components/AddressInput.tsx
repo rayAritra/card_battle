@@ -16,6 +16,8 @@ interface AddressInputProps {
   cta?: string;
   /** One-tap example wallets. */
   examples?: { label: string; address: string }[];
+  /** Override when more than one AddressInput renders on the same page. */
+  id?: string;
 }
 
 const DEFAULT_EXAMPLES = [
@@ -40,6 +42,7 @@ export function AddressInput({
   label = "Enter the arena",
   cta = "Forge my card",
   examples = DEFAULT_EXAMPLES,
+  id = "address",
 }: AddressInputProps) {
   const router = useRouter();
   const [value, setValue] = useState("");
@@ -105,13 +108,13 @@ export function AddressInput({
 
   return (
     <form className="address-form" onSubmit={submit}>
-      <label className="address-form__label" htmlFor="address">
+      <label className="address-form__label" htmlFor={id}>
         {label}
       </label>
 
       <div className="address-form__field">
         <input
-          id="address"
+          id={id}
           name="address"
           className="mono"
           placeholder="Wallet address or ENS"
@@ -124,7 +127,7 @@ export function AddressInput({
             if (error) setError(null);
           }}
           aria-invalid={error !== null}
-          aria-describedby={error ? "address-error" : undefined}
+          aria-describedby={error ? `${id}-error` : undefined}
         />
         <motion.button
           type="submit"
@@ -138,7 +141,7 @@ export function AddressInput({
       </div>
 
       {error && (
-        <p className="form-error" id="address-error" role="alert">
+        <p className="form-error" id={`${id}-error`} role="alert">
           {error}
         </p>
       )}

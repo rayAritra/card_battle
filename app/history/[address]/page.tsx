@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { InvalidAddress } from "@/components/InvalidAddress";
+import { Badge } from "@/components/ui/badge";
 import { isValidAddress, normalizeAddress, readStoredCard } from "@/lib/server/card";
 import { resolveIdentity } from "@/lib/server/resolve";
 import { walletHistory } from "@/lib/server/history";
@@ -47,15 +48,16 @@ export default async function HistoryPage({ params }: PageProps) {
 
   return (
     <main className="page">
-      <header className="board-head">
-        <p className="eyebrow">Arena record</p>
-        <h1 className="board-head__title display">{name}</h1>
-        <p className="board-head__copy">
+      <header className="mx-auto mb-12 max-w-[620px] text-center">
+        <h1 className="display enter enter-1 text-[clamp(36px,6vw,62px)] text-[var(--text)]">
+          {name}
+        </h1>
+        <p className="enter enter-2 mt-4 text-[14px] leading-relaxed text-[var(--muted)]">
           Every clash leaves a mark. Each result is locked by both wallets, the battle date and the
           rematch number, so every old showdown can be replayed exactly as it happened.
         </p>
 
-        <div className="record">
+        <div className="record enter enter-3 justify-center">
           <span className="record__wins">{record.wins}W</span>
           <span className="record__losses">{record.losses}L</span>
           {fought > 0 && (
@@ -75,12 +77,16 @@ export default async function HistoryPage({ params }: PageProps) {
           No clashes yet. Send this card into the arena and begin its legend.
         </p>
       ) : (
-        <ol className="history">
-          {record.entries.map((entry) => (
-            <li key={`${entry.opponent}-${entry.dateUtc}-${entry.nonce}`}>
-              <span className={entry.won ? "history__badge history__badge--won" : "history__badge"}>
-                {entry.won ? "VICTORY" : "DEFEAT"}
-              </span>
+        <ol className="seam-grid grid-cols-1 history">
+          {record.entries.map((entry, index) => (
+            <li
+              key={`${entry.opponent}-${entry.dateUtc}-${entry.nonce}`}
+              className="seam-cell history__row stagger-item"
+              style={{ "--i": index } as React.CSSProperties}
+            >
+              <Badge variant={entry.won ? "default" : "secondary"} className="w-fit">
+                {entry.won ? "Won" : "Lost"}
+              </Badge>
 
               <Link className="history__opponent" href={`/card/${entry.opponent}`}>
                 {truncateAddress(entry.opponent)}

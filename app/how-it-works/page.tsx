@@ -47,80 +47,84 @@ const STATS = [
  */
 export default function HowItWorksPage() {
   return (
-    <main className="page prose-page">
-      <header className="board-head">
-        <p className="eyebrow">Methodology</p>
-        <h1 className="board-head__title display">How it works</h1>
-        <p className="board-head__copy">
+    <main className="page max-w-[760px]">
+      <header className="mx-auto max-w-[620px] text-center">
+        <h1 className="display enter enter-2 text-[clamp(36px,6vw,58px)] text-[var(--text)]">
+          How it works
+        </h1>
+        <p className="enter enter-3 mt-4 text-[15px] leading-relaxed text-[var(--muted)]">
           Every number on a card comes from public onchain history. Nothing is invented, nothing is
           guessed, and the same wallet always produces the same card.
         </p>
       </header>
 
-      <section className="prose">
-        <h2>1. What gets read</h2>
-        <p>
+      <section className="prose mt-14 [&_a]:text-[var(--brand)] [&_a]:underline [&_a]:underline-offset-2 [&_em]:not-italic [&_em]:text-[var(--text)] [&_strong]:text-[var(--text)]">
+        <h2 className="display mt-10 text-[19px] text-[var(--text)] first:mt-0">1. What gets read</h2>
+        <p className="mt-3 text-[14.5px] leading-relaxed text-[#b6b6c8]">
           Your transactions, token transfers, NFT transfers and current token balances on{" "}
           <strong>Ethereum</strong> and <strong>Base</strong> — all of it already public. No wallet
           connection, no signature and no permission is needed to generate a card, because nothing
           here touches your funds.
         </p>
-        <p>
+        <p className="mt-3 text-[14.5px] leading-relaxed text-[#b6b6c8]">
           Only <em>derived metrics</em> survive that step. Raw transaction payloads never reach the
           scoring engine, and the history read is capped at the 3,000 most recent transactions per
           address per chain.
         </p>
 
-        <h2>2. How the five stats are scored</h2>
-        <p>
+        <h2 className="display mt-10 text-[19px] text-[var(--text)]">2. How the five stats are scored</h2>
+        <p className="mt-3 text-[14.5px] leading-relaxed text-[#b6b6c8]">
           Each stat normalizes its signals into a single composite, then maps that through a{" "}
           <strong>percentile table</strong> rather than fixed thresholds. Absolute cutoffs always
           feel arbitrary — is forty swaps a lot? — while percentiles answer the question people
           actually mean: how does this wallet compare to others?
         </p>
 
-        <dl className="method">
+        <dl className="mt-5 grid gap-px">
           {STATS.map((stat) => (
-            <div key={stat.name} className="method__row">
-              <dt>{stat.name}</dt>
-              <dd>
-                <span className="method__measures">{stat.measures}</span>
-                <span className="method__note">{stat.note}</span>
+            <div
+              key={stat.name}
+              className="grid grid-cols-[116px_1fr] gap-4 border-b border-[var(--line)] py-3.5"
+            >
+              <dt className="mono text-[12px] text-[var(--brand)]">{stat.name}</dt>
+              <dd className="m-0 grid gap-1">
+                <span className="text-[13.5px] leading-snug text-[var(--text)]">{stat.measures}</span>
+                <span className="text-[12px] leading-snug text-[#74748a]">{stat.note}</span>
               </dd>
             </div>
           ))}
         </dl>
 
-        <p>
+        <p className="mt-5 text-[14.5px] leading-relaxed text-[#b6b6c8]">
           Scores are integers from <strong>12 to 99</strong> — never zero, never a hundred. The
           level is derived from all five, weighted toward EXPERIENCE. Tap any stat on a card to see
           the specific activity behind it.
         </p>
 
-        <h2>3. Archetype, ability and rarity</h2>
-        <p>
+        <h2 className="display mt-10 text-[19px] text-[var(--text)]">3. Archetype, ability and rarity</h2>
+        <p className="mt-3 text-[14.5px] leading-relaxed text-[#b6b6c8]">
           The five stats form a shape, and that shape is matched to the nearest of{" "}
           <Link href="/archetypes">sixteen archetypes</Link>. Separately, the wallet is awarded the
           rarest of <Link href="/abilities">thirty abilities</Link> it qualifies for. Both are
           deterministic: the same history always yields the same result.
         </p>
 
-        <h2>4. How a battle is decided</h2>
-        <p>
+        <h2 className="display mt-10 text-[19px] text-[var(--text)]">4. How a battle is decided</h2>
+        <p className="mt-3 text-[14.5px] leading-relaxed text-[#b6b6c8]">
           Five rounds. Each round draws a stat category from a weighted distribution in which{" "}
           <em>both</em> cards&rsquo; two best stats are more likely to come up — that is what
           creates upsets and gives a rematch a point. Each side then rolls its stat plus a small
           random swing, abilities apply, and the higher roll takes the round.
         </p>
-        <p>
+        <p className="mt-3 text-[14.5px] leading-relaxed text-[#b6b6c8]">
           The match is seeded from both addresses, the UTC date and a rematch number, so{" "}
           <strong>anyone opening the link sees the identical match</strong>. The two addresses are
           sorted before seeding, which means swapping their order cannot change the outcome. A
           rematch increments the number: a different match, equally reproducible.
         </p>
 
-        <h2>5. What this does not do</h2>
-        <ul className="plain-list">
+        <h2 className="display mt-10 text-[19px] text-[var(--text)]">5. What this does not do</h2>
+        <ul className="mt-3 grid gap-2.5 pl-5 text-[14.5px] leading-relaxed text-[#b6b6c8]">
           <li>
             <strong>No net-worth ranking.</strong> Value is always shown bucketed (&ldquo;$28K&rdquo;),
             never exact, and there is no leaderboard for it. How much a wallet holds is not an
@@ -137,8 +141,8 @@ export default function HowItWorksPage() {
           </li>
         </ul>
 
-        <h2>6. Known limits, stated plainly</h2>
-        <ul className="plain-list">
+        <h2 className="display mt-10 text-[19px] text-[var(--text)]">6. Known limits, stated plainly</h2>
+        <ul className="mt-3 grid gap-2.5 pl-5 text-[14.5px] leading-relaxed text-[#b6b6c8]">
           <li>
             Hold durations are measured from first acquisition, not from the last time a position
             was sold to zero and rebought.
@@ -158,9 +162,11 @@ export default function HowItWorksPage() {
         </ul>
       </section>
 
-      <section className="prose-cta">
-        <h2 className="display">See your own</h2>
-        <AddressInput />
+      <section className="mt-14 border-t-2 border-[var(--line)] pt-8 text-center">
+        <h2 className="display text-[26px] text-[var(--text)]">See your own</h2>
+        <div className="mt-6">
+          <AddressInput id="address-methodology" />
+        </div>
       </section>
     </main>
   );

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ABILITIES } from "@/lib/stats/abilities";
+import { Badge } from "@/components/ui/badge";
 import type { BattleEffect } from "@/types";
 
 export const metadata: Metadata = {
@@ -55,13 +56,15 @@ export default function AbilitiesPage() {
 
   return (
     <main className="page">
-      <header className="board-head">
-        <p className="eyebrow">Compendium</p>
-        <h1 className="board-head__title display">Abilities</h1>
-        <p className="board-head__copy">
+      <header className="mx-auto max-w-[620px] text-center">
+        <h1 className="display enter enter-2 text-[clamp(38px,6.5vw,62px)] text-[var(--text)]">
+          Abilities
+        </h1>
+        <p className="enter enter-3 mt-4 text-[14px] leading-relaxed text-[var(--muted)]">
           {ABILITIES.length} abilities, each triggered by something the wallet actually did. A card
-          is awarded the <strong>rarest</strong> one it qualifies for, and the same wallet always
-          earns the same ability — ties break on a fixed order, never at random.
+          is awarded the <strong className="text-[var(--text)]">rarest</strong> one it qualifies
+          for, and the same wallet always earns the same ability — ties break on a fixed order,
+          never at random.
         </p>
       </header>
 
@@ -70,26 +73,36 @@ export default function AbilitiesPage() {
         if (tier.length === 0) return null;
 
         return (
-          <section key={rarity} className="tier">
-            <h2 className="tier__title">
+          <section key={rarity} className="mt-10">
+            <div className="mb-3.5 flex items-center gap-2.5">
               <span className={`tier__pip tier__pip--${rarity}`} aria-hidden="true" />
-              {RARITY_LABELS[rarity] ?? `Tier ${rarity}`}
-              <span className="tier__count mono">{tier.length}</span>
-            </h2>
+              <h2 className="display text-[15px] font-semibold text-[var(--text)]">
+                {RARITY_LABELS[rarity] ?? `Tier ${rarity}`}
+              </h2>
+              <Badge variant="secondary">{tier.length}</Badge>
+            </div>
 
-            <ul className="abilities">
-              {tier.map((ability) => (
-                <li key={ability.id} className="ability">
-                  <h3 className="ability__name">{ability.name}</h3>
-                  <p className="ability__effect">{describeEffect(ability.battleEffect)}</p>
-                </li>
+            <div className="seam-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+              {tier.map((ability, index) => (
+                <div
+                  key={ability.id}
+                  className="seam-cell stagger-item p-4"
+                  style={{ "--i": index } as React.CSSProperties}
+                >
+                  <h3 className="display text-[13px] font-semibold text-[var(--text)]">
+                    {ability.name}
+                  </h3>
+                  <p className="mt-1.5 text-[11.5px] leading-relaxed text-[var(--muted)]">
+                    {describeEffect(ability.battleEffect)}
+                  </p>
+                </div>
               ))}
-            </ul>
+            </div>
           </section>
         );
       })}
 
-      <p className="compendium__foot">
+      <p className="mt-10 text-center">
         <Link className="button button--ghost" href="/archetypes">
           Browse archetypes
         </Link>

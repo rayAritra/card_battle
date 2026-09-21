@@ -69,9 +69,8 @@ export default async function BattlePage({ params, searchParams }: PageProps) {
   if (addrA === addrB) {
     return (
       <main className="page state-page">
-        <p className="eyebrow">Battle rejected</p>
-        <h1 className="state-page__title display">A legend cannot fight itself</h1>
-        <p className="state-page__copy">Choose another wallet worthy of the challenge.</p>
+        <h1 className="state-page__title display enter enter-1">A legend cannot fight itself</h1>
+        <p className="state-page__copy enter enter-2">Choose another wallet worthy of the challenge.</p>
         <Link className="button" href={`/card/${addrA}`}>
           Return to the card
         </Link>

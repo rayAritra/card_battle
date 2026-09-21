@@ -120,49 +120,56 @@ export default async function CardPage({ params }: PageProps) {
       <aside className="card-aside">
         <ClaimCard address={card.address} />
 
-        <p className="eyebrow">The arena is open</p>
-        <h1 className="card-aside__title display">Think you can beat it?</h1>
-        <p className="card-aside__copy">
+        <h1 className="display enter enter-1 mt-3 text-[clamp(34px,5vw,50px)] text-[var(--text)]">
+          Think you can beat it?
+        </h1>
+        <p className="enter enter-2 mt-3.5 mb-6 text-[14px] leading-relaxed text-[var(--muted)]">
           Bring another wallet into the arena. Five rounds. Five powers. One winner. Every clash is
           locked by both wallets and today&rsquo;s battle seed.
         </p>
 
-        <AddressInput
-          destinationPrefix={`/battle/${wallet}/`}
-          label="Choose your challenger"
-          cta="Enter battle"
-          examples={[]}
-        />
+        <div className="enter enter-3">
+          <AddressInput
+            id="address-challenger"
+            destinationPrefix={`/battle/${wallet}/`}
+            label="Choose your challenger"
+            cta="Enter battle"
+            examples={[]}
+          />
 
-        <RandomOpponent address={wallet} level={card.level} />
+          <RandomOpponent address={wallet} level={card.level} />
 
-        <ShareBar
-          url={`/card/${wallet}`}
-          text={shareText}
-          download={{
-            href: `/api/og/${wallet}?v=portrait`,
-            filename: `${name.replace(/[^a-z0-9.-]/gi, "-")}-card.png`,
-          }}
-        />
+          <ShareBar
+            url={`/card/${wallet}`}
+            text={shareText}
+            download={{
+              href: `/api/og/${wallet}?v=portrait`,
+              filename: `${name.replace(/[^a-z0-9.-]/gi, "-")}-card.png`,
+            }}
+          />
+        </div>
 
         {fought > 0 && (
-          <Link className="card-aside__record" href={`/history/${wallet}`}>
+          <Link
+            className="card-aside__record enter enter-4"
+            href={`/history/${wallet}`}
+          >
             Arena record: {record.wins}W {record.losses}L · {fought} {fought === 1 ? "clash" : "clashes"} →
           </Link>
         )}
 
-        <dl className="card-aside__facts">
+        <dl className="enter enter-4 mt-7 flex flex-wrap gap-6 border-t-2 border-[var(--line)] pt-5">
           <div>
-            <dt>Battle class</dt>
-            <dd>{card.archetype}</dd>
+            <dt className="text-[9px] font-bold text-[#74748a]">Battle class</dt>
+            <dd className="mt-1 text-[13px] text-[var(--text)]">{card.archetype}</dd>
           </div>
           <div>
-            <dt>Card rarity</dt>
-            <dd>{card.rarity}</dd>
+            <dt className="text-[9px] font-bold text-[#74748a]">Card rarity</dt>
+            <dd className="mt-1 text-[13px] text-[var(--text)]">{card.rarity}</dd>
           </div>
           <div>
-            <dt>Card ID</dt>
-            <dd className="mono">{card.serial}</dd>
+            <dt className="text-[9px] font-bold text-[#74748a]">Card ID</dt>
+            <dd className="mono mt-1 text-[13px] text-[var(--text)]">{card.serial}</dd>
           </div>
         </dl>
       </aside>
