@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Crown } from "lucide-react";
 import { FightButton } from "@/components/FightButton";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -39,18 +40,23 @@ function Table({
         <ol className="seam-grid grid-cols-1">
           {entries.map((entry, index) => {
             const palette = paletteFor(entry.archetype);
+            const rank = index + 1;
 
             return (
               <li
                 key={entry.address}
-                className="seam-cell board__row stagger-item"
+                className={`seam-cell board__row stagger-item${rank <= 3 ? ` board__row--${rank}` : ""}`}
                 style={{ "--i": index } as React.CSSProperties}
               >
-                <span className="board__rank mono" aria-label={ordinal(index + 1)}>
-                  {String(index + 1).padStart(2, "0")}
+                <span className="board__crown" aria-hidden="true">
+                  {rank <= 3 && <Crown fill="currentColor" strokeWidth={1.5} />}
                 </span>
 
-                <Avatar className="h-8 w-8" style={{ borderColor: palette.accent }}>
+                <span className="board__rank mono" aria-label={ordinal(rank)}>
+                  {String(rank).padStart(2, "0")}
+                </span>
+
+                <Avatar className="h-9 w-9" style={{ borderColor: palette.accent }}>
                   <AvatarFallback style={{ color: palette.accent }}>
                     {initials(entry)}
                   </AvatarFallback>
