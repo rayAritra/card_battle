@@ -1852,6 +1852,25 @@ input {
 .tier__pip--2 { background: #6fd3ff; }
 .tier__pip--1 { background: #74748a; }
 
+.ability-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-left: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.ability-card__icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin-bottom: 2px;
+  border: 1.5px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--accent);
+}
+
 /* ── How it works ─────────────────────────────────────────────────────────── */
 
 .how-stepper {

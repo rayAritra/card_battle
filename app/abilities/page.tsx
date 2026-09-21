@@ -1,8 +1,25 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Circle, Crown, Gem, ShieldCheck, Star } from "lucide-react";
 import { ABILITIES } from "@/lib/stats/abilities";
 import { Badge } from "@/components/ui/badge";
 import type { BattleEffect } from "@/types";
+
+const RARITY_ICONS: Record<number, React.ComponentType<{ className?: string }>> = {
+  5: Crown,
+  4: Gem,
+  3: Star,
+  2: ShieldCheck,
+  1: Circle,
+};
+
+const RARITY_COLORS: Record<number, string> = {
+  5: "#ff4fd8",
+  4: "#ffb020",
+  3: "#3d5aff",
+  2: "#6fd3ff",
+  1: "#74748a",
+};
 
 export const metadata: Metadata = {
   title: "Abilities",
@@ -83,20 +100,28 @@ export default function AbilitiesPage() {
             </div>
 
             <div className="seam-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-              {tier.map((ability, index) => (
-                <div
-                  key={ability.id}
-                  className="seam-cell stagger-item p-4"
-                  style={{ "--i": index } as React.CSSProperties}
-                >
-                  <h3 className="display text-[13px] font-semibold text-[var(--text)]">
-                    {ability.name}
-                  </h3>
-                  <p className="mt-1.5 text-[11.5px] leading-relaxed text-[var(--muted)]">
-                    {describeEffect(ability.battleEffect)}
-                  </p>
-                </div>
-              ))}
+              {tier.map((ability, index) => {
+                const Icon = RARITY_ICONS[rarity] ?? Circle;
+                const color = RARITY_COLORS[rarity] ?? "#74748a";
+
+                return (
+                  <div
+                    key={ability.id}
+                    className="ability-card seam-cell stagger-item p-4"
+                    style={{ "--accent": color, "--i": index } as React.CSSProperties}
+                  >
+                    <span className="ability-card__icon">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <h3 className="display text-[13px] font-semibold text-[var(--text)]">
+                      {ability.name}
+                    </h3>
+                    <p className="mt-1.5 text-[11.5px] leading-relaxed text-[var(--muted)]">
+                      {describeEffect(ability.battleEffect)}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </section>
         );
