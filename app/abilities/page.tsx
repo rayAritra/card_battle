@@ -90,18 +90,18 @@ export default function AbilitiesPage() {
         const tier = ABILITIES.filter((ability) => ability.rarity === rarity);
         if (tier.length === 0) return null;
 
+        const TierIcon = RARITY_ICONS[rarity] ?? Circle;
+
         return (
           <section key={rarity} className="mt-10">
             <div className="mb-3.5 flex items-center gap-2.5">
               <span
-                className="h-2.5 w-2.5 rounded-full"
-                style={{
-                  backgroundColor: RARITY_COLORS[rarity] ?? "#545454",
-                  boxShadow:
-                    rarity >= 4 ? `0 0 ${rarity === 5 ? 10 : 8}px ${RARITY_COLORS[rarity]}` : undefined,
-                }}
+                className={styles.tierHeadIcon}
+                style={{ "--tier-color": RARITY_COLORS[rarity] ?? "#545454" } as React.CSSProperties}
                 aria-hidden="true"
-              />
+              >
+                <TierIcon className="h-4 w-4" />
+              </span>
               <h2 className="display text-[15px] font-semibold text-[var(--text)]">
                 {RARITY_LABELS[rarity] ?? `Tier ${rarity}`}
               </h2>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowLeftRight, Flame, History, Layers, Lock } from "lucide-react";
 import { ARCHETYPE_CENTROIDS } from "@/lib/stats/archetypes";
 import { paletteFor } from "@/lib/art/palettes";
 import { taglineFor } from "@/lib/flavor/templates";
@@ -9,11 +10,20 @@ import styles from "./archetypes.module.css";
 
 /** A fixed color per stat, consistent across every card, so a stat reads the same everywhere. */
 const STAT_COLORS: Record<StatKey, string> = {
-  experience: "#0F9C9C",
-  trading: "#178F5A",
-  defi: "#B96C00",
-  holding: "#C22C4E",
-  risk: "#6A3FCB",
+  experience: "#3B82F6",
+  trading: "#22C55E",
+  defi: "#F59E0B",
+  holding: "#EF4444",
+  risk: "#A855F7",
+};
+
+/** One icon per stat, standing in for the old plain accent dot on each card. */
+const STAT_ICONS: Record<StatKey, React.ComponentType<{ className?: string }>> = {
+  experience: History,
+  trading: ArrowLeftRight,
+  defi: Layers,
+  holding: Lock,
+  risk: Flame,
 };
 
 export const metadata: Metadata = {
@@ -64,6 +74,8 @@ export default function ArchetypesPage() {
             .map((key, statIndex) => ({ key, statIndex, weight: centroid[statIndex] ?? 0 }))
             .sort((a, b) => b.weight - a.weight);
           const top = ranked.slice(0, 2);
+          const lead = leadStat(centroid) as StatKey;
+          const LeadIcon = STAT_ICONS[lead];
 
           return (
             <div
@@ -72,13 +84,15 @@ export default function ArchetypesPage() {
               style={{ "--accent": palette.accent, "--i": index } as React.CSSProperties}
             >
               <div className={styles.archetypeCardHead}>
-                <span className={styles.archetypeCardDot} aria-hidden="true" />
+                <span className={styles.archetypeCardIcon} aria-hidden="true">
+                  <LeadIcon className="h-4 w-4" />
+                </span>
                 <h2 className="display text-[19px] text-[var(--accent)]">{name}</h2>
                 <Badge
                   variant="outline"
                   className="ml-auto border-[var(--accent)] text-[var(--accent)]"
                 >
-                  {leadStat(centroid)}-led
+                  {lead}-led
                 </Badge>
               </div>
 
@@ -99,7 +113,7 @@ export default function ArchetypesPage() {
                 <p className={styles.archetypeCardBreakdownTitle}>Stat shape</p>
 
                 <div className={styles.archetypeCardBubbles} aria-hidden="true">
-                  {ranked.map(({ key, weight }, rank) => (
+                  {ranked.map(({ key, weight }) => (
                     <span
                       key={key}
                       className={styles.archetypeCardBubble}
@@ -107,8 +121,6 @@ export default function ArchetypesPage() {
                         {
                           "--height": `${28 + weight * 64}px`,
                           "--bubble-color": STAT_COLORS[key],
-                          "--i": index,
-                          "--bi": rank,
                         } as React.CSSProperties
                       }
                     />

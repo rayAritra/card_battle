@@ -1,44 +1,5 @@
 /* ── How it works ─────────────────────────────────────────────────────────── */
 
-.howStepper {
-  display: flex;
-  align-items: center;
-  max-width: 920px;
-  margin: 40px auto 0;
-  padding: 0;
-  list-style: none;
-}
-
-.howStepperStep {
-  display: flex;
-  align-items: center;
-  flex: 1;
-}
-
-.howStepperStep:last-child {
-  flex: 0 0 auto;
-}
-
-.howStepperNum {
-  display: grid;
-  flex-shrink: 0;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border: 2px solid var(--line-strong);
-  border-radius: 999px;
-  background: var(--surface-alt);
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.howStepperLine {
-  flex: 1;
-  height: 2px;
-  margin: 0 4px;
-  background: var(--line-strong);
-}
-
 .howGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -50,19 +11,14 @@
   flex-direction: column;
   gap: 12px;
   padding: 26px;
-  border: 2px solid var(--line);
+  border: 1px solid var(--line);
   border-radius: var(--radius-card);
-  background: var(--surface);
-  transition:
-    border-color 180ms ease,
-    transform 180ms ease,
-    background 180ms ease;
+  background: var(--surface-alt);
 }
 
-.howCard:hover {
-  border-color: var(--brand);
-  background: var(--surface-alt);
-  transform: translateY(-3px);
+.howCard:hover,
+.howCard:focus-within {
+  border-color: var(--line-strong);
 }
 
 .howCardHead {
@@ -76,9 +32,8 @@
   place-items: center;
   width: 42px;
   height: 42px;
-  border: 1.5px solid var(--line-strong);
   border-radius: 13px;
-  background: var(--surface-alt);
+  background: color-mix(in srgb, var(--brand) 16%, transparent);
   color: var(--brand);
 }
 
@@ -141,9 +96,5 @@
 @media (max-width: 640px) {
   .howGrid {
     grid-template-columns: 1fr;
-  }
-
-  .howStepper {
-    display: none;
   }
 }

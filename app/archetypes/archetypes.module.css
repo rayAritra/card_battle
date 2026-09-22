@@ -8,27 +8,16 @@
 }
 
 .archetypeCard {
-  border: 2px solid var(--line);
+  border: 1px solid var(--line);
   border-radius: var(--radius-card);
-  background: var(--surface);
-  transition:
-    background 180ms ease,
-    border-color 180ms ease,
-    transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 180ms ease;
+  /* A flat elevated panel against the black page, not a glow — same read as
+     a dashboard card sitting on a dark canvas. */
+  background: var(--surface-alt);
 }
 
 .archetypeCard:hover,
 .archetypeCard:focus-within {
-  background: var(--surface-alt);
-  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
-  transform: translateY(-4px);
-  box-shadow: 0 16px 34px -18px color-mix(in srgb, var(--accent) 55%, transparent);
-}
-
-.archetypeCard:hover .archetypeCardDot,
-.archetypeCard:focus-within .archetypeCardDot {
-  transform: scale(1.25);
+  border-color: var(--line-strong);
 }
 
 .archetypeCardHead {
@@ -37,14 +26,15 @@
   gap: 10px;
 }
 
-.archetypeCardDot {
-  width: 11px;
-  height: 11px;
+.archetypeCardIcon {
+  display: grid;
   flex-shrink: 0;
-  border-radius: 999px;
-  background: var(--accent);
-  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 70%, transparent);
-  transition: transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-inner);
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  color: var(--accent);
 }
 
 .archetypeCardHighlights {
@@ -103,28 +93,6 @@
   flex-shrink: 0;
   border-radius: 999px;
   background: var(--bubble-color);
-  opacity: 0;
-  animation: bubbleRise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: calc(var(--i, 0) * 45ms + var(--bi, 0) * 90ms + 260ms);
-}
-
-@keyframes bubbleRise {
-  from {
-    opacity: 0;
-    transform: translateY(26px) scale(0.4);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .archetypeCardBubble {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-  }
 }
 
 .archetypeCardBreakdown {

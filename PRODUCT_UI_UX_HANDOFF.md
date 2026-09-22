@@ -418,6 +418,19 @@ Do not present battle outcomes as live randomness, gambling, prediction, or fina
 
 “A physical foil trading card photographed in low light”: deep black surfaces, restrained metallic edges, one saturated archetype color, real depth, and minimal interface chrome.
 
+This applies to the collectible itself (the battle card and its foil/holo/glow treatment) — not to browsing/listing surfaces. See “List and dashboard card surfaces” below, which supersedes any earlier glow/lift guidance for those.
+
+### List and dashboard card surfaces
+
+Any card used to *browse or summarize* — archetypes, abilities, leaderboard rows, and similar grids, as distinct from the collectible battle card itself — follows a flat dashboard-panel style, not the foil-card treatment above:
+
+- Card background is a flat, static elevated surface (`--surface-alt`) against the pure-black page — contrast comes from that flat color difference, not from a shadow or glow.
+- No box-shadow, no blur, no hover lift/translate, no glow. A hairline border only, optionally brightening slightly on hover/focus for affordance.
+- A category/type marker is an icon in a small tinted rounded-square chip (`background: color-mix(in srgb, var(--accent) 16%, transparent)`, icon colored `var(--accent)`), never a plain colored dot.
+- Data values use a small set of consistent, saturated “poppy” hues (blue/green/orange/red/purple work well) rather than the muted archetype accent for anything chart-like (bars, bubbles, legend dots).
+- No entrance/reveal animation on the data visualization itself (bars, bubbles) — it renders in its final state immediately. The page-level `stagger-item` mount fade is still fine.
+- Reference implementation: `app/archetypes/page.tsx` + `archetypes.module.css`.
+
 ### Core tokens
 
 | Token | Value |
