@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useAnimate, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 import type { Card } from "@/types";
 import { cardArtDataUri } from "@/lib/art/generate";
@@ -26,7 +26,21 @@ export function RevealSequence({ card, children }: { card: Card; children?: Reac
   // compositing bounds from its own (untransformed) box rather than the
   // child's live rotated extent.
   const [settled, setSettled] = useState(false);
-  const [sweepScope, animateSweep] = useAnimate<HTMLDivElement>();
+  // The frame sweep (below) is a covering panel, not a clip-path on the card:
+  // Framer Motion's imperative `useAnimate` was tried first, animating
+  // clip-path on a wrapper around the card and clearing it back to `none`
+  // once the wipe finished. In practice that clear never reliably stuck —
+  // `getAnimations()` confirms the underlying animation is genuinely gone,
+  // but the clip-path's last-animated value (`inset(0% 0% 0% 0%)`, a
+  // rectangle matching the card's *resting, untilted* box) kept reasserting
+  // itself over any later plain style write, on a timeline this component
+  // doesn't control. Any leftover inset there clips the interactive
+  // hover-tilt the instant it rotates/scales past that frozen rectangle. A
+  // declarative overlay sidesteps the whole class of bug: it's conditionally
+  // rendered, so once `sweepDone` flips there is nothing left in the DOM to
+  // go stale — not "cleared to a value that should mean no clipping", just
+  // gone.
+  const [sweepDone, setSweepDone] = useState(false);
 
   const palette = paletteFor(card.archetype);
   const backArt = cardArtDataUri(card.address, palette, card.rarity);
@@ -35,31 +49,6 @@ export function RevealSequence({ card, children }: { card: Card; children?: Reac
     const timer = window.setTimeout(() => setFlipped(true), reduced ? 0 : 60);
     return () => window.clearTimeout(timer);
   }, [reduced]);
-
-  // The frame-sweep wipe below animates `clip-path` to reveal the card's
-  // border. Framer Motion leaves that final clip-path value sitting on the
-  // element as an inline style forever — a clip region that exactly matches
-  // the card's own static (untilted) box. Once the interactive hover-tilt
-  // later rotates/scales the card beyond that frozen box, the clip silently
-  // slices off whatever pokes past it. Driving the animation imperatively
-  // lets it be cleared to `none` the moment the wipe finishes, on the same
-  // DOM node, so nothing about the card remounts or loses state.
-  useEffect(() => {
-    if (reduced || !flipped || !sweepScope.current) return;
-    let cancelled = false;
-    animateSweep(
-      sweepScope.current,
-      { clipPath: "inset(0% 0% 0% 0%)" },
-      { delay: 0.35, duration: 0.4, ease: [0.22, 1, 0.36, 1] },
-    ).then(() => {
-      if (!cancelled && sweepScope.current) sweepScope.current.style.clipPath = "none";
-    });
-    return () => {
-      cancelled = true;
-    };
-    // Fires once, when the flip starts; animateSweep is stable.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [flipped, reduced]);
 
   if (reduced) {
     return (
@@ -112,12 +101,33 @@ export function RevealSequence({ card, children }: { card: Card; children?: Reac
           }}
         />
 
-        <div style={{ backfaceVisibility: settled ? "visible" : "hidden" }}>
-          {/* Frame sweep: a clip-path wipe that draws the border in at 350ms,
-              cleared back to no clip once it finishes — see the effect above. */}
-          <div ref={sweepScope} style={{ clipPath: "inset(0% 100% 0% 0%)" }}>
-            <BattleCard card={card} animate />
-          </div>
+        <div style={{ backfaceVisibility: settled ? "visible" : "hidden", position: "relative" }}>
+          <BattleCard card={card} animate />
+
+          {/* Frame sweep: an opaque panel covering the card, anchored to the
+              right edge, that shrinks away at 350ms — revealing left-to-right,
+              same as the clip-path wipe it replaces (see the note above).
+              Unmounted via onAnimationComplete rather than "cleared", so
+              nothing is ever left sitting on the card itself for the
+              interactive hover-tilt to run into later. */}
+          {!sweepDone && (
+            <motion.div
+              aria-hidden
+              style={{
+                position: "absolute",
+                inset: 0,
+                zIndex: 16,
+                pointerEvents: "none",
+                borderRadius: "var(--radius-card)",
+                background: "var(--surface-alt)",
+                transformOrigin: "right center",
+              }}
+              initial={{ scaleX: 1 }}
+              animate={{ scaleX: 0 }}
+              transition={{ delay: 0.35, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              onAnimationComplete={() => setSweepDone(true)}
+            />
+          )}
 
           {/* Rarity flourish: one holo sweep across epic and above at 1600ms. */}
           {card.rarity !== "common" && card.rarity !== "rare" && (

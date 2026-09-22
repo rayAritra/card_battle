@@ -83,7 +83,15 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  /* min-height, not height — a `height:100%` here resolves to a fixed pixel
+     value once .battle-card's own aspect-ratio-derived size is computed, and
+     a *definite* child height decouples from its own content: overflowing
+     content (an expanded stat's reasons) no longer counts toward what
+     .battle-card itself needs to be, so it just gets clip-path'd away below.
+     min-height keeps the 5:7 resting size (still exactly 100% when content is
+     short) but lets genuinely taller content grow both this box and its
+     aspect-ratio parent together, so nothing after the expanded stat gets cut off. */
+  min-height: 100%;
   border-radius: var(--radius-card);
   background: linear-gradient(165deg, var(--surface-alt) 0%, #0c0c0c 100%);
   /* clip-path, not overflow: hidden — this element has no transform of its
@@ -274,7 +282,14 @@
 
 .card-art {
   position: relative;
-  height: 19%;
+  /* cqw, not %: .battle-card__inner's own height is a `min-height` now (see
+     its rule above), not a definite `height`, and a percentage height on a
+     child of a non-definite-height box resolves to auto — collapsing this to
+     nothing — rather than an error, so it fails silently. cqw sidesteps that
+     entirely: it reads .battle-card's width, which stays definite regardless
+     of how tall the card grows. 26.6cqw = the same 19% this used to be, of
+     the card's resting 140cqw (5:7 at 100cqw wide) height. */
+  height: 26.6cqw;
   margin: 1.6cqw 2.9cqw 0;
   border: 1.5px solid var(--line-strong);
   border-radius: var(--radius-inner);
