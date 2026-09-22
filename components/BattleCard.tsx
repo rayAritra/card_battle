@@ -7,6 +7,7 @@ import { cardArtDataUri } from "@/lib/art/generate";
 import { paletteFor } from "@/lib/art/palettes";
 import { truncateAddress } from "@/lib/utils/format";
 import { AbilityBox } from "./AbilityBox";
+import "./BattleCard.css";
 import { CountUp } from "./CountUp";
 import { HoloLayer } from "./HoloLayer";
 import { RarityBadge } from "./RarityBadge";
@@ -69,7 +70,7 @@ export function BattleCard({
               <span className="chain-pip">NO CHAIN</span>
             )}
           </span>
-          <span className="card-identity card-head__spacer" title={card.address}>
+          <span className="card-identity ml-auto" title={card.address}>
             {identity}
           </span>
         </div>
@@ -150,12 +151,15 @@ export function BattleCard({
 
           <div className="card-foot">
             <span>Forged onchain</span>
-            <span className="card-foot__serial">{card.serial}</span>
+            <span className="mono tracking-[0.04em]">{card.serial}</span>
           </div>
         </div>
-      </div>
 
-      {interactive && <HoloLayer targetRef={cardRef} />}
+        {/* Clipped by .battle-card__inner, not .battle-card — see the note
+            on .battle-card in BattleCard.css for why the sheen has to live
+            in here rather than alongside it. */}
+        {interactive && <HoloLayer targetRef={cardRef} />}
+      </div>
     </div>
   );
 }

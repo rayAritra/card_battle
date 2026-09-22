@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { cardArtDataUri } from "@/lib/art/generate";
 import { paletteFor } from "@/lib/art/palettes";
 import { truncateAddress } from "@/lib/utils/format";
+import "./BattleCard.css";
+import "./CardSkeleton.css";
 
 /**
  * The loading state is a face-down card, never a spinner (§9).
@@ -16,7 +18,7 @@ export function CardSkeleton({ address }: { address: string }) {
   const art = cardArtDataUri(address, palette, "rare");
 
   return (
-    <div className="card-stage">
+    <div className="perspective-[1000px] w-[min(100%,380px)] mx-auto overflow-visible">
       <motion.div
         className="battle-card rarity--rare"
         style={

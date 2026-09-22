@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import "./HoloLayer.css";
 
 interface HoloLayerProps {
   /** The element the tilt is applied to — normally the .battle-card itself. */
@@ -50,8 +51,21 @@ export function HoloLayer({ targetRef, maxTilt = 12, enabled = true }: HoloLayer
     let idlePhase = 0;
     let lastFrame = performance.now();
 
+    // Measured once per hover session rather than on every pointermove.
+    // `element` is the thing being rotated — once it has any tilt applied,
+    // its own `getBoundingClientRect()` returns the axis-aligned box of the
+    // already-*projected* (rotated) shape, not the flat rectangle. Feeding
+    // that distorted, moving box back into the next frame's angle
+    // calculation is a feedback loop: each frame's rect is skewed by the
+    // previous frame's rotation, which compounds into the tilt drifting off
+    // in a direction the pointer never actually moved — the far edge
+    // "coming loose" and sliding out from under its own border as you hover
+    // near one side. Snapshotting the rect while the card is still flat (at
+    // the moment the pointer arrives) removes the feedback entirely.
+    let hoverRect: DOMRect | null = null;
+
     const setFromPoint = (clientX: number, clientY: number) => {
-      const rect = element.getBoundingClientRect();
+      const rect = hoverRect ?? element.getBoundingClientRect();
       const px = (clientX - rect.left) / rect.width;
       const py = (clientY - rect.top) / rect.height;
 
@@ -61,14 +75,20 @@ export function HoloLayer({ targetRef, maxTilt = 12, enabled = true }: HoloLayer
       target.my = py * 100;
     };
 
+    const onPointerEnter = () => {
+      hoverRect = element.getBoundingClientRect();
+    };
+
     const onPointerMove = (event: PointerEvent) => {
       pointerInside = true;
       target.lift = 1;
+      if (!hoverRect) hoverRect = element.getBoundingClientRect();
       setFromPoint(event.clientX, event.clientY);
     };
 
     const onPointerLeave = () => {
       pointerInside = false;
+      hoverRect = null;
       target.rx = 0;
       target.ry = 0;
       target.mx = 50;
@@ -125,6 +145,7 @@ export function HoloLayer({ targetRef, maxTilt = 12, enabled = true }: HoloLayer
       frameRef.current = requestAnimationFrame(tick);
     };
 
+    element.addEventListener("pointerenter", onPointerEnter);
     element.addEventListener("pointermove", onPointerMove);
     element.addEventListener("pointerleave", onPointerLeave);
     element.addEventListener("pointercancel", onPointerLeave);
@@ -144,6 +165,7 @@ export function HoloLayer({ targetRef, maxTilt = 12, enabled = true }: HoloLayer
 
     return () => {
       cancelAnimationFrame(frameRef.current);
+      element.removeEventListener("pointerenter", onPointerEnter);
       element.removeEventListener("pointermove", onPointerMove);
       element.removeEventListener("pointerleave", onPointerLeave);
       element.removeEventListener("pointercancel", onPointerLeave);

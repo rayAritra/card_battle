@@ -1,0 +1,70 @@
+/* ── Holo ─────────────────────────────────────────────────────────────────── */
+/* .rarity--* here target the .battle-card ancestor rendered by BattleCard —   */
+/* a cross-component compound selector, so this stays global rather than a     */
+/* CSS module (module-scoped class names on either side wouldn't match).       */
+
+.holo,
+.holo-sparkle {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 260ms ease;
+}
+
+.holo {
+  background: repeating-linear-gradient(
+    110deg,
+    transparent 0%,
+    rgba(255, 212, 0, 0.55) 6%,
+    rgba(255, 56, 158, 0.45) 12%,
+    rgba(120, 255, 92, 0.35) 18%,
+    transparent 26%
+  );
+  background-size: 260% 260%;
+  background-position: var(--mx) var(--my);
+  mix-blend-mode: color-dodge;
+}
+
+.holo-sparkle {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.55) 0.5px, transparent 0.6px);
+  background-size: 4px 4px;
+  background-position: var(--mx) var(--my);
+  mix-blend-mode: overlay;
+}
+
+.rarity--rare .holo {
+  opacity: 0.07;
+  background: repeating-linear-gradient(
+    110deg,
+    transparent 0%,
+    color-mix(in srgb, var(--accent) 60%, transparent) 10%,
+    transparent 22%
+  );
+  background-size: 260% 260%;
+}
+
+.rarity--epic .holo {
+  opacity: 0.12;
+}
+
+.rarity--legendary .holo {
+  opacity: 0.16;
+}
+
+.rarity--legendary .holo-sparkle,
+.rarity--mythic .holo-sparkle {
+  opacity: 0.22;
+}
+
+.rarity--mythic .holo {
+  opacity: 0.2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .holo,
+  .holo-sparkle {
+    display: none !important;
+  }
+}

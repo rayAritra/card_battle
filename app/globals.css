@@ -3,17 +3,26 @@
 
 /* ===========================================================================
    Onchain Battle Cards — design foundation.
-   Arcade cartridge: ink-navy black, one hot electric-cobalt signal color,
+   Arcade cartridge: pitch-black-and-white, one hot poppy signal color (a
+   vivid yellow — chosen because none of the sixteen archetype hues use it),
    hard edges, thick borders, flat offset "pressable" shadows instead of soft
    blur. Sixteen archetype accent hues (lib/art/palettes.ts) still drive each
    card's own identity — this file only owns the site's design tokens plus the
-   handful of systems reused across many pages/components (page shell, type
-   scale, buttons, entrance animation, seam-grid listing pattern, and the
-   battle-card/holo/rarity/stat/ability system rendered by BattleCard,
-   HoloLayer, RarityBadge, StatBar, AbilityBox, CardSkeleton and
-   RevealSequence).
+   handful of primitives reused across many unrelated pages/components with no
+   single owning file (page shell, type scale, buttons, entrance animation,
+   seam-grid listing pattern).
 
-   Everything page-specific or single-component lives in a colocated
+   The battle-card/holo/rarity/stat/ability card system — despite spanning
+   BattleCard, HoloLayer, RarityBadge, StatBar, AbilityBox, CardSkeleton and
+   RevealSequence — has one owning component per selector, so it lives as
+   plain (non-module) CSS colocated with each of those, not here. It stays
+   plain CSS rather than `*.module.css` because several of its selectors are
+   compounds spanning classes rendered by different components in that list
+   (e.g. `.rarity--legendary .holo`) — CSS Modules' scoped/hashed class names
+   would break a selector like that unless every class it touches opts back
+   out with `:global()`, so it's simpler to leave the whole system unscoped.
+
+   Everything else page-specific or single-component lives in a colocated
    `*.module.css` next to that page/component, written with Tailwind
    utilities directly in the JSX wherever practical.
 
@@ -28,22 +37,22 @@
 
 @layer base {
   :root {
-    --bg: #0a0a12;
-    --surface: #14141f;
-    --surface-alt: #191a2c;
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface-alt: #1c1c1c;
     --text: #f5f5f2;
-    --muted: #8b8ba3;
-    --line: #26263a;
-    --line-strong: #3c3c58;
+    --muted: #9a9a9a;
+    --line: #262626;
+    --line-strong: #3a3a3a;
 
-    --brand: #3d5aff;
-    --brand-ink: #ffffff;
+    --brand: #ffd400;
+    --brand-ink: #0a0a0a;
     --danger: #ff4d6d;
 
     /* Overridden per card by the archetype palette. */
-    --accent: #3d5aff;
-    --accent-soft: #172454;
-    --glow: #3d5aff;
+    --accent: #ffd400;
+    --accent-soft: #332b00;
+    --glow: #ffd400;
 
     --radius-card: 28px;
     --radius-inner: 14px;
@@ -157,7 +166,7 @@
 
   ::selection {
     background: var(--brand);
-    color: #ffffff;
+    color: var(--brand-ink);
   }
 
   /* ── Entrance choreography ────────────────────────────────────────────────── */
@@ -254,7 +263,7 @@
   }
 
   .button:active {
-    transform: translateY(0);
+    transform: translateY(0) scale(0.97);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
   }
 
@@ -276,431 +285,6 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
   }
 
-  /* ── The card ─────────────────────────────────────────────────────────────── */
-  /* The site's core collectible: rendered by BattleCard (card page + replay +  */
-  /* reveal sequence) and its supporting parts HoloLayer, RarityBadge, StatBar, */
-  /* AbilityBox and CardSkeleton — genuinely one multi-page, multi-component    */
-  /* system, so it stays here rather than fragmenting across those files.      */
-
-  .card-stage {
-    perspective: 1000px;
-    width: min(100%, 380px);
-    margin: 0 auto;
-    overflow: visible;
-  }
-
-  .battle-card {
-    --rx: 0deg;
-    --ry: 0deg;
-    --mx: 50%;
-    --my: 50%;
-    --lift: 0;
-
-    position: relative;
-    width: 100%;
-    aspect-ratio: 5 / 7;
-    border-radius: var(--radius-card);
-    border: 3px solid color-mix(in srgb, var(--accent) 70%, #000 30%);
-    box-shadow:
-      0 24px 60px rgba(0, 0, 0, 0.55),
-      0 0 0 1px rgba(0, 0, 0, 0.6),
-      0 0 calc(60px + var(--lift) * 40px)
-        color-mix(
-          in srgb,
-          var(--glow) calc(16% + var(--lift) * 18%),
-          transparent
-        );
-    transform: perspective(1000px) rotateX(var(--rx)) rotateY(var(--ry))
-      scale(calc(1 + var(--lift) * 0.028));
-    transform-style: preserve-3d;
-    overflow: hidden;
-    isolation: isolate;
-    container-type: inline-size;
-  }
-
-  .battle-card__inner {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    background: linear-gradient(165deg, var(--surface-alt) 0%, #0c0c14 100%);
-    overflow: hidden;
-  }
-
-  .card-head {
-    display: flex;
-    align-items: center;
-    gap: 2.1cqw;
-    padding: 2.9cqw 3.4cqw 1.8cqw;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .card-head__spacer {
-    margin-left: auto;
-  }
-
-  .chain-pips {
-    display: flex;
-    gap: 4px;
-    font-family: var(--font-mono);
-    font-size: 2.24cqw;
-    letter-spacing: 0.04em;
-    color: var(--accent);
-  }
-
-  .chain-pip {
-    padding: 0.5cqw 1.3cqw;
-    border: 1.5px solid color-mix(in srgb, var(--accent) 45%, transparent);
-    border-radius: 999px;
-  }
-
-  .card-identity {
-    font-family: var(--font-mono);
-    font-size: 2.6cqw;
-    color: var(--muted);
-    letter-spacing: 0.01em;
-    max-width: 46%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .card-art {
-    position: relative;
-    height: 27%;
-    margin: 0.5cqw 2.9cqw 0;
-    border: 1.5px solid var(--line-strong);
-    border-radius: var(--radius-inner);
-    background-size: cover;
-    background-position: center;
-    box-shadow: inset 0 -30px 40px -20px rgba(8, 8, 11, 0.95);
-    overflow: hidden;
-  }
-
-  .card-body {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    padding: 2.6cqw 3.7cqw 3.2cqw;
-    min-height: 0;
-  }
-
-  .card-archetype {
-    margin: 1cqw 0 0;
-    color: var(--accent);
-    font-family: var(--font-display);
-    font-size: 8cqw;
-    letter-spacing: 0;
-    line-height: 0.95;
-  }
-
-  .card-tagline {
-    margin: 1.3cqw 0 0;
-    color: var(--muted);
-    font-size: 2.6cqw;
-    line-height: 1.4;
-  }
-
-  .card-vitals {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.8cqw;
-    margin: 2.6cqw 0 2.4cqw;
-  }
-
-  .vital {
-    padding: 1.6cqw 2.4cqw;
-    border: 1.5px solid var(--line);
-    border-radius: var(--radius-inner);
-    background: rgba(255, 255, 255, 0.025);
-  }
-
-  .vital__label {
-    display: block;
-    color: #797990;
-    font-size: 2.24cqw;
-    font-weight: 700;
-  }
-
-  .vital__value {
-    display: block;
-    margin-top: 0.3cqw;
-    font-family: var(--font-mono);
-    font-size: 5.8cqw;
-    font-variant-numeric: tabular-nums;
-    line-height: 1.1;
-  }
-
-  .stat-list {
-    display: grid;
-    gap: 0.8cqw;
-    margin-top: auto;
-  }
-
-  /* ── Stat rows ────────────────────────────────────────────────────────────── */
-
-  .stat {
-    border: 0;
-    padding: 0;
-    background: none;
-    width: 100%;
-    text-align: left;
-    cursor: pointer;
-    color: inherit;
-  }
-
-  .stat__row {
-    display: grid;
-    grid-template-columns: 16cqw 1fr 5.8cqw;
-    gap: 1.8cqw;
-    align-items: center;
-  }
-
-  .stat__name {
-    color: #9c9cb2;
-    font-size: 2.24cqw;
-    font-weight: 700;
-  }
-
-  .stat__track {
-    position: relative;
-    height: 0.9cqw;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.09);
-    overflow: hidden;
-  }
-
-  .stat__fill {
-    position: absolute;
-    /* Full width, revealed by scaleX from the left — an auto-width element
-     would have nothing to scale. */
-    inset: 0;
-    border-radius: 999px;
-    background: var(--accent);
-    transform-origin: left center;
-  }
-
-  .stat__value {
-    font-family: var(--font-mono);
-    font-size: 2.9cqw;
-    font-variant-numeric: tabular-nums;
-    text-align: right;
-    color: #e8e8ea;
-  }
-
-  .stat__reasons {
-    overflow: hidden;
-    color: #82829a;
-    font-size: 2.24cqw;
-    line-height: 1.5;
-    padding-left: 17.8cqw;
-  }
-
-  .stat__reasons li {
-    list-style: none;
-  }
-
-  .stat__reasons ul {
-    margin: 2px 0 3px;
-    padding: 0;
-  }
-
-  /* ── Ability ──────────────────────────────────────────────────────────────── */
-
-  .ability {
-    margin-top: 2.4cqw;
-    padding-top: 2.1cqw;
-    border-top: 1px solid var(--line);
-  }
-
-  .ability__head {
-    display: flex;
-    align-items: baseline;
-    gap: 1.8cqw;
-  }
-
-  .ability__name {
-    margin: 0;
-    color: var(--accent);
-    font-family: var(--font-display);
-    font-size: 3.4cqw;
-    letter-spacing: 0.02em;
-  }
-
-  .ability__pips {
-    color: var(--accent);
-    font-size: 2.24cqw;
-    letter-spacing: 0.24em;
-  }
-
-  .ability__flavor {
-    margin: 0.8cqw 0 0;
-    color: #a6a6ba;
-    font-size: 2.5cqw;
-    font-style: italic;
-    line-height: 1.45;
-  }
-
-  .card-foot {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 2.4cqw;
-    padding-top: 1.8cqw;
-    border-top: 1px solid var(--line);
-    color: #67677e;
-    font-size: 2.24cqw;
-    letter-spacing: 0.04em;
-  }
-
-  .card-foot__serial {
-    font-family: var(--font-mono);
-    letter-spacing: 0.04em;
-  }
-
-  /* ── Rarity badge ─────────────────────────────────────────────────────────── */
-
-  .rarity-badge {
-    padding: 0.8cqw 1.8cqw;
-    border: 1.5px solid color-mix(in srgb, var(--accent) 50%, transparent);
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--accent) 14%, transparent);
-    color: var(--accent);
-    font-size: 2.24cqw;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-  }
-
-  /* ── Holo ─────────────────────────────────────────────────────────────────── */
-
-  .holo,
-  .holo-sparkle {
-    position: absolute;
-    inset: 0;
-    z-index: 3;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 260ms ease;
-  }
-
-  .holo {
-    background: repeating-linear-gradient(
-      110deg,
-      transparent 0%,
-      rgba(61, 90, 255, 0.55) 6%,
-      rgba(255, 56, 158, 0.45) 12%,
-      rgba(120, 255, 92, 0.35) 18%,
-      transparent 26%
-    );
-    background-size: 260% 260%;
-    background-position: var(--mx) var(--my);
-    mix-blend-mode: color-dodge;
-  }
-
-  .holo-sparkle {
-    background-image: radial-gradient(
-      rgba(255, 255, 255, 0.55) 0.5px,
-      transparent 0.6px
-    );
-    background-size: 4px 4px;
-    background-position: var(--mx) var(--my);
-    mix-blend-mode: overlay;
-  }
-
-  .rarity--rare .holo {
-    opacity: 0.07;
-    background: repeating-linear-gradient(
-      110deg,
-      transparent 0%,
-      color-mix(in srgb, var(--accent) 60%, transparent) 10%,
-      transparent 22%
-    );
-    background-size: 260% 260%;
-  }
-
-  .rarity--epic .holo {
-    opacity: 0.12;
-  }
-
-  .rarity--legendary .holo {
-    opacity: 0.16;
-  }
-
-  .rarity--legendary .holo-sparkle,
-  .rarity--mythic .holo-sparkle {
-    opacity: 0.22;
-  }
-
-  .rarity--mythic .holo {
-    opacity: 0.2;
-  }
-
-  .rarity--legendary .battle-card__inner::after,
-  .rarity--mythic .battle-card__inner::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    pointer-events: none;
-    box-shadow: inset 0 0 40px color-mix(in srgb, var(--glow) 30%, transparent);
-    animation: cornerPulse 4.5s ease-in-out infinite;
-  }
-
-  @keyframes cornerPulse {
-    0%,
-    100% {
-      opacity: 0.35;
-    }
-    50% {
-      opacity: 0.85;
-    }
-  }
-
-  /* Mythic: a slow drifting particle field over the whole card. */
-  .rarity--mythic .battle-card__inner::before {
-    content: "";
-    position: absolute;
-    inset: -40%;
-    z-index: 1;
-    pointer-events: none;
-    background-image: radial-gradient(
-      color-mix(in srgb, var(--accent) 70%, transparent) 0.8px,
-      transparent 1px
-    );
-    background-size: 26px 26px;
-    opacity: 0.22;
-    animation: particleDrift 26s linear infinite;
-  }
-
-  @keyframes particleDrift {
-    from {
-      transform: translate3d(0, 0, 0);
-    }
-    to {
-      transform: translate3d(26px, -26px, 0);
-    }
-  }
-
-  /* ── Skeleton ─────────────────────────────────────────────────────────────── */
-
-  .skeleton-line {
-    border-radius: 999px;
-    background: linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0.05) 0%,
-      rgba(255, 255, 255, 0.12) 50%,
-      rgba(255, 255, 255, 0.05) 100%
-    );
-    background-size: 200% 100%;
-    animation: shimmer 1.4s linear infinite;
-  }
-
-  @keyframes shimmer {
-    to {
-      background-position: -200% 0;
-    }
-  }
-
   /* ── Responsive ───────────────────────────────────────────────────────────── */
 
   @media (max-width: 760px) {
@@ -717,16 +301,6 @@
     *::after {
       animation: none !important;
       transition-duration: 120ms !important;
-    }
-
-    .battle-card {
-      transform: none !important;
-    }
-
-    .holo,
-    .holo-sparkle,
-    .rarity--mythic .battle-card__inner::before {
-      display: none !important;
     }
   }
 

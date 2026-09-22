@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useState } from "react";
 import type { StatKey, StatResult } from "@/types";
 import { CountUp } from "./CountUp";
+import "./StatBar.css";
 
 interface StatBarProps {
   name: StatKey;
@@ -48,7 +49,7 @@ export function StatBar({ name, stat, delay = 0, animate = true }: StatBarProps)
     >
       <button
         type="button"
-        className="stat"
+        className="w-full cursor-pointer border-0 bg-transparent p-0 text-left text-inherit"
         aria-expanded={open}
         onClick={() => setPinned((value) => !value)}
       >
@@ -87,9 +88,11 @@ export function StatBar({ name, stat, delay = 0, animate = true }: StatBarProps)
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: reduced ? 0.12 : 0.22, ease: [0.22, 1, 0.36, 1] }}
           >
-            <ul>
+            <ul className="m-0 mt-0.5 mb-0.75 p-0">
               {stat.reasons.map((reason) => (
-                <li key={reason}>{reason}</li>
+                <li className="list-none" key={reason}>
+                  {reason}
+                </li>
               ))}
             </ul>
           </motion.div>

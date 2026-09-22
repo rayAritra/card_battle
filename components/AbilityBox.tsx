@@ -1,4 +1,5 @@
 import type { Ability } from "@/types";
+import "./AbilityBox.css";
 
 /** Ability name, rarity pips, and the flavor line derived from real history. */
 export function AbilityBox({ ability }: { ability: Ability }) {

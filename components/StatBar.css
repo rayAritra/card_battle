@@ -1,0 +1,48 @@
+/* ── Stat rows ────────────────────────────────────────────────────────────── */
+
+.stat__row {
+  display: grid;
+  grid-template-columns: 16cqw 1fr 5.8cqw;
+  gap: 1.8cqw;
+  align-items: center;
+}
+
+.stat__name {
+  color: #9c9c9c;
+  font-size: 2.24cqw;
+  font-weight: 700;
+}
+
+.stat__track {
+  position: relative;
+  height: 0.9cqw;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+  overflow: hidden;
+}
+
+.stat__fill {
+  position: absolute;
+  /* Full width, revealed by scaleX from the left — an auto-width element
+   would have nothing to scale. */
+  inset: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  transform-origin: left center;
+}
+
+.stat__value {
+  font-family: var(--font-mono);
+  font-size: 2.9cqw;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: #e9e9e9;
+}
+
+.stat__reasons {
+  overflow: hidden;
+  color: #848484;
+  font-size: 2.24cqw;
+  line-height: 1.5;
+  padding-left: 17.8cqw;
+}
