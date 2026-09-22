@@ -1,38 +1,5 @@
-/* ── Arena grid ───────────────────────────────────────────────────────────── */
-/* A faint circuit grid drifting behind every page. Fixed so scrolling never */
-/* reveals a seam, masked so it never competes with foreground content. */
-
-.arenaGrid {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-  background-size: 44px 44px;
-  mask-image: radial-gradient(120% 90% at 50% 0%, black 0%, transparent 72%);
-  opacity: 0.6;
-  animation: gridDrift 60s linear infinite;
-}
-
-@keyframes gridDrift {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: 44px 88px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .arenaGrid {
-    animation: none !important;
-  }
-}
-
 /* Its own, higher stacking level — not tied with `main`. A hero's decorative
- background (e.g. the hero-bg video) can extend above its own section via a
+ background (e.g. the fixed site video) can extend above its own section via a
  negative inset, and `main` sharing z-index:1 with the header would let it
  win that tie (later in DOM order) and paint straight over the header. */
 .siteHeader {

@@ -1,0 +1,99 @@
+/* ── Site background video ────────────────────────────────────────────────── */
+/* A looping video fills the screen, darkened and desaturated toward the */
+/* site's own palette so it reads as part of the system rather than stock */
+/* footage, with a film-grain layer on top for texture. Plain `position: */
+/* fixed`, no scroll-linked transform or opacity — it stays put in the */
+/* viewport while every section on every page scrolls over it. */
+
+.siteBg {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: #050505;
+}
+
+.siteBgVideo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Slight desaturation + darkening so the footage sits behind the type at */
+  /* the same contrast the flat-color hero always assumed, plus a cobalt tint */
+  /* so it reads as this site's own texture, not generic b-roll. Blurred well */
+  /* past "soft" — it's meant to read as a moving texture, not footage. */
+  filter: saturate(0.75) brightness(0.55) contrast(1.05) blur(6px);
+  transform: scale(1.08);
+}
+
+.siteBgTint {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--brand) 22%, transparent) 0%,
+    transparent 45%
+  );
+  mix-blend-mode: color;
+  opacity: 0.6;
+}
+
+/* Classic film-grain trick: a tiled feTurbulence noise tile, blended in and */
+/* stepped through a handful of offsets fast enough to read as a flicker */
+/* rather than a crawl. */
+.siteBgGrain {
+  position: absolute;
+  inset: -20%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 95px 95px;
+  opacity: 0.6;
+  filter: blur(1px);
+  mix-blend-mode: overlay;
+  animation: grainShift 2s steps(8) infinite;
+}
+
+@keyframes grainShift {
+  0% {
+    transform: translate(0, 0);
+  }
+  10% {
+    transform: translate(-4%, -6%);
+  }
+  20% {
+    transform: translate(-8%, 3%);
+  }
+  30% {
+    transform: translate(4%, -9%);
+  }
+  40% {
+    transform: translate(-3%, 6%);
+  }
+  50% {
+    transform: translate(9%, 2%);
+  }
+  60% {
+    transform: translate(-6%, -3%);
+  }
+  70% {
+    transform: translate(2%, 8%);
+  }
+  80% {
+    transform: translate(-9%, -2%);
+  }
+  90% {
+    transform: translate(5%, 5%);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .siteBgGrain {
+    animation: none !important;
+  }
+}

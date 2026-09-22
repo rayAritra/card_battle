@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
+import { SiteBackground } from "@/components/SiteBackground";
 import { appOriginUrl } from "@/lib/utils/origin";
 import "./globals.css";
 import styles from "./layout.module.css";
@@ -50,7 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${inter.variable} ${jetbrainsMono.variable} ${playfair.variable}`}
     >
       <body>
-        <div className={styles.arenaGrid} aria-hidden="true" />
+        <SiteBackground />
 
         <header className={styles.siteHeader}>
           <Link href="/" className={`${styles.logo} flex items-center gap-2.5`}>
