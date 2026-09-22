@@ -108,22 +108,6 @@ export default function HomePage() {
       <main className="relative">
         {/* ── Hero — full viewport height, everything else waits below the fold ── */}
         <section className="relative flex min-h-[100dvh] flex-col items-center justify-center px-6 pb-20 pt-28 text-center">
-          {/* A radar-style scan target behind the headline — rings, a slow */}
-          {/* rotating sweep and viewfinder corners, echoing the "Scan" step */}
-          {/* below and the hero's own "just an address" copy, rather than a */}
-          {/* generic glow. */}
-          <div className={styles.heroScan} aria-hidden="true">
-            <span className={styles.heroScanRing} data-ring="inner" />
-            <span className={styles.heroScanRing} data-ring="outer" />
-            <span className={styles.heroScanSweep} />
-            <span className={styles.heroScanCorners}>
-              <span className={styles.heroScanBracket} data-corner="tl" />
-              <span className={styles.heroScanBracket} data-corner="tr" />
-              <span className={styles.heroScanBracket} data-corner="bl" />
-              <span className={styles.heroScanBracket} data-corner="br" />
-            </span>
-          </div>
-
           <p className="enter enter-1 mono relative z-10 text-[13px] text-[var(--muted)]">
             Nothing to connect, nothing to sign — just an address
           </p>
