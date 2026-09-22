@@ -140,6 +140,39 @@
   color: var(--accent);
 }
 
+/* Below 640px there isn't room for three cards fanned at a 27deg tilt
+   without either the rotated bounding boxes forcing page-wide horizontal
+   scroll, or the cards shrinking so far that their own copy no longer fits
+   and spills past the card edge. The fan gives way to a plain vertical
+   stack instead: full width, unrotated, ordinary flow — the copy keeps its
+   normal size since a full-width card has room for it. */
+@media (max-width: 640px) {
+  .handFan {
+    height: auto;
+    display: grid;
+    gap: 16px;
+    cursor: default;
+  }
+
+  .fanCard,
+  .fanCard:hover,
+  .fanCard:focus-within,
+  .fanCard.fanCardActive {
+    position: static;
+    width: 100%;
+    height: auto;
+    transform: none;
+    z-index: auto !important;
+  }
+
+  /* The upside-down corner index only makes sense as the readable-from-
+     either-end mark on a physically fanned card; stacked upright, it just
+     reads as a typo. */
+  .fanCardIndexBottom {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .fanCard:hover,
   .fanCard:focus-within,

@@ -54,7 +54,12 @@ export function ShareBar({ url, text, primary, download, className }: ShareBarPr
         </motion.a>
       )}
 
-      <div className="flex gap-2">
+      {/* Three real English labels ("Copy challenge", "Save card", "Share to
+          X") can't share one row below ~480px no matter how tight the
+          padding gets — grid-cols-1 stacks them full-width there instead of
+          forcing horizontal scroll; min-[480px]:flex restores the original
+          even row once there's actually room for it. */}
+      <div className="grid grid-cols-1 gap-2 min-[480px]:flex">
         <motion.button
           type="button"
           className="button button--ghost flex-1"

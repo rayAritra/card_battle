@@ -27,6 +27,9 @@
   align-items: center;
   perspective: 1400px;
   isolation: isolate;
+  /* Generous clearance on all sides so 3D rotation (rotateY: +/-19deg) and
+     victory scaling (1.06) have full freedom with zero cutoffs on any side */
+  padding: 36px 32px;
 }
 
 /* Ambient arena glow: a slow-breathing backdrop so the stage never sits flat.
@@ -36,7 +39,7 @@
 .replayArena::before {
   content: "";
   position: absolute;
-  inset: -12% -6%;
+  inset: -6% 0;
   z-index: -1;
   pointer-events: none;
   background:
@@ -302,7 +305,7 @@
 /* Victory burst: a radial pulse behind the winning card, in its own accent. */
 .replayVictoryBurst {
   position: absolute;
-  inset: -20%;
+  inset: -10%;
   z-index: -1;
   pointer-events: none;
   background: radial-gradient(
@@ -379,6 +382,7 @@
   .replayArena {
     grid-template-columns: 1fr 1fr;
     gap: 12px;
+    padding: 20px 12px;
   }
 
   .replayCenter {
@@ -389,6 +393,10 @@
 
   .replaySide :global(.battle-card) {
     max-width: 100%;
+  }
+
+  .replayVictoryBurst {
+    inset: -5%;
   }
 
   .replayScore {

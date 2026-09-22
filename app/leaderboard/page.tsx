@@ -58,26 +58,28 @@ function Table({
                   {String(rank).padStart(2, "0")}
                 </span>
 
-                <Avatar className="h-9 w-9" style={{ borderColor: palette.accent }}>
+                <Avatar className={`${styles.boardAvatar} h-9 w-9`} style={{ borderColor: palette.accent }}>
                   <AvatarFallback style={{ color: palette.accent }}>
                     {initials(entry)}
                   </AvatarFallback>
                 </Avatar>
 
-                <span className="flex min-w-0 flex-col gap-0.5">
+                <span className={`${styles.boardIdentity} flex min-w-0 flex-col gap-0.5`}>
                   <Link className={`${styles.boardName} truncate`} href={`/card/${entry.address}`}>
                     {entry.ensName ?? truncateAddress(entry.address)}
                   </Link>
                   <Badge
                     variant="outline"
-                    className="w-fit border-[var(--line)] text-[8px] text-[#767676]"
+                    className="w-fit max-w-full truncate border-[var(--line)] text-[8px] text-[#767676]"
                   >
                     {entry.archetype}
                   </Badge>
                 </span>
 
-                <span className={`${styles.boardMetric} mono`}>{metric(entry)}</span>
-                <FightButton opponent={entry.address} />
+                <span className={styles.boardMeta}>
+                  <span className={`${styles.boardMetric} mono`}>{metric(entry)}</span>
+                  <FightButton opponent={entry.address} />
+                </span>
               </li>
             );
           })}
