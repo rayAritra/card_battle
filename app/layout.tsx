@@ -54,18 +54,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SiteBackground />
 
         <header className={styles.siteHeader}>
-          <Link href="/" className={`${styles.logo} flex items-center gap-2.5`}>
-            <span
-              aria-hidden
-              className={`${styles.logoMark} grid h-8 w-8 shrink-0 place-items-center rounded-2xl border-2 border-[var(--brand)] bg-[var(--brand)] text-[13px] font-black text-[var(--brand-ink)] shadow-[0_4px_14px_rgba(255,212,0,0.45)]`}
-            >
-              OB
-            </span>
-            <span>
-              Onchain
-              <br />
-              Battle Cards
-            </span>
+          <Link href="/" className={`${styles.logo} flex items-center`}>
+            Onchain Battle Cards
           </Link>
           <nav>
             <Link href="/archetypes">Archetypes</Link>

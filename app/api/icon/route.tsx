@@ -28,8 +28,8 @@ export function GET() {
             height: 240,
             transform: "rotate(45deg)",
             borderRadius: 28,
-            border: "18px solid #FFD400",
-            background: "rgba(255,212,0,0.12)",
+            border: "18px solid #F0B429",
+            background: "rgba(240,180,41,0.12)",
           }}
         />
       </div>

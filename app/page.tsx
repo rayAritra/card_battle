@@ -113,11 +113,12 @@ export default function HomePage() {
           </p>
 
           <h1
-            className={`${styles.heroTitle} enter enter-2 relative z-10 mt-6 text-[clamp(48px,10vw,108px)]`}
+            className={`${styles.heroTitle} enter enter-2 relative z-10 mt-6`}
           >
-            <span className="shimmer-text-graphite">
+            <span className="shimmer-text-graphite block text-[clamp(48px,12vw,130px)]">
               Every wallet
-              <br />
+            </span>
+            <span className="shimmer-text-graphite block text-[clamp(42px,10.3vw,111px)]">
               has a legend
             </span>
           </h1>
@@ -249,7 +250,7 @@ export default function HomePage() {
                   ease: [0.22, 1, 0.36, 1],
                 }}
               >
-                <span className="display block text-[clamp(34px,5vw,54px)] text-[var(--brand)]">
+                <span className="block text-[clamp(34px,5vw,54px)] font-bold text-white">
                   {metric.value}
                 </span>
                 <span className="mt-1 block text-[13px] leading-snug text-[var(--muted)]">
