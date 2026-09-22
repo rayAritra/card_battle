@@ -125,10 +125,18 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
       <div className={styles.replayArena} ref={arenaScope}>
         <div className={styles.replayFlash} ref={flashScope} style={{ opacity: 0 }} aria-hidden />
 
+        {!reduced && (
+          <AnimatePresence>
+            {current && visibleRounds > 0 && !settled && (
+              <ImpactBurst key={visibleRounds} />
+            )}
+          </AnimatePresence>
+        )}
+
         <motion.div
           className={styles.replaySide}
           initial={reduced ? false : { x: -80, opacity: 0, rotateY: 0 }}
-          animate={{ x: 0, rotateY: 6, ...cardState(first) }}
+          animate={{ x: 0, rotateY: 19, ...cardState(first) }}
           transition={{ duration: reduced ? 0.12 : 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
           <BattleCard card={first} animate={false} interactive={false} />
@@ -237,7 +245,7 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
         <motion.div
           className={styles.replaySide}
           initial={reduced ? false : { x: 80, opacity: 0, rotateY: 0 }}
-          animate={{ x: 0, rotateY: -6, ...cardState(second) }}
+          animate={{ x: 0, rotateY: -19, ...cardState(second) }}
           transition={{ duration: reduced ? 0.12 : 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
           <BattleCard card={second} animate={false} interactive={false} />
@@ -304,6 +312,56 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
         })}
       </ol>
     </div>
+  );
+}
+
+/** Angles (degrees) the impact sparks fly out along, evenly spread. */
+const SPARK_ANGLES = [15, 55, 95, 135, 175, 215, 255, 295, 335];
+
+/**
+ * The clash: two beams race in from each card and meet at center, followed
+ * by a shockwave ring and a spray of sparks. Fires once per round, mounted
+ * fresh via its `key` so every entrance/exit replays cleanly.
+ */
+function ImpactBurst() {
+  return (
+    <motion.div className={styles.replayClash} aria-hidden>
+      <motion.span
+        className={`${styles.replayBeam} ${styles.replayBeamLeft}`}
+        initial={{ scaleX: 0, opacity: 0 }}
+        animate={{ scaleX: 1, opacity: [0, 1, 0] }}
+        transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+      />
+      <motion.span
+        className={`${styles.replayBeam} ${styles.replayBeamRight}`}
+        initial={{ scaleX: 0, opacity: 0 }}
+        animate={{ scaleX: 1, opacity: [0, 1, 0] }}
+        transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+      />
+      <motion.span
+        className={styles.replayImpactRing}
+        initial={{ scale: 0.3, opacity: 0.9 }}
+        animate={{ scale: 1.7, opacity: 0 }}
+        transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
+      />
+      {SPARK_ANGLES.map((angle) => {
+        const rad = (angle * Math.PI) / 180;
+        const dist = 60 + (angle % 40);
+        return (
+          <motion.span
+            key={angle}
+            className={styles.replaySpark}
+            initial={{ x: 0, y: 0, opacity: 1 }}
+            animate={{
+              x: Math.cos(rad) * dist,
+              y: Math.sin(rad) * dist,
+              opacity: 0,
+            }}
+            transition={{ duration: 0.55, delay: 0.15, ease: "easeOut" }}
+          />
+        );
+      })}
+    </motion.div>
   );
 }
 
