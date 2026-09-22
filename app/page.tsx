@@ -101,7 +101,9 @@ export default function HomePage() {
           Nothing to connect, nothing to sign — just an address
         </p>
 
-        <h1 className="display enter enter-2 relative z-10 mt-6 text-[clamp(48px,10vw,108px)] text-[var(--text)]">
+        <h1
+          className={`${styles.heroTitle} enter enter-2 relative z-10 mt-6 text-[clamp(48px,10vw,108px)] text-[var(--text)]`}
+        >
           Every wallet
           <br />
           has a legend

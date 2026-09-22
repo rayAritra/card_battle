@@ -1,3 +1,16 @@
+/* ── Homepage type ────────────────────────────────────────────────────────── */
+/* The hero headline uses the site's shared display face (Playfair, set */
+/* globally in app/globals.css) at its own weight/line-height; every other */
+/* title on this page already gets it for free via the shared `.display` */
+/* class. Body copy stays on Inter. */
+
+.heroTitle {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 0.96;
+}
+
 /* ── Hero background video ────────────────────────────────────────────────── */
 /* A looping video fills the screen, darkened and desaturated toward the */
 /* site's own palette so it reads as part of the system rather than stock */

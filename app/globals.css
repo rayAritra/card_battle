@@ -48,7 +48,7 @@
     --radius-card: 28px;
     --radius-inner: 14px;
 
-    --font-display: var(--font-display-face), "Arial Narrow", sans-serif;
+    --font-display: var(--font-display-face), Georgia, "Times New Roman", serif;
     --font-mono:
       var(--font-mono-stack), ui-monospace, "SF Mono", Menlo, monospace;
     --font-body: var(--font-inter), system-ui, -apple-system, sans-serif;

@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
-import { Baloo_2, Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
 import { appOriginUrl } from "@/lib/utils/origin";
 import "./globals.css";
 import styles from "./layout.module.css";
@@ -11,20 +11,19 @@ const inter = Inter({
   display: "swap",
 });
 
-// A genuinely rounded display face — soft terminals instead of the condensed,
-// square-cut Big Shoulders the site opened with — to match the rounded-corner
-// UI system rather than fight it.
-const baloo = Baloo_2({
-  subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
-  variable: "--font-display-face",
-  display: "swap",
-});
-
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["400", "500", "700"],
   variable: "--font-mono-stack",
+  display: "swap",
+});
+
+// The site's display face for every title — an editorial serif set apart
+// from the Inter body text used for everything else.
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["700", "800", "900"],
+  variable: "--font-display-face",
   display: "swap",
 });
 
@@ -48,7 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${baloo.variable} ${jetbrainsMono.variable}`}
+      className={`${inter.variable} ${jetbrainsMono.variable} ${playfair.variable}`}
     >
       <body>
         <div className={styles.arenaGrid} aria-hidden="true" />
