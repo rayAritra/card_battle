@@ -1,10 +1,30 @@
+/* ── Rarity gem ───────────────────────────────────────────────────────────── */
+/* Colored by the rarity "metal" tokens (--metal-1/--metal-2), set per         */
+/* .rarity--* on the ancestor .battle-card in BattleCard.css — never by the    */
+/* archetype accent, so rarity and archetype stay two legible, independent     */
+/* signals instead of competing for the same hue.                             */
+
 .rarity-badge {
-  padding: 0.8cqw 1.8cqw;
-  border: 1.5px solid color-mix(in srgb, var(--accent) 50%, transparent);
+  display: inline-flex;
+  align-items: center;
+  gap: 1cqw;
+  padding: 0.9cqw 1.9cqw 0.9cqw 1.3cqw;
+  border: 1.5px solid var(--metal-2);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--accent) 14%, transparent);
-  color: var(--accent);
-  font-size: 2.24cqw;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--metal-1) 20%, transparent), transparent);
+}
+
+.rarity-badge__icon {
+  width: 2.6cqw;
+  height: 2.6cqw;
+  flex-shrink: 0;
+  color: var(--metal-1);
+}
+
+.rarity-badge__label {
+  color: var(--text);
+  font-size: 2.1cqw;
   font-weight: 800;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }

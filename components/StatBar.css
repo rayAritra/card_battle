@@ -1,48 +1,104 @@
-/* ── Stat rows ────────────────────────────────────────────────────────────── */
+/* ── Stat boxes ───────────────────────────────────────────────────────────── */
 
-.stat__row {
-  display: grid;
-  grid-template-columns: 16cqw 1fr 5.8cqw;
-  gap: 1.8cqw;
+.stat-box {
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-inner);
+  background: rgba(255, 255, 255, 0.025);
+  overflow: hidden;
+  transition: border-color 160ms ease;
+}
+
+.stat-box--open {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+}
+
+.stat-box__trigger {
+  display: flex;
   align-items: center;
+  gap: 1.6cqw;
+  width: 100%;
+  padding: 0.85cqw 1.9cqw;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
 }
 
-.stat__name {
-  color: #9c9c9c;
-  font-size: 2.24cqw;
+.stat-box__icon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 4.4cqw;
+  height: 4.4cqw;
+  border-radius: 1.2cqw;
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  color: var(--accent);
+}
+
+.stat-box__icon svg {
+  width: 2.5cqw;
+  height: 2.5cqw;
+}
+
+.stat-box__body {
+  display: grid;
+  flex: 1;
+  gap: 0.5cqw;
+  min-width: 0;
+}
+
+.stat-box__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1cqw;
+}
+
+.stat-box__name {
+  color: #b4b4b4;
+  font-size: 2.1cqw;
   font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
 }
 
-.stat__track {
+.stat-box__value {
+  font-family: var(--font-mono);
+  font-size: 2.7cqw;
+  font-variant-numeric: tabular-nums;
+  color: #e9e9e9;
+}
+
+.stat-box__track {
   position: relative;
-  height: 0.9cqw;
-  border-radius: 999px;
+  height: 1.1cqw;
+  border-radius: 2px;
   background: rgba(255, 255, 255, 0.09);
   overflow: hidden;
 }
 
-.stat__fill {
+.stat-box__fill {
   position: absolute;
   /* Full width, revealed by scaleX from the left — an auto-width element
    would have nothing to scale. */
   inset: 0;
-  border-radius: 999px;
   background: var(--accent);
   transform-origin: left center;
+  /* A repeating mask chunks the continuous scaleX fill into notches — a
+     power-meter read — without touching the spring animation driving it. */
+  mask-image: repeating-linear-gradient(90deg, #000 0 7.5%, transparent 7.5% 9.5%);
+  -webkit-mask-image: repeating-linear-gradient(90deg, #000 0 7.5%, transparent 7.5% 9.5%);
 }
 
-.stat__value {
-  font-family: var(--font-mono);
-  font-size: 2.9cqw;
-  font-variant-numeric: tabular-nums;
-  text-align: right;
-  color: #e9e9e9;
-}
-
-.stat__reasons {
+.stat-box__reasons {
   overflow: hidden;
-  color: #848484;
-  font-size: 2.24cqw;
+  color: #8c8c8c;
+  font-size: 2.2cqw;
   line-height: 1.5;
-  padding-left: 17.8cqw;
+  padding: 0 2.2cqw;
+}
+
+.stat-box__reasons ul {
+  padding-left: 8cqw;
 }

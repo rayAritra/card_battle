@@ -1,35 +1,56 @@
-/* ── Ability ──────────────────────────────────────────────────────────────── */
+/* ── Ability plaque ───────────────────────────────────────────────────────── */
 
 .ability {
-  margin-top: 2.4cqw;
-  padding-top: 2.1cqw;
-  border-top: 1px solid var(--line);
+  margin-top: 1.6cqw;
+  padding: 1.4cqw 2.2cqw 1.6cqw;
+  border: 1.5px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-inner);
+  background: rgba(255, 255, 255, 0.02);
 }
 
-.ability__head {
+.ability__ribbon {
   display: flex;
-  align-items: baseline;
-  gap: 1.8cqw;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.4cqw;
 }
 
-.ability__name {
-  margin: 0;
-  color: var(--accent);
-  font-family: var(--font-display);
-  font-size: 3.4cqw;
-  letter-spacing: 0.02em;
+.ability__ribbon-label {
+  color: #6e6e6e;
+  font-size: 1.7cqw;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .ability__pips {
+  display: flex;
+  gap: 0.6cqw;
+  color: var(--line-strong);
+}
+
+.ability__pip {
+  width: 1.9cqw;
+  height: 1.9cqw;
+}
+
+.ability__pip--on {
   color: var(--accent);
-  font-size: 2.24cqw;
-  letter-spacing: 0.24em;
+}
+
+.ability__name {
+  margin: 0.8cqw 0 0;
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-size: 3.2cqw;
+  letter-spacing: 0.02em;
 }
 
 .ability__flavor {
-  margin: 0.8cqw 0 0;
+  margin: 0.5cqw 0 0;
   color: #a8a8a8;
-  font-size: 2.5cqw;
+  font-size: 2.2cqw;
   font-style: italic;
-  line-height: 1.45;
+  line-height: 1.4;
 }

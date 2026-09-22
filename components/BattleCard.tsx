@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { motion } from "framer-motion";
+import { Vault } from "lucide-react";
 import { CHAIN_LABELS, STAT_KEYS, type Card } from "@/types";
 import { cardArtDataUri } from "@/lib/art/generate";
 import { paletteFor } from "@/lib/art/palettes";
@@ -58,28 +59,40 @@ export function BattleCard({
     >
       <div className="battle-card__inner">
         <div className="card-head">
-          <RarityBadge rarity={card.rarity} />
-          <span className="chain-pips">
-            {card.chainsActive.length > 0 ? (
-              card.chainsActive.map((chain) => (
-                <span className="chain-pip" key={chain}>
-                  {CHAIN_LABELS[chain]}
-                </span>
-              ))
-            ) : (
-              <span className="chain-pip">NO CHAIN</span>
-            )}
-          </span>
-          <span className="card-identity ml-auto" title={card.address}>
-            {identity}
-          </span>
+          <div className="card-head-left">
+            <span className="card-head-tags">
+              <RarityBadge rarity={card.rarity} />
+              <span className="chain-pips">
+                {card.chainsActive.length > 0 ? (
+                  card.chainsActive.map((chain) => (
+                    <span className="chain-pip" key={chain}>
+                      {CHAIN_LABELS[chain]}
+                    </span>
+                  ))
+                ) : (
+                  <span className="chain-pip">NO CHAIN</span>
+                )}
+              </span>
+            </span>
+            <span className="card-identity" title={card.address}>
+              {identity}
+            </span>
+          </div>
+
+          <motion.div
+            className="level-medallion"
+            initial={animate ? { opacity: 0, rotateY: 180, scale: 0.6 } : false}
+            animate={{ opacity: 1, rotateY: 0, scale: 1 }}
+            transition={{ delay: baseDelay + 0.55, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <span className="level-medallion__label">Lvl</span>
+            <span className="level-medallion__value mono">
+              <CountUp value={card.level} delay={baseDelay + 0.65} duration={0.9} animateOnMount={animate} />
+            </span>
+          </motion.div>
         </div>
 
-        <div
-          className="card-art"
-          style={{ backgroundImage: `url("${art}")` }}
-          aria-hidden
-        />
+        <div className="card-art" style={{ backgroundImage: `url("${art}")` }} aria-hidden />
 
         <div className="card-body">
           <motion.h2
@@ -100,34 +113,24 @@ export function BattleCard({
             {card.tagline}
           </motion.p>
 
-          <div className="card-vitals">
-            <motion.div
-              className="vital"
-              initial={animate ? { opacity: 0, scale: 0.96 } : false}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: baseDelay + 0.65, duration: 0.4 }}
-            >
-              <span className="vital__label">Power level</span>
-              <span className="vital__value">
-                <CountUp
-                  value={card.level}
-                  delay={baseDelay + 0.65}
-                  duration={0.9}
-                  animateOnMount={animate}
-                />
+          <motion.div
+            className="card-vitals"
+            initial={animate ? { opacity: 0, scale: 0.96 } : false}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: baseDelay + 0.68, duration: 0.4 }}
+          >
+            <div className="vital">
+              <span className="vital__icon" aria-hidden>
+                <Vault />
               </span>
-            </motion.div>
+              <span className="vital__text">
+                <span className="vital__label">Vault</span>
+                <span className="vital__value mono">{netWorth}</span>
+              </span>
+            </div>
+          </motion.div>
 
-            <motion.div
-              className="vital"
-              initial={animate ? { opacity: 0, scale: 0.96 } : false}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: baseDelay + 0.7, duration: 0.4 }}
-            >
-              <span className="vital__label">Vault</span>
-              <span className="vital__value">{netWorth}</span>
-            </motion.div>
-          </div>
+          <div className="section-label">Battle stats</div>
 
           <div className="stat-list">
             {STAT_KEYS.map((key, index) => (
