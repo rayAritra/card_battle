@@ -1,8 +1,9 @@
-import type { Metadata, Viewport } from "next";
-import Link from "next/link";
-import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
 import { SiteBackground } from "@/components/SiteBackground";
+import { SiteHeader } from "@/components/SiteHeader";
 import { appOriginUrl } from "@/lib/utils/origin";
+import type { Metadata, Viewport } from "next";
+import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
 import styles from "./layout.module.css";
 
@@ -44,7 +45,11 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="en"
@@ -53,23 +58,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <SiteBackground />
 
-        <header className={styles.siteHeader}>
-          <Link href="/" className={`${styles.logo} flex items-center`}>
-            Onchain Battle Cards
-          </Link>
-          <nav>
-            <Link href="/archetypes">Archetypes</Link>
-            <Link href="/leaderboard">Rankings</Link>
-            <Link href="/how-it-works">How it works</Link>
-            <Link href="/settings">Privacy</Link>
-          </nav>
-        </header>
+        <SiteHeader />
 
         {children}
 
         <footer className={styles.legal}>
           <span>
-            Forged from public onchain history. Built for entertainment, never financial advice.
+            Forged from public onchain history. Built for entertainment, never
+            financial advice.
           </span>
           <span className={styles.legalLinks}>
             <Link href="/how-it-works">Methodology</Link>
