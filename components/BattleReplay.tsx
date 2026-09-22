@@ -1,5 +1,6 @@
 "use client";
 
+import confetti from "canvas-confetti";
 import { AnimatePresence, motion, useAnimate, useReducedMotion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import type { BattleResult, Card, RoundLog } from "@/types";
@@ -57,6 +58,9 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
     [cardA, cardB],
   );
 
+  const firstGlow = paletteFor(first.archetype).glow;
+  const secondGlow = paletteFor(second.archetype).glow;
+
   const beats = useMemo<Beat[]>(() => {
     let cursor = 500; // entrance
     return result.rounds.map((round, index) => {
@@ -87,9 +91,16 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
   const current = visibleRounds > 0 ? result.rounds[visibleRounds - 1] : null;
 
   // Every round result lands with an impact frame: a brief arena jolt plus a
-  // white flash, so a win reads as a hit rather than a number changing.
+  // flash, so a win reads as a hit rather than a number changing. The flash
+  // is tinted with the round winner's own color when an ability fired that
+  // round — a plain white hit otherwise — so an ability swing is legible as
+  // "special" at a glance, not just from the banner text.
   const [arenaScope, animateArena] = useAnimate();
   const [flashScope, animateFlash] = useAnimate();
+  const flashColor =
+    current && current.abilitiesTriggered.length > 0
+      ? paletteFor((current.winner === cardA.address ? cardA : cardB).archetype).glow
+      : "#ffffff";
 
   useEffect(() => {
     if (reduced || settled || visibleRounds === 0) return;
@@ -99,8 +110,39 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visibleRounds]);
 
+  // A tasteful, archetype-colored confetti burst near the winner the instant
+  // the match settles — skipped entirely under reduced motion.
+  useEffect(() => {
+    if (reduced || !settled) return;
+    const winnerIsFirst = result.winner === first.address;
+    const winnerGlow = winnerIsFirst ? firstGlow : secondGlow;
+    confetti({
+      particleCount: 70,
+      spread: 68,
+      startVelocity: 34,
+      gravity: 1.05,
+      scalar: 0.85,
+      ticks: 150,
+      origin: { x: winnerIsFirst ? 0.24 : 0.76, y: 0.5 },
+      colors: [winnerGlow, "#ffffff"],
+      disableForReducedMotion: true,
+    });
+    // Fires once when the match settles.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settled]);
+
   const scoreFor = (address: string) =>
     result.rounds.slice(0, visibleRounds).filter((round) => round.winner === address).length;
+
+  /** Consecutive rounds most recently won by this address, counting back from the latest reveal. */
+  const streakFor = (address: string) => {
+    let streak = 0;
+    for (let i = visibleRounds - 1; i >= 0; i--) {
+      if (result.rounds[i].winner !== address) break;
+      streak++;
+    }
+    return streak;
+  };
 
   const cardState = (card: Card) => {
     if (!settled) {
@@ -122,8 +164,17 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
 
   return (
     <div className={styles.replay}>
-      <div className={styles.replayArena} ref={arenaScope}>
-        <div className={styles.replayFlash} ref={flashScope} style={{ opacity: 0 }} aria-hidden />
+      <div
+        className={styles.replayArena}
+        ref={arenaScope}
+        style={{ "--left-glow": firstGlow, "--right-glow": secondGlow } as React.CSSProperties}
+      >
+        <div
+          className={styles.replayFlash}
+          ref={flashScope}
+          style={{ opacity: 0, background: flashColor }}
+          aria-hidden
+        />
 
         {!reduced && (
           <AnimatePresence>
@@ -144,11 +195,12 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
             card={first}
             score={scoreFor(first.address)}
             total={result.rounds.length}
+            streak={settled ? 0 : streakFor(first.address)}
           />
           {settled && first.address === result.winner && (
             <motion.div
               className={styles.replayVictoryBurst}
-              style={{ "--glow": paletteFor(first.archetype).glow } as React.CSSProperties}
+              style={{ "--glow": firstGlow } as React.CSSProperties}
               initial={{ opacity: 0, scale: 0.6 }}
               animate={{ opacity: [0, 0.9, 0.5], scale: [0.6, 1.3, 1.15] }}
               transition={{ duration: reduced ? 0.15 : 1, ease: "easeOut" }}
@@ -222,23 +274,29 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
           )}
 
           <div className={styles.replayPips} aria-label="rounds won">
-            {result.rounds.map((round, index) => (
-              <motion.span
-                key={index}
-                className={styles.replayPip}
-                initial={false}
-                animate={{
-                  backgroundColor:
-                    index < visibleRounds
-                      ? paletteFor(
-                          (round.winner === cardA.address ? cardA : cardB).archetype,
-                        ).accent
-                      : "rgba(255,255,255,0.12)",
-                  scale: index === visibleRounds - 1 && !settled ? 1.35 : 1,
-                }}
-                transition={{ duration: 0.3 }}
-              />
-            ))}
+            {result.rounds.map((round, index) => {
+              const roundWinnerCard = round.winner === cardA.address ? cardA : cardB;
+              const active = index === visibleRounds - 1 && !settled;
+              return (
+                <motion.span
+                  key={index}
+                  className={styles.replayPip}
+                  initial={false}
+                  animate={{
+                    backgroundColor:
+                      index < visibleRounds
+                        ? paletteFor(roundWinnerCard.archetype).accent
+                        : "rgba(255,255,255,0.12)",
+                    scale: active ? 1.35 : 1,
+                    boxShadow:
+                      index < visibleRounds
+                        ? `0 0 10px 1px color-mix(in srgb, ${paletteFor(roundWinnerCard.archetype).glow} ${active ? 70 : 0}%, transparent)`
+                        : "0 0 0 0 transparent",
+                  }}
+                  transition={{ duration: 0.3 }}
+                />
+              );
+            })}
           </div>
         </div>
 
@@ -253,11 +311,12 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
             card={second}
             score={scoreFor(second.address)}
             total={result.rounds.length}
+            streak={settled ? 0 : streakFor(second.address)}
           />
           {settled && second.address === result.winner && (
             <motion.div
               className={styles.replayVictoryBurst}
-              style={{ "--glow": paletteFor(second.archetype).glow } as React.CSSProperties}
+              style={{ "--glow": secondGlow } as React.CSSProperties}
               initial={{ opacity: 0, scale: 0.6 }}
               animate={{ opacity: [0, 0.9, 0.5], scale: [0.6, 1.3, 1.15] }}
               transition={{ duration: reduced ? 0.15 : 1, ease: "easeOut" }}
@@ -273,6 +332,7 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
           <motion.div
             key={`ability-${visibleRounds}`}
             className={`${styles.replayAbility} display`}
+            style={{ "--ability-color": flashColor } as React.CSSProperties}
             initial={{ x: "-100%", opacity: 0 }}
             animate={{ x: "0%", opacity: 1 }}
             exit={{ x: "100%", opacity: 0 }}
@@ -369,9 +429,9 @@ function RollDelta({ value }: { value: number }) {
   return (
     <motion.span
       className={styles.replayDelta}
-      initial={{ opacity: 0, y: -6 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.35, duration: 0.3 }}
+      initial={{ opacity: 0, y: -10, scale: 0.4 }}
+      animate={{ opacity: 1, y: 0, scale: [1.5, 1] }}
+      transition={{ delay: 0.35, duration: 0.35, ease: [0.34, 1.56, 0.64, 1] }}
       style={{ color: value >= 0 ? "#6ee7a8" : "#ff6579" }}
     >
       {value >= 0 ? `+${value}` : value}
@@ -379,13 +439,38 @@ function RollDelta({ value }: { value: number }) {
   );
 }
 
-function Scoreboard({ card, score, total }: { card: Card; score: number; total: number }) {
+function Scoreboard({
+  card,
+  score,
+  total,
+  streak,
+}: {
+  card: Card;
+  score: number;
+  total: number;
+  streak: number;
+}) {
   return (
     <div className={styles.replayScore}>
+      <span className={styles.replayScoreLevel}>{card.level}</span>
       <span className={styles.replayScoreName}>{card.ensName ?? truncateAddress(card.address)}</span>
       <span className="mono">
         {score}/{total}
       </span>
+      <AnimatePresence>
+        {streak >= 2 && (
+          <motion.span
+            className={styles.replayStreak}
+            style={{ "--glow": paletteFor(card.archetype).glow } as React.CSSProperties}
+            initial={{ opacity: 0, scale: 0.6, y: -4 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.6 }}
+            transition={{ duration: 0.25 }}
+          >
+            {streak}-streak
+          </motion.span>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

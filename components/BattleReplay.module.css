@@ -16,7 +16,10 @@
   isolation: isolate;
 }
 
-/* Ambient arena glow: a slow-breathing backdrop so the stage never sits flat. */
+/* Ambient arena glow: a slow-breathing backdrop so the stage never sits flat.
+   Colored by each fighter's own archetype glow (--left-glow/--right-glow,
+   set inline from the same palette the cards themselves use) rather than a
+   fixed pair of hues, so the arena always reflects who is actually fighting. */
 .replayArena::before {
   content: "";
   position: absolute;
@@ -24,8 +27,10 @@
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(closest-side, rgba(255, 90, 60, 0.16), transparent 70%) 8% 50% / 46% 90% no-repeat,
-    radial-gradient(closest-side, rgba(70, 130, 255, 0.16), transparent 70%) 92% 50% / 46% 90% no-repeat;
+    radial-gradient(closest-side, color-mix(in srgb, var(--left-glow, #ff5a3c) 20%, transparent), transparent 70%)
+      8% 50% / 46% 90% no-repeat,
+    radial-gradient(closest-side, color-mix(in srgb, var(--right-glow, #4682ff) 20%, transparent), transparent 70%)
+      92% 50% / 46% 90% no-repeat;
   filter: blur(20px);
   animation: arenaBreathe 5.5s ease-in-out infinite;
 }
@@ -58,15 +63,43 @@
 .replayScore {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   color: var(--muted);
   font-size: 11px;
 }
 
+.replayScoreLevel {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 50%;
+  background: var(--surface-alt);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+}
+
 .replayScoreName {
-  max-width: 160px;
+  max-width: 130px;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.replayStreak {
+  padding: 2px 8px;
+  border: 1px solid color-mix(in srgb, var(--glow) 55%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--glow) 20%, transparent);
+  color: var(--glow);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
@@ -135,6 +168,8 @@
   top: 42%;
   z-index: 20;
   padding: 12px 0;
+  border-top: 1px solid color-mix(in srgb, var(--ability-color, var(--brand)) 55%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--ability-color, var(--brand)) 55%, transparent);
   background: linear-gradient(
     90deg,
     transparent,
@@ -320,6 +355,16 @@
 
   .replaySide :global(.battle-card) {
     max-width: 100%;
+  }
+
+  .replayScore {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px 8px;
+  }
+
+  .replayScoreName {
+    max-width: 96px;
   }
 
   .replayLog li {
