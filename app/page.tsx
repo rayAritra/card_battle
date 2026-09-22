@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { AddressInput } from "@/components/AddressInput";
 import { RecentCards } from "@/components/RecentCards";
 import { ARCHETYPE_CENTROIDS } from "@/lib/stats/archetypes";
@@ -54,13 +54,8 @@ const fadeUp = {
 };
 
 export default function HomePage() {
-  const heroRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const reducedMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const bgOpacity = useTransform(scrollYProgress, [0, 0.65, 1], [1, 0.35, 0]);
-  const bgScale = useTransform(scrollYProgress, [0, 1], [1, 1.25]);
-  const bgY = useTransform(scrollYProgress, [0, 1], [0, -120]);
 
   // A visitor who asked for less motion gets the first frame, not a paused
   // spinner — the video element still loads, it just never plays.
@@ -77,32 +72,31 @@ export default function HomePage() {
   }, []);
 
   return (
+    <>
+      {/* Rendered as a sibling of <main> — not a descendant of it — so its  */}
+      {/* `position: fixed` is anchored to the viewport, not to some nested */}
+      {/* stacking context. No transform or opacity animation is applied to */}
+      {/* it — it's a plain, static fixed background. Mirrors the           */}
+      {/* `.arenaGrid` background in app/layout.tsx, which uses the same    */}
+      {/* fixed-behind-main pattern. */}
+      <div className={styles.heroBg} aria-hidden="true">
+        <video
+          ref={videoRef}
+          className={styles.heroBgVideo}
+          src="/video/home-hero-bg.mp4"
+          autoPlay={!reducedMotion}
+          muted
+          loop
+          playsInline
+          preload="auto"
+        />
+        <div className={styles.heroBgTint} />
+        <div className={styles.heroBgGrain} />
+      </div>
+
     <main className="relative">
       {/* ── Hero — full viewport height, everything else waits below the fold ── */}
-      <section
-        ref={heroRef}
-        className="relative flex min-h-[100dvh] flex-col items-center justify-center px-6 pb-20 pt-28 text-center"
-      >
-        <motion.div
-          aria-hidden
-          className={styles.heroBg}
-          style={{ opacity: bgOpacity, scale: bgScale, y: bgY }}
-        >
-          <video
-            ref={videoRef}
-            className={styles.heroBgVideo}
-            src="/video/home-hero-bg.mp4"
-            autoPlay={!reducedMotion}
-            muted
-            loop
-            playsInline
-            preload="auto"
-          />
-          <div className={styles.heroBgTint} />
-          <div className={styles.heroBgGrain} />
-          <div className={styles.heroBgFade} />
-        </motion.div>
-
+      <section className="relative flex min-h-[100dvh] flex-col items-center justify-center px-6 pb-20 pt-28 text-center">
         <p className="enter enter-1 mono relative z-10 text-[13px] text-[var(--muted)]">
           Nothing to connect, nothing to sign — just an address
         </p>
@@ -262,5 +256,6 @@ export default function HomePage() {
         </div>
       </section>
     </main>
+    </>
   );
 }

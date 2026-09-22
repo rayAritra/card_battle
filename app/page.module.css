@@ -1,15 +1,16 @@
 /* ── Hero background video ────────────────────────────────────────────────── */
-/* A looping video fills the hero, darkened and desaturated toward the site's */
-/* own palette so it reads as part of the system rather than stock footage, */
-/* with a film-grain layer on top for texture. Scroll-linked opacity/scale is */
-/* applied inline by the hero itself — this file only owns the static layers. */
+/* A looping video fills the screen, darkened and desaturated toward the */
+/* site's own palette so it reads as part of the system rather than stock */
+/* footage, with a film-grain layer on top for texture. Plain `position: */
+/* fixed`, no scroll-linked transform or opacity — it stays put in the */
+/* viewport while every section scrolls over it, the same way `.arenaGrid` */
+/* in app/layout.tsx sits fixed behind `main` everywhere else on the site. */
 
 .heroBg {
-  position: absolute;
-  /* Only overshoots top/bottom (for the blur/scroll-parallax bleed) — full */
-  /* width, never wider than the viewport, or the page gains a horizontal */
-  /* scrollbar. */
-  inset: -10% 0;
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
   z-index: 0;
   overflow: hidden;
   pointer-events: none;
@@ -96,10 +97,4 @@
   .heroBgGrain {
     animation: none !important;
   }
-}
-
-.heroBgFade {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent 45%, var(--bg) 96%);
 }
