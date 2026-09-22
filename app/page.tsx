@@ -113,7 +113,7 @@ export default function HomePage() {
           </p>
 
           <h1
-            className={`${styles.heroTitle} enter enter-2 relative z-10 mt-6 text-[clamp(48px,10vw,108px)] text-[var(--text)]`}
+            className={`${styles.heroTitle} relative z-10 mt-6 text-[clamp(48px,10vw,108px)]`}
           >
             Every wallet
             <br />
