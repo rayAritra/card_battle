@@ -1,0 +1,43 @@
+.statePage {
+  max-width: 620px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.statePageTitle {
+  margin: 14px 0 16px;
+  font-size: clamp(36px, 7vw, 62px);
+}
+
+.statePageCopy {
+  margin: 0 auto 30px;
+  max-width: 480px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* A signal dropout: two quick flickers, thematically tied to "the chain went */
+/* quiet" copy on error/not-found states. Runs once, never loops. */
+@keyframes signalDrop {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  8% {
+    opacity: 0.2;
+  }
+  16% {
+    opacity: 1;
+  }
+  24% {
+    opacity: 0.3;
+  }
+  32% {
+    opacity: 1;
+  }
+}
+
+.statePageTitleGlitch {
+  animation: signalDrop 1.1s ease-in-out both;
+}

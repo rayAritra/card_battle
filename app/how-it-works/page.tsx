@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AlertTriangle, BarChart3, Eye, Layers, ShieldOff, Swords } from "lucide-react";
 import { AddressInput } from "@/components/AddressInput";
+import styles from "./how-it-works.module.css";
 
 export const metadata: Metadata = {
   title: "How it works",
@@ -108,36 +109,36 @@ export default function HowItWorksPage() {
         </p>
       </header>
 
-      <ol className="how-stepper enter enter-4" aria-hidden="true">
+      <ol className={`${styles.howStepper} enter enter-4`} aria-hidden="true">
         {STEPS.map((step, index) => (
-          <li className="how-stepper__step" key={step.title}>
-            <span className="how-stepper__num mono">{index + 1}</span>
-            {index < STEPS.length - 1 && <span className="how-stepper__line" />}
+          <li className={styles.howStepperStep} key={step.title}>
+            <span className={`${styles.howStepperNum} mono`}>{index + 1}</span>
+            {index < STEPS.length - 1 && <span className={styles.howStepperLine} />}
           </li>
         ))}
       </ol>
 
-      <div className="how-grid mt-6">
+      <div className={`${styles.howGrid} mt-6`}>
         {STEPS.map((step, index) => (
           <section
             key={step.title}
-            className="how-card stagger-item"
+            className={`${styles.howCard} stagger-item`}
             style={{ "--i": index } as React.CSSProperties}
           >
-            <div className="how-card__head">
-              <span className="how-card__icon">
+            <div className={styles.howCardHead}>
+              <span className={styles.howCardIcon}>
                 <step.icon className="h-5 w-5" />
               </span>
-              <span className="how-card__num mono">{String(index + 1).padStart(2, "0")}</span>
+              <span className={`${styles.howCardNum} mono`}>{String(index + 1).padStart(2, "0")}</span>
             </div>
 
-            <h2 className="display how-card__title">{step.title}</h2>
-            <p className="how-card__desc">{step.description}</p>
+            <h2 className={`display ${styles.howCardTitle}`}>{step.title}</h2>
+            <p className={styles.howCardDesc}>{step.description}</p>
 
-            <ul className="how-card__list">
+            <ul className={styles.howCardList}>
               {step.points.map((point, pointIndex) => (
                 <li key={pointIndex}>
-                  <span className="how-card__dot" aria-hidden="true" />
+                  <span className={styles.howCardDot} aria-hidden="true" />
                   <span>{point}</span>
                 </li>
               ))}

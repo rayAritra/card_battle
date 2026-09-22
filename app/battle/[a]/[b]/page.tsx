@@ -13,6 +13,8 @@ import { farcasterFrameMeta } from "@/lib/server/frame";
 import { persistBattle } from "@/lib/server/battle";
 import { headToHead } from "@/lib/server/history";
 import { truncateAddress, utcDate } from "@/lib/utils/format";
+import replayStyles from "@/components/BattleReplay.module.css";
+import statePageStyles from "@/components/StatePage.module.css";
 
 export const dynamic = "force-dynamic";
 
@@ -68,9 +70,13 @@ export default async function BattlePage({ params, searchParams }: PageProps) {
 
   if (addrA === addrB) {
     return (
-      <main className="page state-page">
-        <h1 className="state-page__title display enter enter-1">A legend cannot fight itself</h1>
-        <p className="state-page__copy enter enter-2">Choose another wallet worthy of the challenge.</p>
+      <main className={`page ${statePageStyles.statePage}`}>
+        <h1 className={`${statePageStyles.statePageTitle} display enter enter-1`}>
+          A legend cannot fight itself
+        </h1>
+        <p className={`${statePageStyles.statePageCopy} enter enter-2`}>
+          Choose another wallet worthy of the challenge.
+        </p>
         <Link className="button" href={`/card/${addrA}`}>
           Return to the card
         </Link>
@@ -121,7 +127,7 @@ export default async function BattlePage({ params, searchParams }: PageProps) {
         commentary={commentary}
       >
         {priorRecord.total > 0 && (
-          <p className="replay__h2h">
+          <p className={replayStyles.replayH2h}>
             These two have met {priorRecord.total}{" "}
             {priorRecord.total === 1 ? "time" : "times"} before ·{" "}
             <span className="mono">
@@ -131,7 +137,7 @@ export default async function BattlePage({ params, searchParams }: PageProps) {
           </p>
         )}
 
-        <div className="replay__actions">
+        <div className={replayStyles.replayActions}>
           <Link className="button button--ghost" href={`/battle/${addrA}/${addrB}?n=${nonce + 1}`}>
             Run it back
           </Link>
@@ -142,6 +148,7 @@ export default async function BattlePage({ params, searchParams }: PageProps) {
             url={`/battle/${addrA}/${addrB}${nonce ? `?n=${nonce}` : ""}`}
             text={shareText}
             primary={{ href: "/", label: "Forge your card" }}
+            className="mt-0"
           />
         </div>
       </BattleReplay>

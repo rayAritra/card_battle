@@ -1,0 +1,144 @@
+/* ── Arena grid ───────────────────────────────────────────────────────────── */
+/* A faint circuit grid drifting behind every page. Fixed so scrolling never */
+/* reveals a seam, masked so it never competes with foreground content. */
+
+.arenaGrid {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(61, 90, 255, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(61, 90, 255, 0.09) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(120% 90% at 50% 0%, black 0%, transparent 72%);
+  opacity: 0.6;
+  animation: gridDrift 60s linear infinite;
+}
+
+@keyframes gridDrift {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 44px 88px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arenaGrid {
+    animation: none !important;
+  }
+}
+
+/* Its own, higher stacking level — not tied with `main`. A hero's decorative
+ background (e.g. the hero-bg video) can extend above its own section via a
+ negative inset, and `main` sharing z-index:1 with the header would let it
+ win that tie (later in DOM order) and paint straight over the header. */
+.siteHeader {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 20px 28px;
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+  transition: color 160ms ease;
+}
+
+.logo:hover {
+  color: var(--brand);
+}
+
+.siteHeader nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 22px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.siteHeader nav a {
+  position: relative;
+  padding-bottom: 3px;
+  transition: color 160ms ease;
+}
+
+.siteHeader nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--brand);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.siteHeader nav a:hover,
+.siteHeader nav a:focus-visible {
+  color: var(--text);
+}
+
+.siteHeader nav a:hover::after,
+.siteHeader nav a:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.legal {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 48px 28px 40px;
+  color: #5c5c72;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.legalLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.legalLinks a {
+  color: #74748a;
+  transition: color 160ms ease;
+}
+
+.legalLinks a:hover {
+  color: var(--brand);
+}
+
+@media (max-width: 560px) {
+  .siteHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .siteHeader nav {
+    justify-content: flex-start;
+    gap: 14px;
+  }
+}

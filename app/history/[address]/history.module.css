@@ -1,0 +1,85 @@
+/* ── Battle history ───────────────────────────────────────────────────────── */
+
+.record {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin: 20px 0 24px;
+}
+
+.recordWins,
+.recordLosses {
+  font-family: var(--font-display);
+  font-size: 34px;
+  letter-spacing: -0.01em;
+}
+
+.recordWins {
+  color: var(--brand);
+}
+
+.recordLosses {
+  color: #52526a;
+}
+
+.recordRate {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.history {
+  max-width: 640px;
+  margin: 28px auto 0;
+  padding: 0;
+  list-style: none;
+}
+
+.historyRow {
+  display: grid;
+  grid-template-columns: 56px 1fr auto auto auto;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 14px;
+  font-size: 13px;
+}
+
+.historyOpponent {
+  font-family: var(--font-mono);
+  color: var(--text);
+  transition: color 160ms ease;
+}
+
+.historyOpponent:hover {
+  color: var(--brand);
+}
+
+.historyScore,
+.historyDate {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.historyReplay {
+  color: #74748a;
+  font-size: 10px;
+  transition: color 160ms ease;
+}
+
+.historyReplay:hover {
+  color: var(--brand);
+}
+
+@media (max-width: 560px) {
+  .historyRow {
+    grid-template-columns: 56px 1fr auto;
+    row-gap: 6px;
+  }
+
+  .historyDate {
+    grid-column: 2;
+  }
+
+  .historyReplay {
+    grid-column: 3;
+  }
+}

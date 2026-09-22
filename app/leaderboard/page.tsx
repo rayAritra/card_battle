@@ -8,6 +8,7 @@ import { loadLeaderboard } from "@/lib/server/leaderboard";
 import { paletteFor } from "@/lib/art/palettes";
 import { truncateAddress, ordinal } from "@/lib/utils/format";
 import type { LeaderboardEntry } from "@/types";
+import styles from "./board.module.css";
 
 export const dynamic = "force-dynamic";
 
@@ -41,18 +42,19 @@ function Table({
           {entries.map((entry, index) => {
             const palette = paletteFor(entry.archetype);
             const rank = index + 1;
+            const rankStyle = rank === 1 ? styles.boardRow1 : rank === 2 ? styles.boardRow2 : rank === 3 ? styles.boardRow3 : "";
 
             return (
               <li
                 key={entry.address}
-                className={`seam-cell board__row stagger-item${rank <= 3 ? ` board__row--${rank}` : ""}`}
+                className={`seam-cell ${styles.boardRow} stagger-item${rankStyle ? ` ${rankStyle}` : ""}`}
                 style={{ "--i": index } as React.CSSProperties}
               >
-                <span className="board__crown" aria-hidden="true">
+                <span className={styles.boardCrown} aria-hidden="true">
                   {rank <= 3 && <Crown fill="currentColor" strokeWidth={1.5} />}
                 </span>
 
-                <span className="board__rank mono" aria-label={ordinal(rank)}>
+                <span className={`${styles.boardRank} mono`} aria-label={ordinal(rank)}>
                   {String(rank).padStart(2, "0")}
                 </span>
 
@@ -63,7 +65,7 @@ function Table({
                 </Avatar>
 
                 <span className="flex min-w-0 flex-col gap-0.5">
-                  <Link className="board__name truncate" href={`/card/${entry.address}`}>
+                  <Link className={`${styles.boardName} truncate`} href={`/card/${entry.address}`}>
                     {entry.ensName ?? truncateAddress(entry.address)}
                   </Link>
                   <Badge
@@ -74,7 +76,7 @@ function Table({
                   </Badge>
                 </span>
 
-                <span className="board__metric mono">{metric(entry)}</span>
+                <span className={`${styles.boardMetric} mono`}>{metric(entry)}</span>
                 <FightButton opponent={entry.address} />
               </li>
             );
@@ -100,7 +102,7 @@ export default async function LeaderboardPage() {
         </p>
       </header>
 
-      <div className="boards">
+      <div className={styles.boards}>
         <Table
           title="Power rankings"
           caption="The highest-rated cards across all five onchain powers."

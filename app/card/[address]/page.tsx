@@ -16,6 +16,7 @@ import { resolveIdentity } from "@/lib/server/resolve";
 import { walletHistory } from "@/lib/server/history";
 import { truncateAddress } from "@/lib/utils/format";
 import { farcasterFrameMeta } from "@/lib/server/frame";
+import styles from "./card-page.module.css";
 
 export const dynamic = "force-dynamic";
 
@@ -107,7 +108,7 @@ export default async function CardPage({ params }: PageProps) {
   const shareText = `${name} unlocked ${card.archetype} — LVL ${card.level}. Think your wallet can beat it?`;
 
   return (
-    <main className="page card-page">
+    <main className={`page ${styles.cardPage}`}>
       <RevealSequence card={card} />
 
       <RecordVisit
@@ -117,7 +118,7 @@ export default async function CardPage({ params }: PageProps) {
         level={card.level}
       />
 
-      <aside className="card-aside">
+      <aside className={styles.cardAside}>
         <ClaimCard address={card.address} />
 
         <h1 className="display enter enter-1 mt-3 text-[clamp(34px,5vw,50px)] text-[var(--text)]">
@@ -151,7 +152,7 @@ export default async function CardPage({ params }: PageProps) {
 
         {fought > 0 && (
           <Link
-            className="card-aside__record enter enter-4"
+            className="mono enter enter-4 mt-4 inline-block text-xs text-muted-foreground transition-colors duration-150 hover:text-brand"
             href={`/history/${wallet}`}
           >
             Arena record: {record.wins}W {record.losses}L · {fought} {fought === 1 ? "clash" : "clashes"} →

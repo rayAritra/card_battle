@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Baloo_2, Inter, JetBrains_Mono } from "next/font/google";
 import { appOriginUrl } from "@/lib/utils/origin";
 import "./globals.css";
+import styles from "./layout.module.css";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -50,10 +51,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${inter.variable} ${baloo.variable} ${jetbrainsMono.variable}`}
     >
       <body>
-        <div className="arena-grid" aria-hidden="true" />
+        <div className={styles.arenaGrid} aria-hidden="true" />
 
-        <header className="site-header">
-          <Link href="/" className="logo flex items-center gap-2.5">
+        <header className={styles.siteHeader}>
+          <Link href="/" className={`${styles.logo} flex items-center gap-2.5`}>
             <span
               aria-hidden
               className="grid h-8 w-8 shrink-0 place-items-center rounded-2xl border-2 border-[var(--brand)] bg-[var(--brand)] text-[13px] font-black text-white shadow-[0_4px_14px_rgba(61,90,255,0.45)]"
@@ -76,11 +77,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         {children}
 
-        <footer className="legal">
+        <footer className={styles.legal}>
           <span>
             Forged from public onchain history. Built for entertainment, never financial advice.
           </span>
-          <span className="legal__links">
+          <span className={styles.legalLinks}>
             <Link href="/how-it-works">Methodology</Link>
             <Link href="/archetypes">Archetypes</Link>
             <Link href="/abilities">Abilities</Link>

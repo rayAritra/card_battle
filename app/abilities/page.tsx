@@ -4,6 +4,7 @@ import { Circle, Crown, Gem, ShieldCheck, Star } from "lucide-react";
 import { ABILITIES } from "@/lib/stats/abilities";
 import { Badge } from "@/components/ui/badge";
 import type { BattleEffect } from "@/types";
+import styles from "./abilities.module.css";
 
 const RARITY_ICONS: Record<number, React.ComponentType<{ className?: string }>> = {
   5: Crown,
@@ -92,7 +93,15 @@ export default function AbilitiesPage() {
         return (
           <section key={rarity} className="mt-10">
             <div className="mb-3.5 flex items-center gap-2.5">
-              <span className={`tier__pip tier__pip--${rarity}`} aria-hidden="true" />
+              <span
+                className="h-2.5 w-2.5 rounded-full"
+                style={{
+                  backgroundColor: RARITY_COLORS[rarity] ?? "#52526a",
+                  boxShadow:
+                    rarity >= 4 ? `0 0 ${rarity === 5 ? 10 : 8}px ${RARITY_COLORS[rarity]}` : undefined,
+                }}
+                aria-hidden="true"
+              />
               <h2 className="display text-[15px] font-semibold text-[var(--text)]">
                 {RARITY_LABELS[rarity] ?? `Tier ${rarity}`}
               </h2>
@@ -107,10 +116,10 @@ export default function AbilitiesPage() {
                 return (
                   <div
                     key={ability.id}
-                    className="ability-card seam-cell stagger-item p-4"
+                    className={`${styles.abilityCard} seam-cell stagger-item p-4`}
                     style={{ "--accent": color, "--i": index } as React.CSSProperties}
                   >
-                    <span className="ability-card__icon">
+                    <span className={styles.abilityCardIcon}>
                       <Icon className="h-4 w-4" />
                     </span>
                     <h3 className="display text-[13px] font-semibold text-[var(--text)]">

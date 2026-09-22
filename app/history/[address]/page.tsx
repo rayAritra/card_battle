@@ -7,6 +7,8 @@ import { isValidAddress, normalizeAddress, readStoredCard } from "@/lib/server/c
 import { resolveIdentity } from "@/lib/server/resolve";
 import { walletHistory } from "@/lib/server/history";
 import { truncateAddress } from "@/lib/utils/format";
+import styles from "./history.module.css";
+import boardStyles from "@/app/leaderboard/board.module.css";
 
 export const dynamic = "force-dynamic";
 
@@ -57,11 +59,11 @@ export default async function HistoryPage({ params }: PageProps) {
           rematch number, so every old showdown can be replayed exactly as it happened.
         </p>
 
-        <div className="record enter enter-3 justify-center">
-          <span className="record__wins">{record.wins}W</span>
-          <span className="record__losses">{record.losses}L</span>
+        <div className={`${styles.record} enter enter-3 justify-center`}>
+          <span className={styles.recordWins}>{record.wins}W</span>
+          <span className={styles.recordLosses}>{record.losses}L</span>
           {fought > 0 && (
-            <span className="record__rate mono">
+            <span className={`${styles.recordRate} mono`}>
               {Math.round((record.wins / fought) * 100)}%
             </span>
           )}
@@ -73,35 +75,35 @@ export default async function HistoryPage({ params }: PageProps) {
       </header>
 
       {record.entries.length === 0 ? (
-        <p className="board__empty">
+        <p className={boardStyles.boardEmpty}>
           No clashes yet. Send this card into the arena and begin its legend.
         </p>
       ) : (
-        <ol className="seam-grid grid-cols-1 history">
+        <ol className={`seam-grid grid-cols-1 ${styles.history}`}>
           {record.entries.map((entry, index) => (
             <li
               key={`${entry.opponent}-${entry.dateUtc}-${entry.nonce}`}
-              className="seam-cell history__row stagger-item"
+              className={`seam-cell ${styles.historyRow} stagger-item`}
               style={{ "--i": index } as React.CSSProperties}
             >
               <Badge variant={entry.won ? "default" : "secondary"} className="w-fit">
                 {entry.won ? "Won" : "Lost"}
               </Badge>
 
-              <Link className="history__opponent" href={`/card/${entry.opponent}`}>
+              <Link className={styles.historyOpponent} href={`/card/${entry.opponent}`}>
                 {truncateAddress(entry.opponent)}
               </Link>
 
               {entry.roundsPlayed > 0 && (
-                <span className="history__score mono">
+                <span className={`${styles.historyScore} mono`}>
                   {entry.roundsWon}–{entry.roundsPlayed - entry.roundsWon}
                 </span>
               )}
 
-              <span className="history__date mono">{entry.dateUtc}</span>
+              <span className={`${styles.historyDate} mono`}>{entry.dateUtc}</span>
 
               <Link
-                className="history__replay"
+                className={styles.historyReplay}
                 href={`/battle/${wallet}/${entry.opponent}${entry.nonce ? `?n=${entry.nonce}` : ""}`}
               >
                 Replay clash

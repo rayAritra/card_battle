@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { isAddress } from "viem";
+import styles from "./AddressInput.module.css";
 
 interface AddressInputProps {
   /**
@@ -107,12 +108,12 @@ export function AddressInput({
   };
 
   return (
-    <form className="address-form" onSubmit={submit}>
-      <label className="address-form__label" htmlFor={id}>
+    <form className={styles.addressForm} onSubmit={submit}>
+      <label className={styles.addressFormLabel} htmlFor={id}>
         {label}
       </label>
 
-      <div className="address-form__field">
+      <div className={styles.addressFormField}>
         <input
           id={id}
           name="address"
@@ -141,18 +142,22 @@ export function AddressInput({
       </div>
 
       {error && (
-        <p className="form-error" id={`${id}-error`} role="alert">
+        <p
+          className="mt-2.5 ml-0.5 text-xs leading-relaxed text-(--danger)"
+          id={`${id}-error`}
+          role="alert"
+        >
           {error}
         </p>
       )}
 
       {examples.length > 0 && (
-        <div className="examples">
+        <div className={styles.examples}>
           {examples.map((example) => (
             <motion.button
               key={example.address}
               type="button"
-              className="chip"
+              className={styles.chip}
               whileTap={{ scale: 0.97 }}
               transition={{ duration: 0.12 }}
               onClick={() => {

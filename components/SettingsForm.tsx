@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { isAddress } from "viem";
 import { settingsMessage } from "@/lib/server/settings";
+import styles from "./SettingsForm.module.css";
 
 /** The minimal EIP-1193 surface we need. No wallet library required. */
 interface Eip1193Provider {
@@ -109,8 +110,8 @@ export function SettingsForm() {
   };
 
   return (
-    <div className="settings">
-      <label className="settings__row">
+    <div className={styles.settings}>
+      <label className={styles.settingsRow}>
         <input
           type="checkbox"
           checked={hideNetWorth}
@@ -118,13 +119,13 @@ export function SettingsForm() {
         />
         <span>
           <strong>Seal the vault</strong>
-          <span className="settings__hint">
+          <span className={styles.settingsHint}>
             Replace the displayed portfolio estimate with ??? everywhere, including shared images.
           </span>
         </span>
       </label>
 
-      <label className="settings__row">
+      <label className={styles.settingsRow}>
         <input
           type="checkbox"
           checked={noIndex}
@@ -132,7 +133,7 @@ export function SettingsForm() {
         />
         <span>
           <strong>Leave the rankings</strong>
-          <span className="settings__hint">
+          <span className={styles.settingsHint}>
             Vanish from rankings, search and rival discovery. Direct links to your card still work.
           </span>
         </span>
@@ -151,7 +152,11 @@ export function SettingsForm() {
 
       {status.kind !== "idle" && (
         <p
-          className={status.kind === "error" ? "form-error" : "settings__status"}
+          className={
+            status.kind === "error"
+              ? "mt-2.5 ml-0.5 text-xs leading-relaxed text-(--danger)"
+              : styles.settingsStatus
+          }
           role={status.kind === "error" ? "alert" : "status"}
         >
           {status.note}

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 interface ShareBarProps {
   /** Absolute or root-relative URL to share. */
@@ -12,13 +13,15 @@ interface ShareBarProps {
   primary?: { href: string; label: string };
   /** When set, offers the rendered card as a downloadable image. */
   download?: { href: string; filename: string };
+  /** Override the default top margin — e.g. flush when nested in another gap-managed stack. */
+  className?: string;
 }
 
 const press = { scale: 0.97 };
 const pressTransition = { duration: 0.12 };
 
 /** Copy link, save the card, post to X, and the loop's primary CTA. */
-export function ShareBar({ url, text, primary, download }: ShareBarProps) {
+export function ShareBar({ url, text, primary, download, className }: ShareBarProps) {
   const [copied, setCopied] = useState(false);
 
   const absolute =
@@ -39,10 +42,10 @@ export function ShareBar({ url, text, primary, download }: ShareBarProps) {
   };
 
   return (
-    <div className="share-bar">
+    <div className={cn("mt-5.5 grid gap-2.5", className)}>
       {primary && (
         <motion.a
-          className="button button--accent share-bar__primary"
+          className="button button--accent w-full px-5 py-4 text-xs"
           href={primary.href}
           whileTap={press}
           transition={pressTransition}
@@ -51,10 +54,10 @@ export function ShareBar({ url, text, primary, download }: ShareBarProps) {
         </motion.a>
       )}
 
-      <div className="share-bar__secondary">
+      <div className="flex gap-2">
         <motion.button
           type="button"
-          className="button button--ghost"
+          className="button button--ghost flex-1"
           onClick={copy}
           whileTap={press}
           transition={pressTransition}
@@ -64,7 +67,7 @@ export function ShareBar({ url, text, primary, download }: ShareBarProps) {
 
         {download && (
           <motion.a
-            className="button button--ghost"
+            className="button button--ghost flex-1"
             href={download.href}
             download={download.filename}
             whileTap={press}
@@ -75,7 +78,7 @@ export function ShareBar({ url, text, primary, download }: ShareBarProps) {
         )}
 
         <motion.a
-          className="button button--ghost"
+          className="button button--ghost flex-1"
           href={intent}
           target="_blank"
           rel="noreferrer"

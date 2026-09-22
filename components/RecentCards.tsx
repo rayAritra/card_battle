@@ -7,6 +7,7 @@ import { truncateAddress } from "@/lib/utils/format";
 import { paletteFor } from "@/lib/art/palettes";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import styles from "./RecentCards.module.css";
 
 const initials = (card: RecentCard): string =>
   (card.name ?? card.address.slice(2)).slice(0, 2).toUpperCase();
@@ -28,12 +29,12 @@ export function RecentCards() {
   if (recents.length === 0) return null;
 
   return (
-    <section className="recents">
-      <div className="recents__head">
-        <h2 className="recents__title">Recently revealed</h2>
+    <section className={styles.recents}>
+      <div className={styles.recentsHead}>
+        <h2 className={styles.recentsTitle}>Recently revealed</h2>
         <button
           type="button"
-          className="recents__clear"
+          className={styles.recentsClear}
           onClick={() => {
             clearRecents();
             setRecents([]);
@@ -43,13 +44,13 @@ export function RecentCards() {
         </button>
       </div>
 
-      <ul className="seam-grid grid-cols-1 recents__list sm:grid-cols-2">
+      <ul className={`seam-grid grid-cols-1 ${styles.recentsList} sm:grid-cols-2`}>
         {recents.map((card) => {
           const palette = paletteFor(card.archetype);
 
           return (
             <li key={card.address}>
-              <Link className="seam-cell recents__row" href={`/card/${card.address}`}>
+              <Link className={`seam-cell ${styles.recentsRow}`} href={`/card/${card.address}`}>
                 <Avatar className="h-9 w-9" style={{ borderColor: palette.accent }}>
                   <AvatarFallback style={{ color: palette.accent }}>
                     {initials(card)}
@@ -57,7 +58,7 @@ export function RecentCards() {
                 </Avatar>
 
                 <span className="flex min-w-0 flex-col gap-0.5">
-                  <span className="recents__name truncate">
+                  <span className={`${styles.recentsName} truncate`}>
                     {card.name ?? truncateAddress(card.address)}
                   </span>
                   <Badge

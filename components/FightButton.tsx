@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { readSelf } from "@/lib/utils/recents";
+import styles from "@/app/leaderboard/board.module.css";
 
 interface FightButtonProps {
   /** The wallet being challenged. */
@@ -29,7 +30,7 @@ export function FightButton({ opponent }: FightButtonProps) {
     : `/card/${opponent.toLowerCase()}`;
 
   return (
-    <Link className="board__fight" href={target}>
+    <Link className={styles.boardFight} href={target}>
       Challenge
     </Link>
   );

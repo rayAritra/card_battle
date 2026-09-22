@@ -1,0 +1,56 @@
+/* ── Recently viewed ──────────────────────────────────────────────────────── */
+
+.recents {
+  max-width: 620px;
+  margin: 40px auto 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  text-align: left;
+}
+
+.recentsHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.recentsTitle {
+  margin: 0;
+  color: #74748a;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.recentsClear {
+  border: 0;
+  background: transparent;
+  color: #52526a;
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+  transition: color 160ms ease;
+}
+
+.recentsClear:hover {
+  color: var(--muted);
+}
+
+.recentsList {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.recentsRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+}
+
+.recentsName {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text);
+}

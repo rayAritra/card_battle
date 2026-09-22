@@ -1,0 +1,150 @@
+/* ── Compendium: archetypes ───────────────────────────────────────────────── */
+/* Each archetype is its own card, not a cell sharing hairlines with its */
+/* neighbors — sixteen distinct collectibles read better as separate objects. */
+
+.archetypeGrid {
+  display: grid;
+  gap: 16px;
+}
+
+.archetypeCard {
+  border: 2px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  transition:
+    background 160ms ease,
+    border-color 160ms ease;
+}
+
+.archetypeCard:hover,
+.archetypeCard:focus-within {
+  background: var(--surface-alt);
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+}
+
+.archetypeCardHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.archetypeCardDot {
+  width: 11px;
+  height: 11px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+.archetypeCardHighlights {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.archetypeCardHighlight {
+  padding: 10px 12px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-inner);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.archetypeCardHighlightLabel {
+  display: block;
+  color: #797990;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.archetypeCardHighlightValue {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+
+.archetypeCardBreakdownTitle {
+  margin: 0 0 2px;
+  color: #797990;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.archetypeCardBubbles {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 14px;
+  height: 92px;
+  padding: 10px 6px 0;
+  border-radius: var(--radius-inner);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.archetypeCardBubble {
+  width: 40px;
+  height: var(--height);
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: var(--bubble-color);
+  opacity: 0;
+  animation: bubbleRise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 45ms + var(--bi, 0) * 90ms + 260ms);
+}
+
+@keyframes bubbleRise {
+  from {
+    opacity: 0;
+    transform: translateY(26px) scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .archetypeCardBubble {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+.archetypeCardBreakdown {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 8px 10px;
+}
+
+.archetypeCardBreakdownItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.archetypeCardBreakdownDot {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: var(--bubble-color);
+}
+
+.archetypeCardBreakdownItem dt {
+  font-size: 9px;
+  text-transform: capitalize;
+  color: #a0a0b0;
+}
+
+.archetypeCardBreakdownItem dd {
+  margin: 0 0 0 auto;
+  font-size: 9px;
+  color: #797990;
+}

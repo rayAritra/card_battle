@@ -1,0 +1,83 @@
+.addressForm {
+  max-width: 620px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.addressFormLabel {
+  display: block;
+  color: #9c9cb2;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.addressFormField {
+  display: flex;
+  gap: 6px;
+  margin-top: 9px;
+  padding: 5px;
+  border: 2px solid var(--line-strong);
+  border-radius: var(--radius-inner);
+  background: var(--surface);
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.addressFormField:focus-within {
+  border-color: var(--brand);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--brand) 25%, transparent);
+}
+
+.addressFormField input {
+  flex: 1;
+  min-width: 0;
+  padding: 13px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  outline: none;
+}
+
+.addressFormField input::placeholder {
+  color: #55556c;
+}
+
+.examples {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.chip {
+  padding: 8px 13px;
+  border: 1.5px solid var(--line);
+  border-radius: 99px;
+  background: transparent;
+  color: #93939f;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.chip:hover {
+  border-color: var(--brand);
+  color: var(--text);
+}
+
+@media (max-width: 420px) {
+  .addressFormField {
+    flex-direction: column;
+  }
+
+  .addressFormField .button {
+    width: 100%;
+  }
+}

@@ -1,0 +1,46 @@
+.settings {
+  display: grid;
+  gap: 18px;
+  max-width: 520px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.settingsRow {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 16px;
+  border: 2px solid var(--line);
+  border-radius: var(--radius-inner);
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+}
+
+.settingsRow input {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: var(--brand);
+}
+
+.settingsRow strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.settingsHint {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.settingsStatus {
+  margin: 0;
+  color: #63e6a3;
+  font-size: 12px;
+}

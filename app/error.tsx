@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
+import styles from "@/components/StatePage.module.css";
 
 /** Top-level error boundary. Themed, never a raw stack trace. */
 export default function GlobalError({
@@ -23,9 +24,11 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <main className="page state-page">
-      <h1 className="state-page__title display state-page__title--glitch">The chain went silent</h1>
-      <p className="state-page__copy enter enter-2">
+    <main className={`page ${styles.statePage}`}>
+      <h1 className={`${styles.statePageTitle} display ${styles.statePageTitleGlitch}`}>
+        The chain went silent
+      </h1>
+      <p className={`${styles.statePageCopy} enter enter-2`}>
         We could not complete the reveal. Your existing cards and battles are safe.
       </p>
       <div className="enter enter-3" style={{ display: "flex", gap: 10, justifyContent: "center" }}>

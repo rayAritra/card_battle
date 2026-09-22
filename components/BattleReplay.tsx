@@ -6,6 +6,7 @@ import type { BattleResult, Card, RoundLog } from "@/types";
 import { paletteFor } from "@/lib/art/palettes";
 import { truncateAddress } from "@/lib/utils/format";
 import { BattleCard } from "./BattleCard";
+import styles from "./BattleReplay.module.css";
 
 interface BattleReplayProps {
   cardA: Card;
@@ -120,12 +121,12 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
   };
 
   return (
-    <div className="replay">
-      <div className="replay__arena" ref={arenaScope}>
-        <div className="replay__flash" ref={flashScope} style={{ opacity: 0 }} aria-hidden />
+    <div className={styles.replay}>
+      <div className={styles.replayArena} ref={arenaScope}>
+        <div className={styles.replayFlash} ref={flashScope} style={{ opacity: 0 }} aria-hidden />
 
         <motion.div
-          className="replay__side"
+          className={styles.replaySide}
           initial={reduced ? false : { x: -80, opacity: 0, rotateY: 0 }}
           animate={{ x: 0, rotateY: 6, ...cardState(first) }}
           transition={{ duration: reduced ? 0.12 : 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -138,7 +139,7 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
           />
           {settled && first.address === result.winner && (
             <motion.div
-              className="replay__victory-burst"
+              className={styles.replayVictoryBurst}
               style={{ "--glow": paletteFor(first.archetype).glow } as React.CSSProperties}
               initial={{ opacity: 0, scale: 0.6 }}
               animate={{ opacity: [0, 0.9, 0.5], scale: [0.6, 1.3, 1.15] }}
@@ -148,19 +149,19 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
           )}
         </motion.div>
 
-        <div className="replay__center">
+        <div className={styles.replayCenter}>
           <AnimatePresence mode="wait">
             {phase === "entrance" && (
               <motion.div
                 key="vs"
-                className="replay__intro"
+                className={styles.replayIntro}
                 initial={{ opacity: 0, scale: 0.85 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 1.1 }}
                 transition={{ duration: 0.3 }}
               >
-                <span className="replay__intro-mark display">VS</span>
-                <span className="replay__intro-names">
+                <span className={`${styles.replayIntroMark} display`}>VS</span>
+                <span className={styles.replayIntroNames}>
                   <span className="mono">{first.ensName ?? truncateAddress(first.address)}</span>
                   <span>×</span>
                   <span className="mono">{second.ensName ?? truncateAddress(second.address)}</span>
@@ -171,7 +172,7 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
             {current && !settled && (
               <motion.div
                 key={`${visibleRounds}-${current.category}`}
-                className="replay__category display"
+                className={`${styles.replayCategory} display`}
                 initial={{ scale: 1.3, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -185,14 +186,14 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
           {current && !settled && (
             <motion.div
               key={`rolls-${visibleRounds}`}
-              className="replay__rolls mono"
+              className={`${styles.replayRolls} mono`}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.25, duration: 0.35 }}
             >
               <span>{current.statA}</span>
               <RollDelta value={current.rollA - current.statA} />
-              <span className="replay__vs">vs</span>
+              <span className={styles.replayVs}>vs</span>
               <RollDelta value={current.rollB - current.statB} />
               <span>{current.statB}</span>
             </motion.div>
@@ -200,23 +201,23 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
 
           {settled && (
             <motion.div
-              className="replay__verdict display"
+              className={`${styles.replayVerdict} display`}
               initial={reduced ? false : { scale: 1.25, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: reduced ? 0.12 : 0.2, ease: [0.22, 1, 0.36, 1] }}
             >
               Arena victory
-              <span className="replay__verdict-name">
+              <span className={styles.replayVerdictName}>
                 {(result.winner === cardA.address ? cardA : cardB).archetype}
               </span>
             </motion.div>
           )}
 
-          <div className="replay__pips" aria-label="rounds won">
+          <div className={styles.replayPips} aria-label="rounds won">
             {result.rounds.map((round, index) => (
               <motion.span
                 key={index}
-                className="replay__pip"
+                className={styles.replayPip}
                 initial={false}
                 animate={{
                   backgroundColor:
@@ -234,7 +235,7 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
         </div>
 
         <motion.div
-          className="replay__side"
+          className={styles.replaySide}
           initial={reduced ? false : { x: 80, opacity: 0, rotateY: 0 }}
           animate={{ x: 0, rotateY: -6, ...cardState(second) }}
           transition={{ duration: reduced ? 0.12 : 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -247,7 +248,7 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
           />
           {settled && second.address === result.winner && (
             <motion.div
-              className="replay__victory-burst"
+              className={styles.replayVictoryBurst}
               style={{ "--glow": paletteFor(second.archetype).glow } as React.CSSProperties}
               initial={{ opacity: 0, scale: 0.6 }}
               animate={{ opacity: [0, 0.9, 0.5], scale: [0.6, 1.3, 1.15] }}
@@ -263,7 +264,7 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
         {current && current.abilitiesTriggered.length > 0 && !settled && (
           <motion.div
             key={`ability-${visibleRounds}`}
-            className="replay__ability display"
+            className={`${styles.replayAbility} display`}
             initial={{ x: "-100%", opacity: 0 }}
             animate={{ x: "0%", opacity: 1 }}
             exit={{ x: "100%", opacity: 0 }}
@@ -275,27 +276,27 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
       </AnimatePresence>
 
       <motion.div
-        className="replay__after"
+        className={styles.replayAfter}
         initial={reduced ? false : { opacity: 0, y: 8 }}
         animate={{ opacity: settled ? 1 : 0, y: settled ? 0 : 8 }}
         transition={{ duration: 0.4, delay: settled ? 0.2 : 0 }}
         aria-hidden={!settled}
       >
-        <p className="replay__commentary">{commentary}</p>
+        <p className={styles.replayCommentary}>{commentary}</p>
         {children}
       </motion.div>
 
-      <ol className="replay__log">
+      <ol className={styles.replayLog}>
         {result.rounds.slice(0, visibleRounds).map((round, index) => {
           const winnerCard = round.winner === cardA.address ? cardA : cardB;
           return (
             <li key={index}>
-              <span className="replay__log-round mono">R{index + 1}</span>
-              <span className="replay__log-category">{BATTLE_CATEGORY_NAMES[round.category]}</span>
+              <span className={`${styles.replayLogRound} mono`}>R{index + 1}</span>
+              <span className={styles.replayLogCategory}>{BATTLE_CATEGORY_NAMES[round.category]}</span>
               <span className="mono">
                 {round.rollA} — {round.rollB}
               </span>
-              <span className="replay__log-winner">
+              <span className={styles.replayLogWinner}>
                 {winnerCard.ensName ?? truncateAddress(winnerCard.address)}
               </span>
             </li>
@@ -309,7 +310,7 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
 function RollDelta({ value }: { value: number }) {
   return (
     <motion.span
-      className="replay__delta"
+      className={styles.replayDelta}
       initial={{ opacity: 0, y: -6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.35, duration: 0.3 }}
@@ -322,8 +323,8 @@ function RollDelta({ value }: { value: number }) {
 
 function Scoreboard({ card, score, total }: { card: Card; score: number; total: number }) {
   return (
-    <div className="replay__score">
-      <span className="replay__score-name">{card.ensName ?? truncateAddress(card.address)}</span>
+    <div className={styles.replayScore}>
+      <span className={styles.replayScoreName}>{card.ensName ?? truncateAddress(card.address)}</span>
       <span className="mono">
         {score}/{total}
       </span>

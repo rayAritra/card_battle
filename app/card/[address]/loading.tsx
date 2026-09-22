@@ -1,4 +1,5 @@
 import { CardSkeleton } from "@/components/CardSkeleton";
+import styles from "./card-page.module.css";
 
 /**
  * The loading state is the face-down card, not a spinner (§9). The address is
@@ -7,7 +8,7 @@ import { CardSkeleton } from "@/components/CardSkeleton";
  */
 export default function CardLoading() {
   return (
-    <main className="page card-page">
+    <main className={`page ${styles.cardPage}`}>
       <CardSkeleton address="0x0000000000000000000000000000000000000000" />
     </main>
   );

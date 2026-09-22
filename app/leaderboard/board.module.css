@@ -1,0 +1,98 @@
+/* ── Leaderboard ──────────────────────────────────────────────────────────── */
+/* Shared by the leaderboard page itself, FightButton (the `board__fight` pill */
+/* used in every row) and the history page's empty-state message. */
+
+.boards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 48px;
+}
+
+.boardEmpty {
+  padding: 22px 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.boardRow {
+  display: grid;
+  grid-template-columns: 34px 22px auto 1fr auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  font-size: 13px;
+}
+
+.boardRank {
+  color: #52526a;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.boardRow1 .boardRank {
+  color: #ffd15c;
+}
+
+.boardRow2 .boardRank {
+  color: #cfd4e6;
+}
+
+.boardRow3 .boardRank {
+  color: #e0a468;
+}
+
+.boardCrown {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+}
+
+.boardCrown svg {
+  width: 16px;
+  height: 16px;
+}
+
+.boardRow1 .boardCrown svg {
+  color: #ffd15c;
+  filter: drop-shadow(0 0 6px rgba(255, 209, 92, 0.5));
+}
+
+.boardRow2 .boardCrown svg {
+  color: #cfd4e6;
+}
+
+.boardRow3 .boardCrown svg {
+  color: #e0a468;
+}
+
+.boardName {
+  font-size: 14.5px;
+  font-weight: 700;
+}
+
+.boardName:hover {
+  color: var(--brand);
+}
+
+.boardMetric {
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.boardFight {
+  padding: 5px 11px;
+  border: 1.5px solid var(--line);
+  border-radius: 99px;
+  color: #93939f;
+  font-size: 10px;
+  transition:
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.boardFight:hover {
+  border-color: var(--brand);
+  color: var(--text);
+}

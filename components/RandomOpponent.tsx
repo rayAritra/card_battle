@@ -57,10 +57,10 @@ export function RandomOpponent({ address, level, label = "Find a worthy rival" }
   };
 
   return (
-    <div className="random-opponent">
+    <div className="mt-3.5 grid gap-2">
       <motion.button
         type="button"
-        className="button button--ghost"
+        className="button button--ghost w-full"
         onClick={draw}
         disabled={pending}
         whileTap={{ scale: 0.97 }}
@@ -70,7 +70,7 @@ export function RandomOpponent({ address, level, label = "Find a worthy rival" }
       </motion.button>
 
       {error && (
-        <p className="form-error" role="alert">
+        <p className="mt-2.5 ml-0.5 text-xs leading-relaxed text-(--danger)" role="alert">
           {error}
         </p>
       )}

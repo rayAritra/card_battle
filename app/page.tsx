@@ -10,6 +10,7 @@ import { paletteFor } from "@/lib/art/palettes";
 import { taglineFor } from "@/lib/flavor/templates";
 import { Badge } from "@/components/ui/badge";
 import { STAT_KEYS } from "@/types";
+import styles from "./page.module.css";
 
 /** The stat with the highest weight in an archetype's centroid — its "lead". */
 function leadStat(centroid: readonly number[]): string {
@@ -84,12 +85,12 @@ export default function HomePage() {
       >
         <motion.div
           aria-hidden
-          className="hero-bg"
+          className={styles.heroBg}
           style={{ opacity: bgOpacity, scale: bgScale, y: bgY }}
         >
           <video
             ref={videoRef}
-            className="hero-bg__video"
+            className={styles.heroBgVideo}
             src="/video/home-hero-bg.mp4"
             autoPlay={!reducedMotion}
             muted
@@ -97,9 +98,9 @@ export default function HomePage() {
             playsInline
             preload="auto"
           />
-          <div className="hero-bg__tint" />
-          <div className="hero-bg__grain" />
-          <div className="hero-bg__fade" />
+          <div className={styles.heroBgTint} />
+          <div className={styles.heroBgGrain} />
+          <div className={styles.heroBgFade} />
         </motion.div>
 
         <p className="enter enter-1 mono relative z-10 text-[13px] text-[var(--muted)]">

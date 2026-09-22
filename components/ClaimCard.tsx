@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { clearSelf, readSelf, writeSelf } from "@/lib/utils/recents";
+import { cn } from "@/lib/utils";
 
 interface ClaimCardProps {
   address: string;
@@ -33,7 +34,10 @@ export function ClaimCard({ address }: ClaimCardProps) {
   return (
     <motion.button
       type="button"
-      className={claimed ? "claim claim--on" : "claim"}
+      className={cn(
+        "mono mb-4.5 cursor-pointer self-start rounded-full border-[1.5px] border-(--line) bg-transparent px-3 py-1.5 text-[11px] text-[#93939f] transition-colors duration-150 hover:border-brand hover:text-foreground",
+        claimed && "border-brand bg-(--accent-soft) text-foreground",
+      )}
       whileTap={{ scale: 0.97 }}
       transition={{ duration: 0.12 }}
       aria-pressed={claimed}
