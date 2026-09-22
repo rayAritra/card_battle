@@ -164,17 +164,22 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
 
   return (
     <div className={styles.replay}>
-      <div
-        className={styles.replayArena}
-        ref={arenaScope}
-        style={{ "--left-glow": firstGlow, "--right-glow": secondGlow } as React.CSSProperties}
-      >
+      {/* The stage centers the arena vertically within roughly the opening */}
+      {/* viewport, independent of however tall the commentary/log below turn */}
+      {/* out to be — a min-height flex box, not a share of the page's total */}
+      {/* content height, so a long round log never flattens the centering. */}
+      <div className={styles.replayStage}>
         <div
-          className={styles.replayFlash}
-          ref={flashScope}
-          style={{ opacity: 0, background: flashColor }}
-          aria-hidden
-        />
+          className={styles.replayArena}
+          ref={arenaScope}
+          style={{ "--left-glow": firstGlow, "--right-glow": secondGlow } as React.CSSProperties}
+        >
+          <div
+            className={styles.replayFlash}
+            ref={flashScope}
+            style={{ opacity: 0, background: flashColor }}
+            aria-hidden
+          />
 
         {!reduced && (
           <AnimatePresence>
@@ -324,24 +329,27 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
             />
           )}
         </motion.div>
-      </div>
 
-      {/* An ability banner sweeps across whenever one fires. */}
-      <AnimatePresence>
-        {current && current.abilitiesTriggered.length > 0 && !settled && (
-          <motion.div
-            key={`ability-${visibleRounds}`}
-            className={`${styles.replayAbility} display`}
-            style={{ "--ability-color": flashColor } as React.CSSProperties}
-            initial={{ x: "-100%", opacity: 0 }}
-            animate={{ x: "0%", opacity: 1 }}
-            exit={{ x: "100%", opacity: 0 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          >
-              Ability activated · {current.abilitiesTriggered.join(" · ")}
-          </motion.div>
-        )}
-      </AnimatePresence>
+          {/* An ability banner sweeps across whenever one fires — nested inside
+              the arena (not a sibling of the stage) so its position tracks the
+              arena's own box, however the stage sizes it. */}
+          <AnimatePresence>
+            {current && current.abilitiesTriggered.length > 0 && !settled && (
+              <motion.div
+                key={`ability-${visibleRounds}`}
+                className={`${styles.replayAbility} display`}
+                style={{ "--ability-color": flashColor } as React.CSSProperties}
+                initial={{ x: "-100%", opacity: 0 }}
+                animate={{ x: "0%", opacity: 1 }}
+                exit={{ x: "100%", opacity: 0 }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              >
+                  Ability activated · {current.abilitiesTriggered.join(" · ")}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
 
       <motion.div
         className={styles.replayAfter}

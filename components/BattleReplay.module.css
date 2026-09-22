@@ -4,10 +4,23 @@
   position: relative;
   max-width: 1040px;
   margin: 0 auto;
+  margin-top: 4%;
+}
+
+/* Centers the arena vertically within roughly the opening viewport — a
+   min-height flex box the arena sits in the middle of, not a share of the
+   page's total content height. Whatever commentary/log follows below still
+   flows normally underneath, however tall it ends up being. */
+.replayStage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: min(620px, calc(100dvh - 260px));
 }
 
 .replayArena {
   position: relative;
+  width: 100%;
   display: grid;
   grid-template-columns: 1fr minmax(160px, 260px) 1fr;
   gap: 28px;
@@ -27,17 +40,32 @@
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(closest-side, color-mix(in srgb, var(--left-glow, #ff5a3c) 20%, transparent), transparent 70%)
+    radial-gradient(
+        closest-side,
+        color-mix(in srgb, var(--left-glow, #ff5a3c) 20%, transparent),
+        transparent 70%
+      )
       8% 50% / 46% 90% no-repeat,
-    radial-gradient(closest-side, color-mix(in srgb, var(--right-glow, #4682ff) 20%, transparent), transparent 70%)
+    radial-gradient(
+        closest-side,
+        color-mix(in srgb, var(--right-glow, #4682ff) 20%, transparent),
+        transparent 70%
+      )
       92% 50% / 46% 90% no-repeat;
   filter: blur(20px);
   animation: arenaBreathe 5.5s ease-in-out infinite;
 }
 
 @keyframes arenaBreathe {
-  0%, 100% { opacity: 0.6; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.05); }
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
 }
 
 .replaySide {
@@ -165,11 +193,17 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: 42%;
+  /* Relative to the arena itself (its nearest positioned ancestor, now that
+     it's nested inside .replayArena rather than the outer .replay column) —
+     stays pinned over the lower third of the cards regardless of how tall
+     the commentary/log below the arena end up being. */
+  top: 78%;
   z-index: 20;
   padding: 12px 0;
-  border-top: 1px solid color-mix(in srgb, var(--ability-color, var(--brand)) 55%, transparent);
-  border-bottom: 1px solid color-mix(in srgb, var(--ability-color, var(--brand)) 55%, transparent);
+  border-top: 1px solid
+    color-mix(in srgb, var(--ability-color, var(--brand)) 55%, transparent);
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--ability-color, var(--brand)) 55%, transparent);
   background: linear-gradient(
     90deg,
     transparent,
