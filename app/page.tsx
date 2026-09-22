@@ -7,10 +7,10 @@ import { paletteFor } from "@/lib/art/palettes";
 import { taglineFor } from "@/lib/flavor/templates";
 import { ARCHETYPE_CENTROIDS } from "@/lib/stats/archetypes";
 import { STAT_KEYS } from "@/types";
-import { motion, useReducedMotion, type PanInfo } from "framer-motion";
+import { motion, type PanInfo } from "framer-motion";
 import { Hammer, ScanLine, Swords } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import styles from "./page.module.css";
 
 /** The stat with the highest weight in an archetype's centroid — its "lead". */
@@ -73,9 +73,6 @@ const fadeUp = {
 };
 
 export default function HomePage() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const reducedMotion = useReducedMotion();
-
   // Touch has no hover, so a swipe across the fan needs its own notion of
   // "revealed" card — driven by drag distance rather than raw pointer
   // position, so crossing the hidden middle card during a fast swipe still
@@ -106,46 +103,27 @@ export default function HomePage() {
     });
   }
 
-  // A visitor who asked for less motion gets the first frame, not a paused
-  // spinner — the video element still loads, it just never plays.
-  useEffect(() => {
-    if (reducedMotion) videoRef.current?.pause();
-  }, [reducedMotion]);
-
-  // Slower than native — the footage reads as ambient texture, not footage
-  // someone is meant to actually watch.
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.playbackRate = 0.35;
-  }, []);
-
   return (
     <>
-      {/* Rendered as a sibling of <main> — not a descendant of it — so its  */}
-      {/* `position: fixed` is anchored to the viewport, not to some nested */}
-      {/* stacking context. No transform or opacity animation is applied to */}
-      {/* it — it's a plain, static fixed background. Mirrors the           */}
-      {/* `.arenaGrid` background in app/layout.tsx, which uses the same    */}
-      {/* fixed-behind-main pattern. */}
-      <div className={styles.heroBg} aria-hidden="true">
-        <video
-          ref={videoRef}
-          className={styles.heroBgVideo}
-          src="/video/home-hero-bg.mp4"
-          autoPlay={!reducedMotion}
-          muted
-          loop
-          playsInline
-          preload="auto"
-        />
-        <div className={styles.heroBgTint} />
-        <div className={styles.heroBgGrain} />
-      </div>
-
       <main className="relative">
         {/* ── Hero — full viewport height, everything else waits below the fold ── */}
         <section className="relative flex min-h-[100dvh] flex-col items-center justify-center px-6 pb-20 pt-28 text-center">
+          {/* A radar-style scan target behind the headline — rings, a slow */}
+          {/* rotating sweep and viewfinder corners, echoing the "Scan" step */}
+          {/* below and the hero's own "just an address" copy, rather than a */}
+          {/* generic glow. */}
+          <div className={styles.heroScan} aria-hidden="true">
+            <span className={styles.heroScanRing} data-ring="inner" />
+            <span className={styles.heroScanRing} data-ring="outer" />
+            <span className={styles.heroScanSweep} />
+            <span className={styles.heroScanCorners}>
+              <span className={styles.heroScanBracket} data-corner="tl" />
+              <span className={styles.heroScanBracket} data-corner="tr" />
+              <span className={styles.heroScanBracket} data-corner="bl" />
+              <span className={styles.heroScanBracket} data-corner="br" />
+            </span>
+          </div>
+
           <p className="enter enter-1 mono relative z-10 text-[13px] text-[var(--muted)]">
             Nothing to connect, nothing to sign — just an address
           </p>
@@ -206,7 +184,7 @@ export default function HomePage() {
             whileInView="show"
             viewport={{ once: true, margin: "-60px" }}
             variants={fadeUp}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={0}
@@ -263,7 +241,7 @@ export default function HomePage() {
             whileInView="show"
             viewport={{ once: true, margin: "-80px" }}
             variants={fadeUp}
-            transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           >
             From address to arena
           </motion.h2>

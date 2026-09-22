@@ -11,103 +11,106 @@
   line-height: 0.96;
 }
 
-/* ── Hero background video ────────────────────────────────────────────────── */
-/* A looping video fills the screen, darkened and desaturated toward the */
-/* site's own palette so it reads as part of the system rather than stock */
-/* footage, with a film-grain layer on top for texture. Plain `position: */
-/* fixed`, no scroll-linked transform or opacity — it stays put in the */
-/* viewport while every section scrolls over it, the same way `.arenaGrid` */
-/* in app/layout.tsx sits fixed behind `main` everywhere else on the site. */
+/* ── Hero scan target ─────────────────────────────────────────────────────── */
+/* A radar-style scan target behind the headline, in place of a glow — two */
+/* rings, a slow rotating sweep and four viewfinder corners, echoing the */
+/* ScanLine icon on the "Scan" step below and the hero's own "just an */
+/* address" copy: this is the moment a wallet gets read, so the backdrop */
+/* looks like a scan in progress rather than an ambient light. Sits above the */
+/* fixed site video (z-index 0, set in SiteBackground.module.css) but below */
+/* the hero copy (the "relative z-10" elements alongside it). */
 
-.heroBg {
-  position: fixed;
+.heroScan {
+  --scan-size: clamp(360px, 46vw, 620px);
+  position: absolute;
   inset: 0;
-  width: 100vw;
-  height: 100dvh;
-  z-index: 0;
-  overflow: hidden;
+  z-index: 1;
   pointer-events: none;
-  background: #050505;
 }
 
-.heroBgVideo {
+.heroScanRing {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  /* Slight desaturation + darkening so the footage sits behind the type at */
-  /* the same contrast the flat-color hero always assumed, plus a cobalt tint */
-  /* so it reads as this site's hero, not generic b-roll. Blurred well past */
-  /* "soft" — it's meant to read as a moving texture, not footage. */
-  filter: saturate(0.75) brightness(0.55) contrast(1.05) blur(6px);
-  transform: scale(1.08);
+  top: 50%;
+  left: 50%;
+  width: var(--scan-size);
+  height: var(--scan-size);
+  translate: -50% -50%;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--brand) 22%, transparent);
 }
 
-.heroBgTint {
+.heroScanRing[data-ring="outer"] {
+  width: calc(var(--scan-size) * 1.36);
+  height: calc(var(--scan-size) * 1.36);
+  border-color: color-mix(in srgb, var(--brand) 11%, transparent);
+}
+
+.heroScanSweep {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--brand) 22%, transparent) 0%,
-    transparent 45%
+  top: 50%;
+  left: 50%;
+  width: var(--scan-size);
+  height: var(--scan-size);
+  translate: -50% -50%;
+  border-radius: 999px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    color-mix(in srgb, var(--brand) 34%, transparent) 22deg,
+    transparent 52deg
   );
-  mix-blend-mode: color;
-  opacity: 0.6;
+  mix-blend-mode: screen;
+  animation: heroScanRotate 14s linear infinite;
 }
 
-/* Classic film-grain trick: a tiled feTurbulence noise tile, blended in and */
-/* stepped through a handful of offsets fast enough to read as a flicker */
-/* rather than a crawl. */
-.heroBgGrain {
+@keyframes heroScanRotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.heroScanCorners {
   position: absolute;
-  inset: -20%;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 95px 95px;
-  opacity: 0.6;
-  filter: blur(1px);
-  mix-blend-mode: overlay;
-  animation: grainShift 2s steps(8) infinite;
+  top: 50%;
+  left: 50%;
+  width: var(--scan-size);
+  height: var(--scan-size);
+  translate: -50% -50%;
 }
 
-@keyframes grainShift {
-  0% {
-    transform: translate(0, 0);
-  }
-  10% {
-    transform: translate(-4%, -6%);
-  }
-  20% {
-    transform: translate(-8%, 3%);
-  }
-  30% {
-    transform: translate(4%, -9%);
-  }
-  40% {
-    transform: translate(-3%, 6%);
-  }
-  50% {
-    transform: translate(9%, 2%);
-  }
-  60% {
-    transform: translate(-6%, -3%);
-  }
-  70% {
-    transform: translate(2%, 8%);
-  }
-  80% {
-    transform: translate(-9%, -2%);
-  }
-  90% {
-    transform: translate(5%, 5%);
-  }
-  100% {
-    transform: translate(0, 0);
-  }
+.heroScanBracket {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border: 2px solid color-mix(in srgb, var(--brand) 50%, transparent);
+}
+
+.heroScanBracket[data-corner="tl"] {
+  top: -14px;
+  left: -14px;
+  border-width: 2px 0 0 2px;
+}
+
+.heroScanBracket[data-corner="tr"] {
+  top: -14px;
+  right: -14px;
+  border-width: 2px 2px 0 0;
+}
+
+.heroScanBracket[data-corner="bl"] {
+  bottom: -14px;
+  left: -14px;
+  border-width: 0 0 2px 2px;
+}
+
+.heroScanBracket[data-corner="br"] {
+  bottom: -14px;
+  right: -14px;
+  border-width: 0 2px 2px 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .heroBgGrain {
+  .heroScanSweep {
     animation: none !important;
   }
 }
@@ -139,7 +142,7 @@
   height: clamp(266px, 50vw, 420px);
   transform-origin: bottom center;
   transform: translateX(-50%) rotate(var(--rot));
-  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 650ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .fanCard:hover,
@@ -168,14 +171,34 @@
     radial-gradient(120% 140% at 50% -10%, color-mix(in srgb, var(--accent) 20%, transparent) 0%, transparent 60%),
     var(--surface);
   box-shadow: 0 18px 34px -22px rgba(0, 0, 0, 0.75);
-  transition: border-color 420ms ease, box-shadow 420ms ease;
+  transition: border-color 650ms ease;
+}
+
+/* The hover/active glow fades in as its own layer rather than animating the
+   box-shadow directly — a box-shadow transition repaints the element on
+   every frame, which is what made a fast swipe through the fan feel choppy.
+   Opacity is compositor-only, so this stays smooth mid-drag. */
+.fanCardFace::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 26px 50px -18px color-mix(in srgb, var(--accent) 55%, transparent);
+  opacity: 0;
+  transition: opacity 650ms ease;
+  pointer-events: none;
 }
 
 .fanCard:hover .fanCardFace,
 .fanCard:focus-within .fanCardFace,
 .fanCard.fanCardActive .fanCardFace {
   border-color: var(--accent);
-  box-shadow: 0 26px 50px -18px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.fanCard:hover .fanCardFace::after,
+.fanCard:focus-within .fanCardFace::after,
+.fanCard.fanCardActive .fanCardFace::after {
+  opacity: 1;
 }
 
 .fanCardIndex {
