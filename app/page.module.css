@@ -27,7 +27,7 @@
   z-index: 0;
   overflow: hidden;
   pointer-events: none;
-  background: #050509;
+  background: #050505;
 }
 
 .heroBgVideo {
@@ -109,5 +109,103 @@
 @media (prefers-reduced-motion: reduce) {
   .heroBgGrain {
     animation: none !important;
+  }
+}
+
+/* ── Process: hand-of-cards fan ───────────────────────────────────────────── */
+/* Three cards pivot from one shared point at the bottom, like a hand of */
+/* playing cards — bottoms meet at that pivot, tops fan open and stay mostly */
+/* clear of each other. Hovering (or focusing, for keyboard users) straightens */
+/* a card, lifts it above its neighbors and brings it fully into view. */
+
+.handFan {
+  position: relative;
+  height: clamp(360px, 66vw, 520px);
+  margin: 0 auto;
+  max-width: 720px;
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.handFan:active {
+  cursor: grabbing;
+}
+
+.fanCard {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: clamp(190px, 36vw, 300px);
+  height: clamp(266px, 50vw, 420px);
+  transform-origin: bottom center;
+  transform: translateX(-50%) rotate(var(--rot));
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.fanCard:hover,
+.fanCard:focus-within,
+.fanCard.fanCardActive {
+  /* Only tilt part-way back toward upright, not fully straight, and lift just
+     a little — staying close to its fanned position leaves room for its
+     neighbor (the middle card, easiest to bury) to still show through. */
+  transform: translateX(-50%) rotate(calc(var(--rot) * 0.35)) translateY(-14px) scale(1.1);
+  z-index: 5 !important;
+}
+
+.fanCardFace {
+  position: relative;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 26px 22px;
+  text-align: center;
+  border-radius: var(--radius-inner);
+  border: 2px solid color-mix(in srgb, var(--accent) 45%, var(--line));
+  background:
+    radial-gradient(120% 140% at 50% -10%, color-mix(in srgb, var(--accent) 20%, transparent) 0%, transparent 60%),
+    var(--surface);
+  box-shadow: 0 18px 34px -22px rgba(0, 0, 0, 0.75);
+  transition: border-color 420ms ease, box-shadow 420ms ease;
+}
+
+.fanCard:hover .fanCardFace,
+.fanCard:focus-within .fanCardFace,
+.fanCard.fanCardActive .fanCardFace {
+  border-color: var(--accent);
+  box-shadow: 0 26px 50px -18px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.fanCardIndex {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+
+.fanCardIndexBottom {
+  top: auto;
+  left: auto;
+  right: 16px;
+  bottom: 14px;
+  transform: rotate(180deg);
+}
+
+.fanCardIcon {
+  width: 34px;
+  height: 34px;
+  color: var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fanCard:hover,
+  .fanCard:focus-within,
+  .fanCard.fanCardActive {
+    transform: translateX(-50%) rotate(calc(var(--rot) * 0.35)) scale(1.03);
   }
 }
