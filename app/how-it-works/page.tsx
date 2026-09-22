@@ -1,7 +1,14 @@
+import { AddressInput } from "@/components/AddressInput";
+import {
+  AlertTriangle,
+  BarChart3,
+  Eye,
+  Layers,
+  ShieldOff,
+  Swords,
+} from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AlertTriangle, BarChart3, Eye, Layers, ShieldOff, Swords } from "lucide-react";
-import { AddressInput } from "@/components/AddressInput";
 import styles from "./how-it-works.module.css";
 
 export const metadata: Metadata = {
@@ -36,11 +43,26 @@ const STEPS: Step[] = [
     description:
       "Each stat normalizes its signals into a composite, then maps that through a percentile table rather than fixed thresholds.",
     points: [
-      <span key="exp"><strong className="text-[var(--text)]">EXPERIENCE</strong> — wallet age, months active, transaction count.</span>,
-      <span key="trd"><strong className="text-[var(--text)]">TRADING</strong> — swaps, distinct tokens, cadence, venue diversity.</span>,
-      <span key="defi"><strong className="text-[var(--text)]">DEFI</strong> — protocol breadth multiplied by category coverage, plus depth.</span>,
-      <span key="hold"><strong className="text-[var(--text)]">HOLDING</strong> — median hold duration, untouched share, restraint.</span>,
-      <span key="risk"><strong className="text-[var(--text)]">RISK</strong> — memecoin share, leverage, unlabelled contracts, open approvals.</span>,
+      <span key="exp">
+        <strong className="text-[var(--text)]">EXPERIENCE</strong> — wallet age,
+        months active, transaction count.
+      </span>,
+      <span key="trd">
+        <strong className="text-[var(--text)]">TRADING</strong> — swaps,
+        distinct tokens, cadence, venue diversity.
+      </span>,
+      <span key="defi">
+        <strong className="text-[var(--text)]">DEFI</strong> — protocol breadth
+        multiplied by category coverage, plus depth.
+      </span>,
+      <span key="hold">
+        <strong className="text-[var(--text)]">HOLDING</strong> — median hold
+        duration, untouched share, restraint.
+      </span>,
+      <span key="risk">
+        <strong className="text-[var(--text)]">RISK</strong> — memecoin share,
+        leverage, unlabelled contracts, open approvals.
+      </span>,
       "Scores run 12–99, never zero or a hundred — the level weights toward EXPERIENCE.",
     ],
   },
@@ -50,8 +72,14 @@ const STEPS: Step[] = [
     description:
       "The five stats form a shape, and that shape is matched to the nearest archetype. Both outcomes below are deterministic.",
     points: [
-      <span key="a">Matched to the nearest of <Link href="/archetypes">sixteen archetypes</Link>.</span>,
-      <span key="b">Awarded the rarest of <Link href="/abilities">thirty abilities</Link> it qualifies for.</span>,
+      <span key="a">
+        Matched to the nearest of{" "}
+        <Link href="/archetypes">sixteen archetypes</Link>.
+      </span>,
+      <span key="b">
+        Awarded the rarest of <Link href="/abilities">thirty abilities</Link> it
+        qualifies for.
+      </span>,
       "The same history always yields the same result.",
     ],
   },
@@ -73,13 +101,18 @@ const STEPS: Step[] = [
     points: [
       "No net-worth ranking — value is always bucketed (“$28K”), never exact, and never leaderboarded.",
       "No financial advice, no price predictions, no stakes — this is entertainment.",
-      <span key="c">No custody, no permissions — a signature is requested only in <Link href="/settings">privacy settings</Link>, to prove ownership. It sends no transaction.</span>,
+      <span key="c">
+        No custody, no permissions — a signature is requested only in{" "}
+        <Link href="/settings">privacy settings</Link>, to prove ownership. It
+        sends no transaction.
+      </span>,
     ],
   },
   {
     icon: AlertTriangle,
     title: "Known limits, stated plainly",
-    description: "Every number traces to something the wallet did — but the trace has edges.",
+    description:
+      "Every number traces to something the wallet did — but the trace has edges.",
     points: [
       "Hold durations measure from first acquisition, not from a sell-to-zero and rebuy.",
       "Memecoin classification uses a curated list plus a naming pattern, undercounting long-tail tokens.",
@@ -104,21 +137,13 @@ export default function HowItWorksPage() {
           How it works
         </h1>
         <p className="enter enter-3 mt-4 text-[15px] leading-relaxed text-[var(--muted)]">
-          Every number on a card comes from public onchain history. Nothing is invented, nothing is
-          guessed, and the same wallet always produces the same card.
+          Every number on a card comes from public onchain history. Nothing is
+          invented, nothing is guessed, and the same wallet always produces the
+          same card.
         </p>
       </header>
 
-      <ol className={`${styles.howStepper} enter enter-4`} aria-hidden="true">
-        {STEPS.map((step, index) => (
-          <li className={styles.howStepperStep} key={step.title}>
-            <span className={`${styles.howStepperNum} mono`}>{index + 1}</span>
-            {index < STEPS.length - 1 && <span className={styles.howStepperLine} />}
-          </li>
-        ))}
-      </ol>
-
-      <div className={`${styles.howGrid} mt-6`}>
+      <div className={`${styles.howGrid} mt-12`}>
         {STEPS.map((step, index) => (
           <section
             key={step.title}
@@ -129,7 +154,9 @@ export default function HowItWorksPage() {
               <span className={styles.howCardIcon}>
                 <step.icon className="h-5 w-5" />
               </span>
-              <span className={`${styles.howCardNum} mono`}>{String(index + 1).padStart(2, "0")}</span>
+              <span className={`${styles.howCardNum} mono`}>
+                {String(index + 1).padStart(2, "0")}
+              </span>
             </div>
 
             <h2 className={`display ${styles.howCardTitle}`}>{step.title}</h2>
