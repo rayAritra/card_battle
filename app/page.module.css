@@ -9,66 +9,6 @@
   font-weight: 800;
   letter-spacing: -0.01em;
   line-height: 0.96;
-  /* A silver foil shine sweeping across the headline — the same metal tones
-     as the "rare" card frame (see .rarity--rare in BattleCard.css), so the
-     hero itself reads as foil before anyone forges a card. The base text
-     color is already near-white, so a light band alone barely reads against
-     it; a darker dip riding just ahead of the bright peak gives the sweep
-     actual contrast, like light catching a curved metal edge. background-
-     clip:text paints the gradient into the glyphs themselves, not a box. */
-  background: linear-gradient(
-    100deg,
-    var(--text) 0%,
-    var(--text) 30%,
-    #7c8894 42%,
-    #ffffff 50%,
-    #7c8894 58%,
-    var(--text) 70%,
-    var(--text) 100%
-  );
-  background-size: 260% 100%;
-  background-position: 180% 0;
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  /* Combined with the shared .enter/.enter-2 entrance fade (its keyframes
-     duplicated locally below as heroEnterUp, since a CSS module scopes
-     animation names — referencing globals.css's own `enterUp` by name here
-     would resolve to nothing) in one shorthand, rather than layering it on
-     top of those global classes: two rules both setting the `animation`
-     shorthand on the same element would have the later one in the
-     stylesheet silently win outright instead of merging. */
-  animation:
-    heroEnterUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both,
-    heroShimmer 6s ease-in-out 0.7s infinite;
-}
-
-@keyframes heroEnterUp {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes heroShimmer {
-  0% {
-    background-position: 180% 0;
-  }
-  55%,
-  100% {
-    background-position: -80% 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .heroTitle {
-    animation: none;
-    background-position: 40% 0;
-  }
 }
 
 /* ── Process: hand-of-cards fan ───────────────────────────────────────────── */

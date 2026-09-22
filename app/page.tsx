@@ -113,11 +113,13 @@ export default function HomePage() {
           </p>
 
           <h1
-            className={`${styles.heroTitle} relative z-10 mt-6 text-[clamp(48px,10vw,108px)]`}
+            className={`${styles.heroTitle} enter enter-2 relative z-10 mt-6 text-[clamp(48px,10vw,108px)]`}
           >
-            Every wallet
-            <br />
-            has a legend
+            <span className="shimmer-text-graphite">
+              Every wallet
+              <br />
+              has a legend
+            </span>
           </h1>
 
           <p className="enter enter-3 relative z-10 mx-auto mt-6 max-w-[560px] text-base leading-relaxed text-[var(--muted)]">
