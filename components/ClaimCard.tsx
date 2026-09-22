@@ -35,7 +35,7 @@ export function ClaimCard({ address }: ClaimCardProps) {
     <motion.button
       type="button"
       className={cn(
-        "mono mb-4.5 cursor-pointer self-start rounded-full border-[1.5px] border-(--line) bg-transparent px-3 py-1.5 text-[11px] text-[#93939f] transition-colors duration-150 hover:border-brand hover:text-foreground",
+        "mono mb-4.5 cursor-pointer self-start rounded-full border-[1.5px] border-(--line) bg-transparent px-3 py-1.5 text-[11px] text-[#949494] transition-colors duration-150 hover:border-brand hover:text-foreground",
         claimed && "border-brand bg-(--accent-soft) text-foreground",
       )}
       whileTap={{ scale: 0.97 }}

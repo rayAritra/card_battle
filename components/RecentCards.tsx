@@ -63,7 +63,7 @@ export function RecentCards() {
                   </span>
                   <Badge
                     variant="outline"
-                    className="w-fit border-[var(--line)] text-[8px] text-[#74748a]"
+                    className="w-fit border-[var(--line)] text-[8px] text-[#767676]"
                   >
                     {card.archetype} · LVL {card.level}
                   </Badge>

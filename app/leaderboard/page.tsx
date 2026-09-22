@@ -31,7 +31,7 @@ function Table({
   return (
     <section>
       <h2 className="display text-[22px] text-[var(--text)]">{title}</h2>
-      <p className="mt-1.5 mb-4.5 text-[12px] leading-relaxed text-[#74748a]">{caption}</p>
+      <p className="mt-1.5 mb-4.5 text-[12px] leading-relaxed text-[#767676]">{caption}</p>
 
       {entries.length === 0 ? (
         <p className="py-5 text-[13px] text-[var(--muted)]">
@@ -70,7 +70,7 @@ function Table({
                   </Link>
                   <Badge
                     variant="outline"
-                    className="w-fit border-[var(--line)] text-[8px] text-[#74748a]"
+                    className="w-fit border-[var(--line)] text-[8px] text-[#767676]"
                   >
                     {entry.archetype}
                   </Badge>

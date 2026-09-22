@@ -5,6 +5,12 @@
   flex-direction: column;
   gap: 8px;
   border-left: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  transition: border-left-color 180ms ease;
+}
+
+.abilityCard:hover,
+.abilityCard:focus-within {
+  border-left-color: var(--accent);
 }
 
 .abilityCardIcon {
@@ -17,4 +23,13 @@
   border-radius: 10px;
   background: color-mix(in srgb, var(--accent) 14%, transparent);
   color: var(--accent);
+  transition:
+    transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    background 180ms ease;
+}
+
+.abilityCard:hover .abilityCardIcon,
+.abilityCard:focus-within .abilityCardIcon {
+  transform: scale(1.12) rotate(-4deg);
+  background: color-mix(in srgb, var(--accent) 24%, transparent);
 }

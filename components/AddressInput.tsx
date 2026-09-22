@@ -132,7 +132,7 @@ export function AddressInput({
         />
         <motion.button
           type="submit"
-          className="button"
+          className="button button--accent"
           disabled={pending}
           whileTap={{ scale: 0.97 }}
           transition={{ duration: 0.12 }}

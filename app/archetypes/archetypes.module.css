@@ -12,14 +12,23 @@
   border-radius: var(--radius-card);
   background: var(--surface);
   transition:
-    background 160ms ease,
-    border-color 160ms ease;
+    background 180ms ease,
+    border-color 180ms ease,
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 180ms ease;
 }
 
 .archetypeCard:hover,
 .archetypeCard:focus-within {
   background: var(--surface-alt);
-  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+  transform: translateY(-4px);
+  box-shadow: 0 16px 34px -18px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.archetypeCard:hover .archetypeCardDot,
+.archetypeCard:focus-within .archetypeCardDot {
+  transform: scale(1.25);
 }
 
 .archetypeCardHead {
@@ -35,6 +44,7 @@
   border-radius: 999px;
   background: var(--accent);
   box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 70%, transparent);
+  transition: transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .archetypeCardHighlights {
@@ -52,7 +62,7 @@
 
 .archetypeCardHighlightLabel {
   display: block;
-  color: #797990;
+  color: #7a7a7a;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.03em;
@@ -69,7 +79,7 @@
 
 .archetypeCardBreakdownTitle {
   margin: 0 0 2px;
-  color: #797990;
+  color: #7a7a7a;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -140,11 +150,11 @@
 .archetypeCardBreakdownItem dt {
   font-size: 9px;
   text-transform: capitalize;
-  color: #a0a0b0;
+  color: #a3a3a3;
 }
 
 .archetypeCardBreakdownItem dd {
   margin: 0 0 0 auto;
   font-size: 9px;
-  color: #797990;
+  color: #7a7a7a;
 }

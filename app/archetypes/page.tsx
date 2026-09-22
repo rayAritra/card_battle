@@ -9,7 +9,7 @@ import styles from "./archetypes.module.css";
 
 /** A fixed color per stat, consistent across every card, so a stat reads the same everywhere. */
 const STAT_COLORS: Record<StatKey, string> = {
-  experience: "#2F5FC4",
+  experience: "#0F9C9C",
   trading: "#178F5A",
   defi: "#B96C00",
   holding: "#C22C4E",

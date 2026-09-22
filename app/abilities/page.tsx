@@ -17,9 +17,9 @@ const RARITY_ICONS: Record<number, React.ComponentType<{ className?: string }>> 
 const RARITY_COLORS: Record<number, string> = {
   5: "#ff4fd8",
   4: "#ffb020",
-  3: "#3d5aff",
-  2: "#6fd3ff",
-  1: "#74748a",
+  3: "#b45cff",
+  2: "#2fe0d6",
+  1: "#767676",
 };
 
 export const metadata: Metadata = {
@@ -96,7 +96,7 @@ export default function AbilitiesPage() {
               <span
                 className="h-2.5 w-2.5 rounded-full"
                 style={{
-                  backgroundColor: RARITY_COLORS[rarity] ?? "#52526a",
+                  backgroundColor: RARITY_COLORS[rarity] ?? "#545454",
                   boxShadow:
                     rarity >= 4 ? `0 0 ${rarity === 5 ? 10 : 8}px ${RARITY_COLORS[rarity]}` : undefined,
                 }}
@@ -111,7 +111,7 @@ export default function AbilitiesPage() {
             <div className="seam-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {tier.map((ability, index) => {
                 const Icon = RARITY_ICONS[rarity] ?? Circle;
-                const color = RARITY_COLORS[rarity] ?? "#74748a";
+                const color = RARITY_COLORS[rarity] ?? "#767676";
 
                 return (
                   <div

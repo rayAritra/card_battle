@@ -19,7 +19,7 @@
 }
 
 .recordLosses {
-  color: #52526a;
+  color: #545454;
 }
 
 .recordRate {
@@ -60,7 +60,7 @@
 }
 
 .historyReplay {
-  color: #74748a;
+  color: #767676;
   font-size: 10px;
   transition: color 160ms ease;
 }

@@ -38,7 +38,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0a0a12",
+  themeColor: "#0a0a0a",
   width: "device-width",
   initialScale: 1,
 };
@@ -56,7 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Link href="/" className={`${styles.logo} flex items-center gap-2.5`}>
             <span
               aria-hidden
-              className="grid h-8 w-8 shrink-0 place-items-center rounded-2xl border-2 border-[var(--brand)] bg-[var(--brand)] text-[13px] font-black text-white shadow-[0_4px_14px_rgba(61,90,255,0.45)]"
+              className={`${styles.logoMark} grid h-8 w-8 shrink-0 place-items-center rounded-2xl border-2 border-[var(--brand)] bg-[var(--brand)] text-[13px] font-black text-[var(--brand-ink)] shadow-[0_4px_14px_rgba(255,212,0,0.45)]`}
             >
               OB
             </span>

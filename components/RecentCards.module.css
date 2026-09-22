@@ -17,7 +17,7 @@
 
 .recentsTitle {
   margin: 0;
-  color: #74748a;
+  color: #767676;
   font-size: 11px;
   font-weight: 500;
 }
@@ -25,7 +25,7 @@
 .recentsClear {
   border: 0;
   background: transparent;
-  color: #52526a;
+  color: #545454;
   font-family: inherit;
   font-size: 11px;
   cursor: pointer;

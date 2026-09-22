@@ -161,15 +161,15 @@ export default async function CardPage({ params }: PageProps) {
 
         <dl className="enter enter-4 mt-7 flex flex-wrap gap-6 border-t-2 border-[var(--line)] pt-5">
           <div>
-            <dt className="text-[9px] font-bold text-[#74748a]">Battle class</dt>
+            <dt className="text-[9px] font-bold text-[#767676]">Battle class</dt>
             <dd className="mt-1 text-[13px] text-[var(--text)]">{card.archetype}</dd>
           </div>
           <div>
-            <dt className="text-[9px] font-bold text-[#74748a]">Card rarity</dt>
+            <dt className="text-[9px] font-bold text-[#767676]">Card rarity</dt>
             <dd className="mt-1 text-[13px] text-[var(--text)]">{card.rarity}</dd>
           </div>
           <div>
-            <dt className="text-[9px] font-bold text-[#74748a]">Card ID</dt>
+            <dt className="text-[9px] font-bold text-[#767676]">Card ID</dt>
             <dd className="mono mt-1 text-[13px] text-[var(--text)]">{card.serial}</dd>
           </div>
         </dl>

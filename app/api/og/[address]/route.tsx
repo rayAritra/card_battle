@@ -55,7 +55,7 @@ function genericImage(): ImageResponse {
           gap: 18,
         }}
       >
-        <div style={{ fontSize: 22, letterSpacing: 8, color: "#9B7BFF", display: "flex" }}>
+        <div style={{ fontSize: 22, letterSpacing: 8, color: "#FFD400", display: "flex" }}>
           ONCHAIN BATTLE CARDS
         </div>
         <div style={{ fontSize: 76, fontWeight: 800, letterSpacing: -1, display: "flex" }}>

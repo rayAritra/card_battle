@@ -83,7 +83,7 @@
 }
 
 .howCardNum {
-  color: #52526a;
+  color: #545454;
   font-size: 11px;
 }
 
@@ -95,7 +95,7 @@
 
 .howCardDesc {
   margin: 0;
-  color: #b6b6c8;
+  color: #b8b8b8;
   font-size: 13px;
   line-height: 1.55;
 }
@@ -112,7 +112,7 @@
   display: flex;
   align-items: flex-start;
   gap: 9px;
-  color: #9c9cb2;
+  color: #9c9c9c;
   font-size: 12.5px;
   line-height: 1.55;
 }
