@@ -15,3 +15,41 @@
     background-position: -200% 0;
   }
 }
+
+/* The face-down loading card's own shimmer: a soft diagonal band of light
+   that sweeps the whole card, on top of the art/overlay (blend-mode: overlay
+   lightens whatever's underneath rather than painting over it, so the art
+   and copy stay legible through the sweep). Sits inside .battle-card__inner,
+   which already clip-paths to the card's rounded corners. */
+.card-skeleton-shimmer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.16) 46%,
+    rgba(255, 255, 255, 0.34) 50%,
+    rgba(255, 255, 255, 0.16) 54%,
+    transparent 70%
+  );
+  background-size: 250% 100%;
+  background-position: 200% 0;
+  mix-blend-mode: overlay;
+  animation: card-skeleton-sweep 2.4s ease-in-out infinite;
+}
+
+@keyframes card-skeleton-sweep {
+  to {
+    background-position: -150% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-skeleton-shimmer {
+    animation: none;
+    background-position: 0 0;
+    opacity: 0.4;
+  }
+}
