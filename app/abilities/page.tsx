@@ -1,12 +1,16 @@
+import { LiquidGlassCard } from "@/components/LiquidGlassCard";
+import { Badge } from "@/components/ui/badge";
+import { ABILITIES } from "@/lib/stats/abilities";
+import type { BattleEffect } from "@/types";
+import { Circle, Crown, Gem, ShieldCheck, Star } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Circle, Crown, Gem, ShieldCheck, Star } from "lucide-react";
-import { ABILITIES } from "@/lib/stats/abilities";
-import { Badge } from "@/components/ui/badge";
-import type { BattleEffect } from "@/types";
 import styles from "./abilities.module.css";
 
-const RARITY_ICONS: Record<number, React.ComponentType<{ className?: string }>> = {
+const RARITY_ICONS: Record<
+  number,
+  React.ComponentType<{ className?: string }>
+> = {
   5: Crown,
   4: Gem,
   3: Star,
@@ -79,10 +83,11 @@ export default function AbilitiesPage() {
           Abilities
         </h1>
         <p className="enter enter-3 mt-4 text-[14px] leading-relaxed text-[var(--muted)]">
-          {ABILITIES.length} abilities, each triggered by something the wallet actually did. A card
-          is awarded the <strong className="text-[var(--text)]">rarest</strong> one it qualifies
-          for, and the same wallet always earns the same ability — ties break on a fixed order,
-          never at random.
+          {ABILITIES.length} abilities, each triggered by something the wallet
+          actually did. A card is awarded the{" "}
+          <strong className="text-[var(--text)]">rarest</strong> one it
+          qualifies for, and the same wallet always earns the same ability —
+          ties break on a fixed order, never at random.
         </p>
       </header>
 
@@ -92,12 +97,23 @@ export default function AbilitiesPage() {
 
         const TierIcon = RARITY_ICONS[rarity] ?? Circle;
 
+        const isFive = tier.length === 5;
+        const gridClass = isFive
+          ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3.5"
+          : tier.length === 2
+            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3.5"
+            : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5";
+
         return (
           <section key={rarity} className="mt-10">
             <div className="mb-3.5 flex items-center gap-2.5">
               <span
                 className={styles.tierHeadIcon}
-                style={{ "--tier-color": RARITY_COLORS[rarity] ?? "#545454" } as React.CSSProperties}
+                style={
+                  {
+                    "--tier-color": RARITY_COLORS[rarity] ?? "#545454",
+                  } as React.CSSProperties
+                }
                 aria-hidden="true"
               >
                 <TierIcon className="h-4 w-4" />
@@ -108,27 +124,44 @@ export default function AbilitiesPage() {
               <Badge variant="secondary">{tier.length}</Badge>
             </div>
 
-            <div className="seam-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            <div className={gridClass}>
               {tier.map((ability, index) => {
                 const Icon = RARITY_ICONS[rarity] ?? Circle;
                 const color = RARITY_COLORS[rarity] ?? "#767676";
+                const colSpanClass = isFive
+                  ? index < 3
+                    ? "sm:col-span-1 lg:col-span-2"
+                    : index === 4
+                      ? "sm:col-span-2 lg:col-span-3"
+                      : "sm:col-span-1 lg:col-span-3"
+                  : "";
 
                 return (
-                  <div
+                  <LiquidGlassCard
                     key={ability.id}
-                    className={`${styles.abilityCard} seam-cell stagger-item p-4`}
-                    style={{ "--accent": color, "--i": index } as React.CSSProperties}
+                    borderRadius={18}
+                    tintOpacity={0.05}
+                    interactive={true}
+                    className={`${styles.abilityCard} stagger-item ${colSpanClass}`}
+                    style={
+                      {
+                        "--accent": color,
+                        "--i": index,
+                      } as React.CSSProperties
+                    }
                   >
-                    <span className={styles.abilityCardIcon}>
-                      <Icon className="h-4 w-4" />
-                    </span>
-                    <h3 className="display text-[13px] font-semibold text-[var(--text)]">
-                      {ability.name}
-                    </h3>
-                    <p className="mt-1.5 text-[11.5px] leading-relaxed text-[var(--muted)]">
-                      {describeEffect(ability.battleEffect)}
-                    </p>
-                  </div>
+                    <div className={styles.abilityCardInner}>
+                      <span className={styles.abilityCardIcon}>
+                        <Icon className="h-4 w-4" />
+                      </span>
+                      <h3 className="display text-[13.5px] font-semibold text-[var(--text)]">
+                        {ability.name}
+                      </h3>
+                      <p className="mt-1 text-[12px] leading-relaxed text-[var(--muted)]">
+                        {describeEffect(ability.battleEffect)}
+                      </p>
+                    </div>
+                  </LiquidGlassCard>
                 );
               })}
             </div>

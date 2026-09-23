@@ -1,27 +1,32 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { Crown } from "lucide-react";
 import { FightButton } from "@/components/FightButton";
+import { LiquidGlassCard } from "@/components/LiquidGlassCard";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { loadLeaderboard } from "@/lib/server/leaderboard";
 import { paletteFor } from "@/lib/art/palettes";
-import { truncateAddress, ordinal } from "@/lib/utils/format";
+import { loadLeaderboard } from "@/lib/server/leaderboard";
+import { ordinal, truncateAddress } from "@/lib/utils/format";
 import type { LeaderboardEntry } from "@/types";
+import { Crown } from "lucide-react";
+import type { Metadata } from "next";
+import Link from "next/link";
 import styles from "./board.module.css";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Rankings",
-  description: "The strongest cards and fiercest arena records. Power earns rank. Wealth never does.",
+  description:
+    "The strongest cards and fiercest arena records. Power earns rank. Wealth never does.",
 };
 
 const initials = (entry: LeaderboardEntry): string =>
   (entry.ensName ?? entry.address.slice(2)).slice(0, 2).toUpperCase();
 
 function Table({
-  title, caption, entries, metric,
+  title,
+  caption,
+  entries,
+  metric,
 }: {
   title: string;
   caption: string;
@@ -31,56 +36,88 @@ function Table({
   return (
     <section>
       <h2 className="display text-[22px] text-[var(--text)]">{title}</h2>
-      <p className="mt-1.5 mb-4.5 text-[12px] leading-relaxed text-[#767676]">{caption}</p>
+      <p className="mt-1.5 mb-4.5 text-[12px] leading-relaxed text-[#767676]">
+        {caption}
+      </p>
 
       {entries.length === 0 ? (
         <p className="py-5 text-[13px] text-[var(--muted)]">
           No legends yet. Forge the first card and claim the top position.
         </p>
       ) : (
-        <ol className="seam-grid grid-cols-1">
+        <ol className={styles.boardList}>
           {entries.map((entry, index) => {
             const palette = paletteFor(entry.archetype);
             const rank = index + 1;
-            const rankStyle = rank === 1 ? styles.boardRow1 : rank === 2 ? styles.boardRow2 : rank === 3 ? styles.boardRow3 : "";
+            const rankStyle =
+              rank === 1
+                ? styles.boardRow1
+                : rank === 2
+                  ? styles.boardRow2
+                  : rank === 3
+                    ? styles.boardRow3
+                    : "";
 
             return (
-              <li
+              <LiquidGlassCard
+                as="li"
                 key={entry.address}
-                className={`seam-cell ${styles.boardRow} stagger-item${rankStyle ? ` ${rankStyle}` : ""}`}
+                borderRadius={14}
+                tintOpacity={0.05}
+                interactive={true}
+                className="stagger-item"
                 style={{ "--i": index } as React.CSSProperties}
               >
-                <span className={styles.boardCrown} aria-hidden="true">
-                  {rank <= 3 && <Crown fill="currentColor" strokeWidth={1.5} />}
-                </span>
+                <div
+                  className={`${styles.boardRow}${rankStyle ? ` ${rankStyle}` : ""}`}
+                >
+                  <span className={styles.boardCrown} aria-hidden="true">
+                    {rank <= 3 && (
+                      <Crown fill="currentColor" strokeWidth={1.5} />
+                    )}
+                  </span>
 
-                <span className={`${styles.boardRank} mono`} aria-label={ordinal(rank)}>
-                  {String(rank).padStart(2, "0")}
-                </span>
-
-                <Avatar className={`${styles.boardAvatar} h-9 w-9`} style={{ borderColor: palette.accent }}>
-                  <AvatarFallback style={{ color: palette.accent }}>
-                    {initials(entry)}
-                  </AvatarFallback>
-                </Avatar>
-
-                <span className={`${styles.boardIdentity} flex min-w-0 flex-col gap-0.5`}>
-                  <Link className={`${styles.boardName} truncate`} href={`/card/${entry.address}`}>
-                    {entry.ensName ?? truncateAddress(entry.address)}
-                  </Link>
-                  <Badge
-                    variant="outline"
-                    className="w-fit max-w-full truncate border-[var(--line)] text-[8px] text-[#767676]"
+                  <span
+                    className={`${styles.boardRank} mono`}
+                    aria-label={ordinal(rank)}
                   >
-                    {entry.archetype}
-                  </Badge>
-                </span>
+                    {String(rank).padStart(2, "0")}
+                  </span>
 
-                <span className={styles.boardMeta}>
-                  <span className={`${styles.boardMetric} mono`}>{metric(entry)}</span>
-                  <FightButton opponent={entry.address} />
-                </span>
-              </li>
+                  <Avatar
+                    className={`${styles.boardAvatar} h-9 w-9`}
+                    style={{ borderColor: palette.accent }}
+                  >
+                    <AvatarFallback style={{ color: palette.accent }}>
+                      {initials(entry)}
+                    </AvatarFallback>
+                  </Avatar>
+
+                  <span
+                    className={`${styles.boardIdentity} flex min-w-0 flex-col gap-0.5`}
+                  >
+                    <Link
+                      className={`${styles.boardName} truncate`}
+                      href={`/card/${entry.address}`}
+                    >
+                      {entry.ensName ?? truncateAddress(entry.address)}
+                    </Link>
+                    <Badge
+                      variant="outline"
+                      className="w-fit max-w-full truncate border-[var(--line)] text-[8px] text-[#767676]"
+                    >
+                      {entry.archetype}
+                    </Badge>
+                  </span>
+
+                  <span className={styles.boardMeta}>
+                    <span className={`${styles.boardMetric} mono`}>
+                      {metric(entry)}
+                    </span>
+                    <FightButton opponent={entry.address} />
+                  </span>
+                </div>
+              </LiquidGlassCard>
             );
           })}
         </ol>
@@ -99,8 +136,8 @@ export default async function LeaderboardPage() {
           The rankings
         </h1>
         <p className="enter enter-3 mt-4 text-[14px] leading-relaxed text-[var(--muted)]">
-          The strongest wallets rise through power and arena performance. Portfolio size buys no
-          glory here.
+          The strongest wallets rise through power and arena performance.
+          Portfolio size buys no glory here.
         </p>
       </header>
 
