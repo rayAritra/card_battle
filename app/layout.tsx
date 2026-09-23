@@ -24,7 +24,7 @@ const jetbrainsMono = JetBrains_Mono({
 // from the Inter body text used for everything else.
 const playfair = Playfair_Display({
   subsets: ["latin"],
-  weight: ["700", "800", "900"],
+  weight: ["400", "500", "700", "800", "900"],
   variable: "--font-display-face",
   display: "swap",
 });
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0a0a0a",
+  themeColor: "#f7f5f1",
   width: "device-width",
   initialScale: 1,
 };

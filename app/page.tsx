@@ -107,8 +107,13 @@ export default function HomePage() {
     <>
       <main className="relative">
         {/* ── Hero — full viewport height, everything else waits below the fold ── */}
-        <section className="relative flex min-h-[100dvh] flex-col items-center justify-center px-6 pb-20 pt-28 text-center">
-          <p className="enter enter-1 mono relative z-10 text-[13px] text-[var(--muted)]">
+        <section className="relative flex min-h-[100dvh] flex-col items-center px-6 pb-20 pt-24 text-center">
+          <div className={styles.heroArt} aria-hidden="true">
+            <div className={styles.heroArtImg} />
+            <div className={styles.heroArtFade} />
+          </div>
+
+          <p className="enter enter-1 mono relative z-10 mt-6 text-[13px] text-[var(--muted)]">
             Nothing to connect, nothing to sign — just an address
           </p>
 
@@ -156,6 +161,10 @@ export default function HomePage() {
               />
             </svg>
           </motion.div>
+
+          {/* A faint contact shadow marking where the hero meets the next
+              section — stays subtle even as it's scrolled past. */}
+          <div className={styles.heroShadow} aria-hidden="true" />
         </section>
 
         {/* ── Recently revealed — only renders once the visitor has a history ── */}
@@ -250,7 +259,7 @@ export default function HomePage() {
                   ease: [0.22, 1, 0.36, 1],
                 }}
               >
-                <span className="block text-[clamp(34px,5vw,54px)] font-bold text-white">
+                <span className="block text-[clamp(34px,5vw,54px)] font-bold text-[var(--text)]">
                   {metric.value}
                 </span>
                 <span className="mt-1 block text-[13px] leading-snug text-[var(--muted)]">

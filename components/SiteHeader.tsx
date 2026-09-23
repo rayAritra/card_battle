@@ -177,6 +177,13 @@ export function SiteHeader() {
           })}
         </nav>
 
+        <Link
+          href="/#address"
+          className={`button button--accent ${styles.headerCta}`}
+        >
+          Forge a card
+        </Link>
+
         {/* Mobile Hamburger Toggle */}
         <button
           type="button"

@@ -52,7 +52,7 @@
 
 .archetypeCardHighlightLabel {
   display: block;
-  color: #7a7a7a;
+  color: var(--muted);
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.03em;
@@ -69,7 +69,7 @@
 
 .archetypeCardBreakdownTitle {
   margin: 0 0 2px;
-  color: #7a7a7a;
+  color: var(--muted);
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -118,11 +118,11 @@
 .archetypeCardBreakdownItem dt {
   font-size: 9px;
   text-transform: capitalize;
-  color: #a3a3a3;
+  color: var(--muted);
 }
 
 .archetypeCardBreakdownItem dd {
   margin: 0 0 0 auto;
   font-size: 9px;
-  color: #7a7a7a;
+  color: var(--muted);
 }

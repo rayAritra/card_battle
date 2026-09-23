@@ -37,22 +37,22 @@
 
 @layer base {
   :root {
-    --bg: #0a0a0a;
-    --surface: #141414;
-    --surface-alt: #1c1c1c;
-    --text: #f5f5f2;
-    --muted: #9a9a9a;
-    --line: #262626;
-    --line-strong: #3a3a3a;
+    --bg: #f7f5f1;
+    --surface: #ffffff;
+    --surface-alt: #efece5;
+    --text: #17150f;
+    --muted: #6f6c62;
+    --line: #e6e2d8;
+    --line-strong: #d2ccbc;
 
-    --brand: #f0b429;
-    --brand-ink: #0a0a0a;
-    --danger: #ff4d6d;
+    --brand: #c8901f;
+    --brand-ink: #17150f;
+    --danger: #c23a3a;
 
     /* Overridden per card by the archetype palette. */
-    --accent: #f0b429;
-    --accent-soft: #332b00;
-    --glow: #f0b429;
+    --accent: #c8901f;
+    --accent-soft: #f3e6c8;
+    --glow: #c8901f;
 
     --radius-card: 28px;
     --radius-inner: 14px;
@@ -62,7 +62,7 @@
       var(--font-mono-stack), ui-monospace, "SF Mono", Menlo, monospace;
     --font-body: var(--font-inter), system-ui, -apple-system, sans-serif;
 
-    color-scheme: dark;
+    color-scheme: light;
   }
 
   /* ── shadcn/ui token bridge ───────────────────────────────────────────────── */
@@ -233,19 +233,20 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* A graphite shine swept across text via background-clip — the text itself
-     is fully painted by the gradient (color: transparent), so it needs its
-     own light tones rather than a base color layered in underneath. Lighter
-     than a literal graphite gray so it stays legible against this site's
-     dark backdrops, with a bright peak for the shine to actually read. */
+  /* An ink shine swept across text via background-clip — the text itself is
+     fully painted by the gradient (color: transparent), so it needs its own
+     dark tones rather than a base color layered in underneath. Darker than a
+     literal black so it stays legible against this site's paper-light
+     backdrops, with a warm gold glint for the shine to read without ever
+     going lighter than the page behind it. */
   .shimmer-text-graphite {
     background-image: linear-gradient(
       100deg,
-      rgba(228, 228, 231, 0.9) 0%,
-      rgba(189, 189, 191, 0.9) 38%,
-      #ffffff 50%,
-      rgba(228, 228, 231, 0.9) 62%,
-      rgba(228, 228, 231, 0.9) 100%
+      rgba(23, 21, 15, 0.94) 0%,
+      rgba(23, 21, 15, 0.78) 38%,
+      var(--brand) 50%,
+      rgba(23, 21, 15, 0.78) 62%,
+      rgba(23, 21, 15, 0.94) 100%
     );
     background-size: 250% auto;
     background-clip: text;
@@ -288,7 +289,7 @@
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 2px 10px rgba(23, 21, 15, 0.08);
     transition:
       transform 140ms ease,
       box-shadow 140ms ease,
@@ -298,31 +299,39 @@
 
   .button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 10px 24px rgba(23, 21, 15, 0.12);
     border-color: var(--brand);
   }
 
   .button:active {
     transform: translateY(0) scale(0.97);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 2px 8px rgba(23, 21, 15, 0.08);
   }
 
   .button--ghost {
     background: transparent;
   }
 
+  /* The site's one solid-ink pill — used for the primary "book/forge" calls
+     to action, so it reads as the same deliberate black button regardless of
+     which section it sits on. */
   .button--accent {
-    background: var(--brand);
-    border-color: var(--brand);
-    color: var(--brand-ink);
-    box-shadow: 0 6px 20px color-mix(in srgb, var(--brand) 45%, transparent);
+    background: var(--text);
+    border-color: var(--text);
+    color: var(--surface);
+    box-shadow: 0 6px 20px rgba(23, 21, 15, 0.18);
+  }
+
+  .button--accent:hover {
+    border-color: var(--text);
+    box-shadow: 0 10px 28px rgba(23, 21, 15, 0.22);
   }
 
   .button:disabled {
     opacity: 0.45;
     cursor: not-allowed;
     transform: none;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 2px 10px rgba(23, 21, 15, 0.08);
   }
 
   /* ── Responsive ───────────────────────────────────────────────────────────── */

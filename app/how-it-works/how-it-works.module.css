@@ -50,7 +50,7 @@
 
 .howCardDesc {
   margin: 0;
-  color: #b8b8b8;
+  color: var(--muted);
   font-size: 13px;
   line-height: 1.55;
 }
@@ -67,7 +67,7 @@
   display: flex;
   align-items: flex-start;
   gap: 9px;
-  color: #9c9c9c;
+  color: var(--muted);
   font-size: 12.5px;
   line-height: 1.55;
 }

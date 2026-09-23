@@ -80,15 +80,15 @@
 }
 
 .boardRow1 .boardRank {
-  color: #ffd15c;
+  color: var(--brand);
 }
 
 .boardRow2 .boardRank {
-  color: #d6d6d6;
+  color: #8f8c82;
 }
 
 .boardRow3 .boardRank {
-  color: #e0a468;
+  color: #a8703c;
 }
 
 .boardCrown {
@@ -104,15 +104,15 @@
 }
 
 .boardRow1 .boardCrown svg {
-  color: #ffd15c;
+  color: var(--brand);
 }
 
 .boardRow2 .boardCrown svg {
-  color: #d6d6d6;
+  color: #8f8c82;
 }
 
 .boardRow3 .boardCrown svg {
-  color: #e0a468;
+  color: #a8703c;
 }
 
 .boardName {
@@ -134,7 +134,7 @@
   padding: 5px 11px;
   border: 1.5px solid var(--line);
   border-radius: 99px;
-  color: #949494;
+  color: var(--muted);
   font-size: 10px;
   transition:
     border-color 160ms ease,

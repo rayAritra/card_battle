@@ -10,6 +10,20 @@
   animation: shimmer 1.4s linear infinite;
 }
 
+/* The dark shimmer above assumes it's sitting on the (still-dark) battle-card
+   face — CardAsideSkeleton's placeholder lines sit directly on the page's
+   light surface instead, so they need an ink-based shimmer rather than a
+   white one to stay visible at all. */
+.skeleton-line--light {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--text) 8%, transparent) 0%,
+    color-mix(in srgb, var(--text) 16%, transparent) 50%,
+    color-mix(in srgb, var(--text) 8%, transparent) 100%
+  );
+  background-size: 200% 100%;
+}
+
 @keyframes shimmer {
   to {
     background-position: -200% 0;
