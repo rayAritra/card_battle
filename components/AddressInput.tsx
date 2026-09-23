@@ -22,9 +22,18 @@ interface AddressInputProps {
 }
 
 const DEFAULT_EXAMPLES = [
-  { label: "vitalik.eth", address: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" },
-  { label: "Uniswap deployer", address: "0x41653c7d61609D856f29355E404F09f0F9c3901d" },
-  { label: "Base builder", address: "0x8c8F1a1e1bFdb15E7ed562efc84e5A588E68aD73" },
+  {
+    label: "vitalik.eth",
+    address: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+  },
+  {
+    label: "Uniswap deployer",
+    address: "0x41653c7d61609D856f29355E404F09f0F9c3901d",
+  },
+  {
+    label: "Base builder",
+    address: "0x8c8F1a1e1bFdb15E7ed562efc84e5A588E68aD73",
+  },
 ];
 
 const looksLikeName = (value: string): boolean =>
@@ -40,7 +49,7 @@ const looksLikeName = (value: string): boolean =>
  */
 export function AddressInput({
   destinationPrefix = "/card/",
-  label = "Enter the arena",
+  label,
   cta = "Forge my card",
   examples = DEFAULT_EXAMPLES,
   id = "address",
@@ -66,7 +75,9 @@ export function AddressInput({
     }
 
     if (!looksLikeName(candidate.toLowerCase())) {
-      setError("Enter a valid wallet address or ENS name to unlock its legend.");
+      setError(
+        "Enter a valid wallet address or ENS name to unlock its legend.",
+      );
       return;
     }
 
@@ -74,16 +85,22 @@ export function AddressInput({
     setPending(true);
 
     try {
-      const response = await fetch(`/api/resolve?q=${encodeURIComponent(candidate)}`);
+      const response = await fetch(
+        `/api/resolve?q=${encodeURIComponent(candidate)}`,
+      );
 
       if (response.status === 429) {
-        setError("The forge is at capacity. Paste the wallet address or return in a moment.");
+        setError(
+          "The forge is at capacity. Paste the wallet address or return in a moment.",
+        );
         setPending(false);
         return;
       }
 
       if (!response.ok) {
-        setError(`The chain knows no wallet named “${candidate}”. Check the spelling.`);
+        setError(
+          `The chain knows no wallet named “${candidate}”. Check the spelling.`,
+        );
         setPending(false);
         return;
       }
@@ -94,24 +111,33 @@ export function AddressInput({
           ? (data as { address: unknown }).address
           : null;
 
-      if (typeof address !== "string" || !isAddress(address, { strict: false })) {
-        setError(`The chain knows no wallet named “${candidate}”. Check the spelling.`);
+      if (
+        typeof address !== "string" ||
+        !isAddress(address, { strict: false })
+      ) {
+        setError(
+          `The chain knows no wallet named “${candidate}”. Check the spelling.`,
+        );
         setPending(false);
         return;
       }
 
       go(address);
     } catch {
-      setError("The chain went quiet. Paste the wallet address directly to continue.");
+      setError(
+        "The chain went quiet. Paste the wallet address directly to continue.",
+      );
       setPending(false);
     }
   };
 
   return (
     <form className={styles.addressForm} onSubmit={submit}>
-      <label className={styles.addressFormLabel} htmlFor={id}>
-        {label}
-      </label>
+      {label && (
+        <label className={styles.addressFormLabel} htmlFor={id}>
+          {label}
+        </label>
+      )}
 
       <div className={styles.addressFormField}>
         <input

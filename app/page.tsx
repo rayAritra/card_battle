@@ -1,6 +1,7 @@
 "use client";
 
 import { AddressInput } from "@/components/AddressInput";
+import { HeroWaterRipples } from "@/components/HeroWaterRipples";
 import { RecentCards } from "@/components/RecentCards";
 import { Badge } from "@/components/ui/badge";
 import { paletteFor } from "@/lib/art/palettes";
@@ -106,65 +107,66 @@ export default function HomePage() {
   return (
     <>
       <main className="relative">
-        {/* ── Hero — full viewport height, everything else waits below the fold ── */}
-        <section className="relative flex min-h-[100dvh] flex-col items-center px-6 pb-20 pt-24 text-center">
-          <div className={styles.heroArt} aria-hidden="true">
-            <div className={styles.heroArtImg} />
-            <div className={styles.heroArtFade} />
-          </div>
+        {/* ── Hero — rounded corner rectangle card with app bar page backdrop ── */}
+        <section className="mx-auto w-full max-w-[1440px] px-3 sm:px-6 lg:px-8 pt-2 pb-14">
+          <div className={styles.heroCard}>
+            <div className={styles.heroArt} aria-hidden="true">
+              <HeroWaterRipples />
+            </div>
 
-          <p className="enter enter-1 mono relative z-10 mt-6 text-[13px] text-[var(--muted)]">
-            Nothing to connect, nothing to sign — just an address
-          </p>
+            <p className="enter enter-1 mono relative z-10 text-[13px] text-[var(--muted)]">
+              Nothing to connect, nothing to sign — just an address
+            </p>
 
-          <h1
-            className={`${styles.heroTitle} enter enter-2 relative z-10 mt-6`}
-          >
-            <span className="shimmer-text-graphite block text-[clamp(48px,12vw,130px)]">
-              Every wallet
-            </span>
-            <span className="shimmer-text-graphite block text-[clamp(42px,10.3vw,111px)]">
-              has a legend
-            </span>
-          </h1>
-
-          <p className="enter enter-3 relative z-10 mx-auto mt-6 max-w-[560px] text-base leading-relaxed text-[var(--muted)]">
-            Transform any wallet into a one-of-one battle card, shaped by its
-            trades, holdings, protocols, risk and time onchain. Forge your
-            identity, then put it to the test.
-          </p>
-
-          <div className="enter enter-4 relative z-10 mt-9 w-full">
-            <AddressInput />
-          </div>
-
-          <motion.div
-            aria-hidden
-            className="absolute bottom-9 left-1/2 z-10 -translate-x-1/2"
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <span className="mono block text-[11px] text-[var(--muted)]">
-              scroll
-            </span>
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 14 14"
-              className="mx-auto mt-1 text-[var(--muted)]"
+            <h1
+              className={`${styles.heroTitle} enter enter-2 relative z-10 mt-6`}
             >
-              <path
-                d="M1 4l6 6 6-6"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              />
-            </svg>
-          </motion.div>
+              <span className="shimmer-text-graphite block text-[clamp(36px,7vw,72px)]">
+                Every wallet
+              </span>
+              <span className="shimmer-text-graphite block text-[clamp(32px,6vw,64px)]">
+                has a legend
+              </span>
+            </h1>
 
-          {/* A faint contact shadow marking where the hero meets the next
-              section — stays subtle even as it's scrolled past. */}
-          <div className={styles.heroShadow} aria-hidden="true" />
+            <p className="enter enter-3 relative z-10 mx-auto mt-6 max-w-[560px] text-base leading-relaxed text-[var(--muted)]">
+              Transform any wallet into a one-of-one battle card, shaped by its
+              trades, holdings, protocols, risk and time onchain. Forge your
+              identity, then put it to the test.
+            </p>
+
+            <div className="enter enter-4 relative z-10 mt-9 w-full">
+              <AddressInput />
+            </div>
+
+            <motion.div
+              aria-hidden
+              className="absolute bottom-6 left-1/2 z-10 -translate-x-1/2"
+              animate={{ y: [0, 8, 0] }}
+              transition={{
+                duration: 1.8,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <span className="mono block text-[11px] text-[var(--muted)]">
+                scroll
+              </span>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                className="mx-auto mt-1 text-[var(--muted)]"
+              >
+                <path
+                  d="M1 4l6 6 6-6"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+              </svg>
+            </motion.div>
+          </div>
         </section>
 
         {/* ── Recently revealed — only renders once the visitor has a history ── */}

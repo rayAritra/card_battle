@@ -54,22 +54,27 @@
 }
 
 .chip {
-  padding: 8px 13px;
-  border: 1.5px solid var(--line);
+  padding: 8px 14px;
+  border: 1.5px solid var(--line-strong);
   border-radius: 99px;
-  background: transparent;
-  color: var(--muted);
+  background: #ffffff;
+  color: #17150f;
   font-family: var(--font-mono);
   font-size: 11px;
+  font-weight: 500;
   cursor: pointer;
+  box-shadow: 0 1px 4px rgba(23, 21, 15, 0.05);
   transition:
     border-color 160ms ease,
-    color 160ms ease;
+    transform 140ms ease,
+    box-shadow 160ms ease;
 }
 
 .chip:hover {
-  border-color: var(--brand);
-  color: var(--text);
+  border-color: var(--text);
+  color: #000000;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(23, 21, 15, 0.08);
 }
 
 @media (max-width: 420px) {

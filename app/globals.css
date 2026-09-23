@@ -45,14 +45,14 @@
     --line: #e6e2d8;
     --line-strong: #d2ccbc;
 
-    --brand: #c8901f;
-    --brand-ink: #17150f;
+    --brand: #17150f;
+    --brand-ink: #ffffff;
     --danger: #c23a3a;
 
     /* Overridden per card by the archetype palette. */
-    --accent: #c8901f;
-    --accent-soft: #f3e6c8;
-    --glow: #c8901f;
+    --accent: #17150f;
+    --accent-soft: #efece5;
+    --glow: rgba(23, 21, 15, 0.12);
 
     --radius-card: 28px;
     --radius-inner: 14px;
@@ -243,9 +243,9 @@
     background-image: linear-gradient(
       100deg,
       rgba(23, 21, 15, 0.94) 0%,
-      rgba(23, 21, 15, 0.78) 38%,
-      var(--brand) 50%,
-      rgba(23, 21, 15, 0.78) 62%,
+      rgba(23, 21, 15, 0.76) 38%,
+      #ffffff 50%,
+      rgba(23, 21, 15, 0.76) 62%,
       rgba(23, 21, 15, 0.94) 100%
     );
     background-size: 250% auto;

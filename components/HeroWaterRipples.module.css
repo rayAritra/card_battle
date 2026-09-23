@@ -1,0 +1,83 @@
+/* ── Hero Water Ripples & Flow Reveal ──────────────────────────────────────── */
+
+.rippleContainer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
+
+  /* Req 4: Initially entirely invisible, flows outward from center */
+  opacity: 0;
+  clip-path: inset(0 50% 0 50%);
+  mask-image: radial-gradient(
+    ellipse 0% 100% at 50% 50%,
+    black 60%,
+    transparent 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    ellipse 0% 100% at 50% 50%,
+    black 60%,
+    transparent 100%
+  );
+  transition:
+    clip-path 1.4s cubic-bezier(0.16, 1, 0.3, 1),
+    mask-image 1.4s cubic-bezier(0.16, 1, 0.3, 1),
+    -webkit-mask-image 1.4s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.6s ease-out;
+}
+
+/* When page first loads and trigger fires: flow smoothly expands to sides */
+.revealed {
+  opacity: 1;
+  clip-path: inset(0 0% 0 0%);
+  mask-image: radial-gradient(
+    ellipse 130% 100% at 50% 50%,
+    black 70%,
+    transparent 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    ellipse 130% 100% at 50% 50%,
+    black 70%,
+    transparent 100%
+  );
+}
+
+.rippleCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* Fallback image: entirely occupies the hero card with bangles centered */
+.fallbackImg {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.fallbackHidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rippleContainer {
+    opacity: 1;
+    clip-path: none;
+    mask-image: none;
+    -webkit-mask-image: none;
+    transition: none;
+  }
+}
