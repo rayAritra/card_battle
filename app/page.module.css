@@ -11,6 +11,40 @@
   line-height: 0.96;
 }
 
+/* ── Hero forge CTA ───────────────────────────────────────────────────────── */
+/* Gradient pulled from the ring art's tones — terracotta through violet into */
+/* cobalt. The reversed gradient sits underneath as an ::after and crossfades */
+/* in on hover, so the button reads as flipping to its own inverse. */
+.heroCta {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-color: transparent;
+  color: #fff;
+  background: linear-gradient(135deg, #dc581e, #5f2aab, #021fcd);
+}
+
+.heroCta::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(135deg, #021fcd, #5f2aab, #dc581e);
+  opacity: 0;
+  transition: opacity 260ms ease;
+}
+
+.heroCta:hover,
+.heroCta:focus-visible {
+  border-color: transparent;
+  box-shadow: 0 14px 30px -10px rgba(95, 42, 171, 0.45);
+}
+
+.heroCta:hover::after,
+.heroCta:focus-visible::after {
+  opacity: 1;
+}
+
 /* ── Hero card container ─────────────────────────────────────────────────── */
 /* The hero is framed as a rounded-corner rectangle card sitting within the
    page shell. The page background (matching the app bar: #f7f5f1) frames it,

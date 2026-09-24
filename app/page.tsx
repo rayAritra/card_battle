@@ -109,7 +109,7 @@ export default function HomePage() {
             </p>
 
             <div className="enter enter-4 relative z-10 mt-9 w-full">
-              <AddressInput />
+              <AddressInput ctaClassName={`button ${styles.heroCta}`} />
             </div>
 
             <motion.div

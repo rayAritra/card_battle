@@ -15,6 +15,8 @@ interface AddressInputProps {
   destinationPrefix?: string;
   label?: string;
   cta?: string;
+  /** Override the submit button's classes, e.g. for a page-specific CTA treatment. */
+  ctaClassName?: string;
   /** One-tap example wallets. */
   examples?: { label: string; address: string }[];
   /** Override when more than one AddressInput renders on the same page. */
@@ -51,6 +53,7 @@ export function AddressInput({
   destinationPrefix = "/card/",
   label,
   cta = "Forge my card",
+  ctaClassName = "button button--accent",
   examples = DEFAULT_EXAMPLES,
   id = "address",
 }: AddressInputProps) {
@@ -158,7 +161,7 @@ export function AddressInput({
         />
         <motion.button
           type="submit"
-          className="button button--accent"
+          className={ctaClassName}
           disabled={pending}
           whileTap={{ scale: 0.97 }}
           transition={{ duration: 0.12 }}
