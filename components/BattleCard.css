@@ -79,6 +79,40 @@
   container-type: inline-size;
 }
 
+/* ── Aurora ────────────────────────────────────────────────────────────────── */
+/* A soft, slowly rotating field of the archetype's own accent/glow hues,
+   bled out from behind the card rather than confined to its face — every
+   card gets one, an ambient signature independent of the pointer-driven
+   foil sheen above. Lives on .battle-card itself (not .battle-card__inner,
+   which is clipped) so it can spread past the card's own edges; a negative
+   z-index keeps it behind the frame's border/box-shadow within the isolated
+   stacking context .battle-card already establishes. */
+.battle-card::before {
+  content: "";
+  position: absolute;
+  inset: -22%;
+  z-index: -2;
+  pointer-events: none;
+  background: conic-gradient(
+    from 0deg,
+    color-mix(in srgb, var(--accent) 60%, transparent),
+    transparent 22%,
+    color-mix(in srgb, var(--glow) 60%, transparent) 50%,
+    transparent 72%,
+    color-mix(in srgb, var(--accent-soft) 60%, transparent) 100%
+  );
+  filter: blur(34px);
+  opacity: calc(0.42 + var(--lift, 0) * 0.28);
+  animation: auroraDrift 14s linear infinite;
+  transition: opacity 0.4s ease;
+}
+
+@keyframes auroraDrift {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .battle-card__inner {
   position: relative;
   display: flex;
@@ -183,6 +217,10 @@
 @media (prefers-reduced-motion: reduce) {
   .battle-card {
     transform: none !important;
+  }
+
+  .battle-card::before {
+    animation: none !important;
   }
 
   .rarity--mythic .battle-card__inner::before {
