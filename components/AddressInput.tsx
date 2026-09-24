@@ -1,9 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Wallet } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { isAddress } from "viem";
+import { injectedProvider } from "@/lib/wallet/injected";
 import styles from "./AddressInput.module.css";
 
 interface AddressInputProps {
@@ -61,10 +63,48 @@ export function AddressInput({
   const [value, setValue] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [connecting, setConnecting] = useState(false);
 
   const go = (address: string) => {
     setPending(true);
     router.push(`${destinationPrefix}${address.toLowerCase()}`);
+  };
+
+  const connect = async () => {
+    const wallet = injectedProvider();
+    if (!wallet) {
+      setError(
+        "No wallet extension detected. Install MetaMask or paste your address instead.",
+      );
+      return;
+    }
+
+    setError(null);
+    setConnecting(true);
+
+    try {
+      const accounts = await wallet.request({ method: "eth_requestAccounts" });
+      const address =
+        Array.isArray(accounts) && typeof accounts[0] === "string"
+          ? accounts[0]
+          : "";
+
+      if (!isAddress(address, { strict: false })) {
+        setError("Your wallet did not reveal a valid address.");
+        setConnecting(false);
+        return;
+      }
+
+      setValue(address);
+      go(address);
+    } catch (err) {
+      const note =
+        err instanceof Error && err.message.toLowerCase().includes("reject")
+          ? "Connection cancelled."
+          : "Couldn't reach your wallet. Try again or paste your address.";
+      setError(note);
+      setConnecting(false);
+    }
   };
 
   const submit = async (event: FormEvent) => {
@@ -143,6 +183,21 @@ export function AddressInput({
       )}
 
       <div className={styles.addressFormField}>
+        <motion.button
+          type="button"
+          className={styles.connectButton}
+          onClick={connect}
+          disabled={connecting || pending}
+          whileTap={{ scale: 0.97 }}
+          transition={{ duration: 0.12 }}
+          aria-label="Connect wallet"
+          title="Connect wallet"
+        >
+          <Wallet size={16} strokeWidth={2} aria-hidden />
+          <span className={styles.connectButtonLabel}>
+            {connecting ? "Connecting…" : "Connect"}
+          </span>
+        </motion.button>
         <input
           id={id}
           name="address"

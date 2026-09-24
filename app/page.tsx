@@ -12,7 +12,7 @@ const STEPS = [
   {
     n: "01",
     title: "Scan",
-    body: "Point it at any wallet address or ENS name. We read Ethereum and Base history — no connection, no signature.",
+    body: "Connect a wallet or point it at any address or ENS name. We read Ethereum and Base history — never a signature.",
     icon: ScanLine,
     accent: "#6FD3FF",
   },
@@ -88,7 +88,7 @@ export default function HomePage() {
             </div>
 
             <p className="enter enter-1 mono relative z-10 text-[13px] text-[var(--muted)]">
-              Nothing to connect, nothing to sign — just an address
+              Connect a wallet, or just paste an address — never a signature
             </p>
 
             <h1

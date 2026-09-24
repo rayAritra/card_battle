@@ -3,18 +3,9 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { isAddress } from "viem";
+import { injectedProvider } from "@/lib/wallet/injected";
 import { settingsMessage } from "@/lib/server/settings";
 import styles from "./SettingsForm.module.css";
-
-/** The minimal EIP-1193 surface we need. No wallet library required. */
-interface Eip1193Provider {
-  request: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
-}
-
-function provider(): Eip1193Provider | null {
-  const injected = (window as unknown as { ethereum?: Eip1193Provider }).ethereum;
-  return injected ?? null;
-}
 
 type Status =
   | { kind: "idle" }
@@ -34,7 +25,7 @@ export function SettingsForm() {
   const [status, setStatus] = useState<Status>({ kind: "idle" });
 
   const save = async () => {
-    const wallet = provider();
+    const wallet = injectedProvider();
     if (!wallet) {
       setStatus({
         kind: "error",
