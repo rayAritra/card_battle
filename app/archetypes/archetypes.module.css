@@ -2,12 +2,53 @@
 /* Each archetype is its own card, not a cell sharing hairlines with its */
 /* neighbors — sixteen distinct collectibles read better as separate objects. */
 
+/* Single row, all archetypes laid out side by side; the page scrolls */
+/* vertically as normal, this strip moves horizontally on its own axis. */
 .archetypeGrid {
-  display: grid;
+  display: flex;
   gap: 16px;
 }
 
+/* Laptop: driven by ArchetypeScroller via transform — the row itself never */
+/* scrolls natively, so no overflow or scrollbar here. */
+.archetypeGridPinned {
+  min-width: 0;
+  padding: 4px 0;
+  will-change: transform;
+}
+
+/* Everywhere else: a plain swipeable row, scrollbar hidden so the card */
+/* edges are the only affordance for "there's more to the right". */
+.archetypeGridFlow {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  padding: 4px 4px 20px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.archetypeGridFlow::-webkit-scrollbar {
+  display: none;
+}
+
+/* Laptop only: breaks the row out of `.page`'s max-width/padding column so */
+/* it can travel to the browser's right edge, while its left edge still */
+/* lines up with the page's normal content gutter. The 1440px/28px figures */
+/* mirror `.page` in globals.css. */
+.archetypePinBreakout {
+  position: relative;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  padding-left: calc(max(0px, (100vw - 1440px) / 2) + 28px);
+  overflow: hidden;
+}
+
 .archetypeCard {
+  flex: 0 0 440px;
+  width: 440px;
+  scroll-snap-align: start;
   border-radius: var(--radius-card);
   transition:
     transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
@@ -29,8 +70,8 @@
   display: grid;
   flex-shrink: 0;
   place-items: center;
-  width: 30px;
-  height: 30px;
+  width: 34px;
+  height: 34px;
   border-radius: var(--radius-inner);
   background: rgba(23, 21, 15, 0.05);
   border: 1px solid rgba(23, 21, 15, 0.08);
@@ -66,7 +107,7 @@
   display: block;
   margin-top: 2px;
   font-family: var(--font-mono);
-  font-size: 22px;
+  font-size: 25px;
   font-variant-numeric: tabular-nums;
   color: var(--text);
 }
@@ -83,7 +124,7 @@
 .archetypeCardGraph {
   position: relative;
   width: 100%;
-  height: 96px;
+  height: 112px;
   padding: 8px 10px;
   border-radius: var(--radius-inner);
   background: rgba(255, 255, 255, 0.35);
