@@ -30,6 +30,15 @@ const securityHeaders = [
 const config: NextConfig = {
   reactStrictMode: true,
 
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+    ],
+  },
+
   async headers() {
     return [
       {

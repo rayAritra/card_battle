@@ -51,51 +51,34 @@
   border-radius: inherit;
 }
 
-/* ── Process: hand-of-cards fan ───────────────────────────────────────────── */
-/* Three cards pivot from one shared point at the bottom, like a hand of */
-/* playing cards — bottoms meet at that pivot, tops fan open and stay mostly */
-/* clear of each other. Hovering (or focusing, for keyboard users) straightens */
-/* a card, lifts it above its neighbors and brings it fully into view. */
+/* ── Process: step cards on a glossy floor ───────────────────────────────── */
+/* Three cards sit upright in a row, each standing on its own partial,
+   fading reflection — like a card propped up on a glossy floor. Hovering
+   (or focusing, for keyboard users) lifts a card slightly toward the
+   viewer. */
 
-.handFan {
-  position: relative;
-  height: clamp(360px, 66vw, 520px);
+.processGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 32px 24px;
   margin: 0 auto;
-  max-width: 720px;
-  cursor: grab;
-  touch-action: pan-y;
+  max-width: 900px;
 }
 
-.handFan:active {
-  cursor: grabbing;
+.stepCardColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.fanCard {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  width: clamp(190px, 36vw, 300px);
-  height: clamp(266px, 50vw, 420px);
-  transform-origin: bottom center;
-  transform: translateX(-50%) rotate(var(--rot));
-  transition: transform 650ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.fanCard:hover,
-.fanCard:focus-within,
-.fanCard.fanCardActive {
-  /* Only tilt part-way back toward upright, not fully straight, and lift just
-     a little — staying close to its fanned position leaves room for its
-     neighbor (the middle card, easiest to bury) to still show through. */
-  transform: translateX(-50%) rotate(calc(var(--rot) * 0.35)) translateY(-14px)
-    scale(1.1);
-  z-index: 5 !important;
-}
-
-.fanCardFace {
+.stepCard {
   position: relative;
   display: flex;
-  height: 100%;
+  width: 100%;
+  max-width: 240px;
+  /* Standard playing-card proportions (2.5in × 3.5in = 5:7), so the card
+     reads as an actual card rather than a wide content tile. */
+  aspect-ratio: 5 / 7;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -131,14 +114,22 @@
     ),
     var(--surface);
   box-shadow: 0 18px 34px -22px rgba(23, 21, 15, 0.22);
-  transition: border-color 650ms ease;
+  transition: transform 350ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 350ms ease;
+}
+
+/* `>` keeps this scoped to the real card only — the reflection holds its
+   own nested .stepCard, which must never pick up this lift on its own
+   (see .stepCardReflection below, which moves as a whole instead). */
+.stepCardColumn:hover > .stepCard,
+.stepCardColumn:focus-within > .stepCard {
+  transform: translateY(-8px);
+  border-color: var(--accent);
 }
 
 /* The hover/active glow fades in as its own layer rather than animating the
-   box-shadow directly — a box-shadow transition repaints the element on
-   every frame, which is what made a fast swipe through the fan feel choppy.
-   Opacity is compositor-only, so this stays smooth mid-drag. */
-.fanCardFace::after {
+   box-shadow directly, so it stays compositor-only and smooth. */
+.stepCard::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -146,23 +137,16 @@
   box-shadow: 0 26px 50px -18px
     color-mix(in srgb, var(--accent) 55%, transparent);
   opacity: 0;
-  transition: opacity 650ms ease;
+  transition: opacity 350ms ease;
   pointer-events: none;
 }
 
-.fanCard:hover .fanCardFace,
-.fanCard:focus-within .fanCardFace,
-.fanCard.fanCardActive .fanCardFace {
-  border-color: var(--accent);
-}
-
-.fanCard:hover .fanCardFace::after,
-.fanCard:focus-within .fanCardFace::after,
-.fanCard.fanCardActive .fanCardFace::after {
+.stepCardColumn:hover > .stepCard::after,
+.stepCardColumn:focus-within > .stepCard::after {
   opacity: 1;
 }
 
-.fanCardIndex {
+.stepCardIndex {
   position: absolute;
   top: 14px;
   left: 16px;
@@ -172,57 +156,90 @@
   color: var(--accent);
 }
 
-.fanCardIndexBottom {
-  top: auto;
-  left: auto;
-  right: 16px;
-  bottom: 14px;
-  transform: rotate(180deg);
-}
-
-.fanCardIcon {
+.stepCardIcon {
   width: 34px;
   height: 34px;
   color: var(--accent);
 }
 
-/* Below 640px there isn't room for three cards fanned at a 27deg tilt
-   without either the rotated bounding boxes forcing page-wide horizontal
-   scroll, or the cards shrinking so far that their own copy no longer fits
-   and spills past the card edge. The fan gives way to a plain vertical
-   stack instead: full width, unrotated, ordinary flow — the copy keeps its
-   normal size since a full-width card has room for it. */
+/* The reflection: a second, mirrored copy of the same card face, clipped to
+   the top 40% of its height and faded out with a mask — like a card
+   standing on a glossy floor, showing just enough of its own upside-down
+   image at the base before it dissolves away. It reuses .stepCard so the
+   trellis pattern and border re-tint for free, then flips vertically;
+   clipping to the top of that flipped copy keeps the edge nearest the card
+   (its actual bottom edge) as the brightest, most legible part of the
+   reflection. The wrapper's own aspect-ratio (5 / (7 * 0.4) simplified) is
+   what fixes its height at exactly 40% of the card's height at any size,
+   without needing to know the card's rendered height in pixels. */
+.stepCardReflection {
+  width: 100%;
+  max-width: 240px;
+  aspect-ratio: 25 / 14;
+  margin-top: 3px;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.4;
+  filter: blur(1.5px);
+  -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+  mask-image: linear-gradient(to bottom, black, transparent);
+  transition: transform 350ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.stepCardReflection .stepCard {
+  aspect-ratio: 5 / 7;
+  transform: scaleY(-1);
+  box-shadow: none;
+}
+
+/* A lifted card moves away from the floor, so its reflection should drift
+   the same distance further away too, not stay clamped to the card's new
+   position — otherwise the reflection would visibly "snap" back against
+   the card instead of tracking it. */
+.stepCardColumn:hover .stepCardReflection,
+.stepCardColumn:focus-within .stepCardReflection {
+  transform: translateY(8px);
+}
+
+/* Below 640px, three narrow columns leave too little room for the copy —
+   fall back to a plain vertical stack, full width. */
 @media (max-width: 640px) {
-  .handFan {
-    height: auto;
-    display: grid;
-    gap: 16px;
-    cursor: default;
-  }
-
-  .fanCard,
-  .fanCard:hover,
-  .fanCard:focus-within,
-  .fanCard.fanCardActive {
-    position: static;
-    width: 100%;
-    height: auto;
-    transform: none;
-    z-index: auto !important;
-  }
-
-  /* The upside-down corner index only makes sense as the readable-from-
-     either-end mark on a physically fanned card; stacked upright, it just
-     reads as a typo. */
-  .fanCardIndexBottom {
-    display: none;
+  .processGrid {
+    grid-template-columns: 1fr;
+    max-width: 340px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .fanCard:hover,
-  .fanCard:focus-within,
-  .fanCard.fanCardActive {
-    transform: translateX(-50%) rotate(calc(var(--rot) * 0.35)) scale(1.03);
+  .stepCardColumn:hover > .stepCard,
+  .stepCardColumn:focus-within > .stepCard {
+    transform: none;
   }
+
+  .stepCardColumn:hover .stepCardReflection,
+  .stepCardColumn:focus-within .stepCardReflection {
+    transform: none;
+  }
+}
+
+/* ── Stats: vertical, zig-zagging rows ───────────────────────────────────── */
+/* Each stat is image-then-content, stacked vertically, sharing one column
+   width (~38% of the viewport on large screens) between the photo and the
+   text below it — left-aligned on odd rows (leaving the right ~60% empty)
+   and right-aligned on even rows (leaving the left ~60% empty), so the
+   column zig-zags down the page instead of running as one straight rail. */
+
+.statPhoto {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  box-shadow: 0 24px 46px -22px rgba(23, 21, 15, 0.32);
+}
+
+.statPhotoImg {
+  object-fit: cover;
 }

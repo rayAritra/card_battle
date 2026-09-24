@@ -3,25 +3,10 @@
 import { AddressInput } from "@/components/AddressInput";
 import { HeroWaterRipples } from "@/components/HeroWaterRipples";
 import { RecentCards } from "@/components/RecentCards";
-import { Badge } from "@/components/ui/badge";
-import { paletteFor } from "@/lib/art/palettes";
-import { taglineFor } from "@/lib/flavor/templates";
-import { ARCHETYPE_CENTROIDS } from "@/lib/stats/archetypes";
-import { STAT_KEYS } from "@/types";
-import { motion, type PanInfo } from "framer-motion";
+import { motion } from "framer-motion";
 import { Hammer, ScanLine, Swords } from "lucide-react";
-import Link from "next/link";
-import { useRef, useState } from "react";
+import Image from "next/image";
 import styles from "./page.module.css";
-
-/** The stat with the highest weight in an archetype's centroid — its "lead". */
-function leadStat(centroid: readonly number[]): string {
-  const topIndex = centroid.reduce(
-    (best, value, index) => (value > centroid[best] ? index : best),
-    0,
-  );
-  return STAT_KEYS[topIndex];
-}
 
 const STEPS = [
   {
@@ -47,25 +32,43 @@ const STEPS = [
   },
 ];
 
-/** Degrees each fanned card rotates from its neighbor, pivoting from a shared point at the bottom. */
-const FAN_ANGLE = 27;
-
-/** Horizontal drag (px) that steps the revealed card by one — keeps a swipe from
- * jumping straight from card 1 to card 3 over the hidden middle card. */
-const SWIPE_STEP_PX = 70;
-
-const METRICS = [
-  { value: "16", label: "archetypes to land on" },
-  { value: "30", label: "abilities, rarest wins" },
-  { value: "5", label: "stats read from real activity" },
-  { value: "2", label: "chains scanned per card" },
-];
-
-const FEATURED_ARCHETYPES = [
-  "DEFI WARLORD",
-  "DIAMOND WHALE",
-  "MEV GREMLIN",
-  "GENESIS RELIC",
+const STAT_SECTIONS = [
+  {
+    value: "16",
+    label: "archetypes to land on",
+    title: "No two wallets forge the same card",
+    body: "Every address is scored across five stats and matched against sixteen distinct archetypes — from DeFi warlords to genesis relics. Yours is decided by what you actually did onchain, not chosen.",
+    image:
+      "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=1200&q=80",
+    alt: "Abstract render of a voxel cube structure linked by glowing lines, suggesting a network of distinct nodes",
+  },
+  {
+    value: "30",
+    label: "abilities, rarest wins",
+    title: "Rarity is earned, not rolled",
+    body: "Thirty abilities are seeded straight from onchain behavior — the rarer the pattern behind a wallet, the rarer the ability it forges. Nothing here comes from a loot table.",
+    image:
+      "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80",
+    alt: "Macro shot of a green circuit board",
+  },
+  {
+    value: "5",
+    label: "stats read from real activity",
+    title: "Five numbers, one honest read",
+    body: "Trades, holdings, protocol depth, risk and time onchain compress into five stats that describe how a wallet actually behaves — not how it wants to look.",
+    image:
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80",
+    alt: "Analytics dashboard with charts displayed on a laptop screen",
+  },
+  {
+    value: "2",
+    label: "chains scanned per card",
+    title: "Ethereum and Base, read together",
+    body: "Every card pulls history from both chains at once, so a wallet's full footprint counts — not just whichever chain it happened to be scanned on.",
+    image:
+      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80",
+    alt: "Earth viewed from space at night, city lights connected by light",
+  },
 ];
 
 const fadeUp = {
@@ -74,36 +77,6 @@ const fadeUp = {
 };
 
 export default function HomePage() {
-  // Touch has no hover, so a swipe across the fan needs its own notion of
-  // "revealed" card — driven by drag distance rather than raw pointer
-  // position, so crossing the hidden middle card during a fast swipe still
-  // lands on it instead of skipping straight to whatever's behind the cursor.
-  const [activeCard, setActiveCard] = useState<number | null>(null);
-  const dragBaseCard = useRef(0);
-
-  function handleFanDragStart() {
-    dragBaseCard.current = activeCard ?? 0;
-  }
-
-  function handleFanDrag(
-    _event: PointerEvent | MouseEvent | TouchEvent,
-    info: PanInfo,
-  ) {
-    const steps = Math.round(info.offset.x / SWIPE_STEP_PX);
-    const target = Math.min(
-      STEPS.length - 1,
-      Math.max(0, dragBaseCard.current + steps),
-    );
-    // Move at most one card per event, even when a single touchmove sample
-    // covers a big jump — otherwise a fast swipe from card 1 to 3 can skip
-    // right over card 2 without it ever becoming the active one.
-    setActiveCard((current) => {
-      const from = current ?? 0;
-      if (target === from) return current;
-      return from + Math.sign(target - from);
-    });
-  }
-
   return (
     <>
       <main className="relative">
@@ -176,156 +149,118 @@ export default function HomePage() {
 
         {/* ── Process — a genuine sequence, so numbered blocks earn their place ── */}
         <section className="mx-auto max-w-[1120px] px-6 py-24">
+          <motion.h2
+            className="display text-center text-[clamp(30px,4.5vw,48px)] text-(--text) mb-12"
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-80px" }}
+            variants={fadeUp}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          >
+            From address to arena
+          </motion.h2>
+
           <motion.div
-            className={styles.handFan}
+            className={`${styles.processGrid} mt-16`}
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, margin: "-60px" }}
             variants={fadeUp}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0}
-            dragMomentum={false}
-            onDragStart={handleFanDragStart}
-            onDrag={handleFanDrag}
-            style={{ touchAction: "pan-y" }}
+            transition={{
+              duration: 0.9,
+              delay: 0.15,
+              ease: [0.22, 1, 0.36, 1],
+            }}
           >
-            {STEPS.map((step, index) => {
+            {STEPS.map((step) => {
               const Icon = step.icon;
-              const isActive = activeCard === index;
+              const cardBody = (
+                <>
+                  <span className={styles.stepCardIndex}>{step.n}</span>
+                  <Icon
+                    className={styles.stepCardIcon}
+                    strokeWidth={1.5}
+                    aria-hidden
+                  />
+                  <h3 className="display mt-2 text-[23px] text-[var(--text)]">
+                    {step.title}
+                  </h3>
+                  <p className="mt-2 text-[14px] leading-relaxed text-[var(--muted)]">
+                    {step.body}
+                  </p>
+                </>
+              );
               return (
                 <div
                   key={step.n}
-                  className={`${styles.fanCard}${isActive ? ` ${styles.fanCardActive}` : ""}`}
-                  tabIndex={0}
-                  onFocus={() => setActiveCard(index)}
-                  onClick={() => setActiveCard(index)}
-                  style={
-                    {
-                      "--rot": `${(index - 1) * FAN_ANGLE}deg`,
-                      "--accent": step.accent,
-                      zIndex: isActive ? 5 : STEPS.length - index,
-                    } as React.CSSProperties
-                  }
+                  className={styles.stepCardColumn}
+                  style={{ "--accent": step.accent } as React.CSSProperties}
                 >
-                  <div className={styles.fanCardFace}>
-                    <span className={styles.fanCardIndex}>{step.n}</span>
-                    <Icon
-                      className={styles.fanCardIcon}
-                      strokeWidth={1.5}
-                      aria-hidden
-                    />
-                    <h3 className="display mt-2 text-[23px] text-[var(--text)]">
-                      {step.title}
-                    </h3>
-                    <p className="mt-2 text-[14px] leading-relaxed text-[var(--muted)]">
-                      {step.body}
-                    </p>
-                    <span
-                      className={`${styles.fanCardIndex} ${styles.fanCardIndexBottom}`}
-                    >
-                      {step.n}
-                    </span>
+                  <div className={styles.stepCard} tabIndex={0}>
+                    {cardBody}
+                  </div>
+                  <div className={styles.stepCardReflection} aria-hidden="true">
+                    <div className={styles.stepCard}>{cardBody}</div>
                   </div>
                 </div>
               );
             })}
           </motion.div>
+        </section>
 
+        {/* ── Stats — real numbers, one alternating photo-led row per stat ── */}
+        <section className="mx-auto max-w-[1120px] px-6 py-24">
           <motion.h2
-            className="display mt-24 text-center text-[clamp(30px,4.5vw,48px)] text-[var(--text)]"
+            className="display text-left text-[clamp(30px,4.5vw,48px)] text-(--text)"
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, margin: "-80px" }}
             variants={fadeUp}
-            transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
-            From address to arena
+            Built on real numbers
           </motion.h2>
-        </section>
 
-        {/* ── Metrics — what the system actually measures, stated as numbers ── */}
-        <section className="border-y-2 border-[var(--line)] bg-[var(--surface)]/60">
-          <div className="mx-auto grid max-w-[1120px] grid-cols-2 gap-8 px-6 py-16 md:grid-cols-4">
-            {METRICS.map((metric, index) => (
-              <motion.div
-                key={metric.label}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, margin: "-60px" }}
-                variants={fadeUp}
-                transition={{
-                  duration: 0.45,
-                  delay: index * 0.08,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-              >
-                <span className="block text-[clamp(34px,5vw,54px)] font-bold text-[var(--text)]">
-                  {metric.value}
-                </span>
-                <span className="mt-1 block text-[13px] leading-snug text-[var(--muted)]">
-                  {metric.label}
-                </span>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* ── Archetype teaser — real data, not filler ── */}
-        <section className="mx-auto max-w-[1120px] px-6 py-24">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <motion.h2
-              className="display text-[clamp(30px,4.5vw,48px)] text-[var(--text)]"
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, margin: "-80px" }}
-              variants={fadeUp}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            >
-              Sixteen ways to be a wallet
-            </motion.h2>
-            <Link href="/archetypes" className="button button--ghost">
-              See all archetypes
-            </Link>
-          </div>
-
-          <div className="seam-grid mt-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-            {FEATURED_ARCHETYPES.map((name, index) => {
-              const palette = paletteFor(name);
-              const centroid = ARCHETYPE_CENTROIDS[name] ?? [];
+          <div className="mt-16 flex flex-col gap-16">
+            {STAT_SECTIONS.map((stat, index) => {
+              const reversed = index % 2 === 1;
               return (
                 <motion.div
-                  key={name}
-                  className="seam-cell p-5"
+                  key={stat.label}
+                  className={`flex flex-col ${
+                    reversed
+                      ? "md:items-end md:text-right"
+                      : "md:items-start md:text-left"
+                  } items-center text-center`}
                   initial="hidden"
                   whileInView="show"
-                  viewport={{ once: true, margin: "-60px" }}
+                  viewport={{ once: true, margin: "-80px" }}
                   variants={fadeUp}
-                  transition={{
-                    duration: 0.45,
-                    delay: index * 0.08,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
+                  transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <Badge
-                    variant="outline"
-                    style={{
-                      borderColor: palette.accent,
-                      color: palette.accent,
-                    }}
-                  >
-                    {leadStat(centroid)}-led
-                  </Badge>
-                  <h3
-                    className="display mt-3 text-[17px]"
-                    style={{ color: palette.accent }}
-                  >
-                    {name}
-                  </h3>
-                  <p className="mt-2 text-[12.5px] leading-relaxed text-[var(--muted)]">
-                    {taglineFor(name)}
-                  </p>
+                  <div className="w-full md:max-w-[58%]">
+                    <div className={styles.statPhoto}>
+                      <Image
+                        src={stat.image}
+                        alt={stat.alt}
+                        fill
+                        sizes="(min-width: 768px) 38vw, 90vw"
+                        className={styles.statPhotoImg}
+                      />
+                    </div>
+                    <span className="display block mt-6 text-[clamp(34px,5vw,48px)] font-bold text-[var(--text)]">
+                      {stat.value}
+                    </span>
+                    <span className="mono mt-1 block text-[12px] uppercase tracking-[0.08em] text-[var(--muted)]">
+                      {stat.label}
+                    </span>
+                    <h3 className="display mt-5 text-[22px] text-[var(--text)]">
+                      {stat.title}
+                    </h3>
+                    <p className="mt-3 text-[14px] leading-relaxed text-[var(--muted)]">
+                      {stat.body}
+                    </p>
+                  </div>
                 </motion.div>
               );
             })}
