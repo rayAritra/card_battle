@@ -472,7 +472,10 @@ export function HeroWaterRipples({
           1.0 / SIM_RES,
           1.0 / SIM_RES,
         );
-        gl.uniform1f(gl.getUniformLocation(activeSimProg, "u_damping"), 0.942);
+        // Strong damping keeps the wave confined near the cursor and fades it
+        // out within about a second, instead of letting it propagate as an
+        // expanding ring across the whole background.
+        gl.uniform1f(gl.getUniformLocation(activeSimProg, "u_damping"), 0.88);
 
         const dropsToProcess = pendingDrops.splice(0, 4);
         if (dropsToProcess.length === 0) {
@@ -582,7 +585,10 @@ export function HeroWaterRipples({
 
         if (pendingDrops.length === 0) {
           idleCounter++;
-          if (idleCounter > 70) {
+          // Keep simulating past the last drop so the wave field has time to
+          // damp down to a flat surface before the loop halts — stopping too
+          // early freezes a visibly distorted (non-flat) ripple in place.
+          if (idleCounter > 90) {
             isRunning = false;
             return;
           }
@@ -619,9 +625,6 @@ export function HeroWaterRipples({
           );
           imageLoaded = true;
           setImageReady(true);
-
-          // Subtle initial ripple on reveal, settles within ~1 second
-          addDrop(0.5, 0.5, 0.02, 0.2);
           wakeAnimation();
         };
 
