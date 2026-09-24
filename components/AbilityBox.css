@@ -1,55 +1,49 @@
-/* ── Ability plaque ───────────────────────────────────────────────────────── */
+/* ── Ability line ─────────────────────────────────────────────────────────── */
+/* Plain typography over the foil, set off from the stats above by a hairline —
+   the reference card's "GHOST PROTOCOL ♦♦♦♦♦" treatment, not a bordered plaque. */
 
 .ability {
-  margin-top: 1.6cqw;
-  padding: 1.4cqw 2.2cqw 1.6cqw;
-  border: 1.5px solid var(--line);
-  border-left: 3px solid var(--accent);
-  border-radius: var(--radius-inner);
-  background: rgba(255, 255, 255, 0.02);
+  margin-top: 1.8cqw;
+  padding-top: 1.7cqw;
+  border-top: 1px solid color-mix(in srgb, var(--text) 14%, transparent);
 }
 
-.ability__ribbon {
+.ability__row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 1.4cqw;
+  gap: 1.2cqw;
 }
 
-.ability__ribbon-label {
-  color: #6e6e6e;
-  font-size: 1.7cqw;
+.ability__name {
+  margin: 0;
+  color: var(--text);
+  font-size: 2.9cqw;
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 .ability__pips {
   display: flex;
-  gap: 0.6cqw;
-  color: var(--line-strong);
+  gap: 0.7cqw;
 }
 
 .ability__pip {
-  width: 1.9cqw;
-  height: 1.9cqw;
+  width: 1.6cqw;
+  height: 1.6cqw;
+  border: 1.5px solid color-mix(in srgb, var(--text) 45%, transparent);
+  transform: rotate(45deg);
 }
 
 .ability__pip--on {
-  color: var(--accent);
-}
-
-.ability__name {
-  margin: 0.8cqw 0 0;
-  color: var(--accent);
-  font-family: var(--font-display);
-  font-size: 3.2cqw;
-  letter-spacing: 0.02em;
+  border-color: var(--text);
+  background: var(--text);
 }
 
 .ability__flavor {
-  margin: 0.5cqw 0 0;
-  color: #a8a8a8;
+  margin: 0.7cqw 0 0;
+  color: var(--muted);
   font-size: 2.2cqw;
   font-style: italic;
   line-height: 1.4;

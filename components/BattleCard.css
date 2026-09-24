@@ -6,40 +6,40 @@
 /* components (HoloLayer's .holo, the .rarity--* tier on this element).       */
 
 /* ── Rarity as material, archetype as color ──────────────────────────────── */
-/* Two independent signals: --accent/--glow (set inline per archetype) drive  */
-/* every colored surface — name, fills, glow. --metal-1/--metal-2 drive the   */
-/* frame's physical tier — a neutral/metallic finish that never competes with */
-/* an archetype hue, so "who this is" and "how rare this is" both stay        */
-/* legible even when they'd otherwise clash (e.g. a violet epic archetype).   */
+/* Two independent signals: --accent/--glow (set inline per archetype) tint   */
+/* the holographic foil background and every colored surface. --metal-1/      */
+/* --metal-2 drive the frame's physical tier — a neutral finish that never    */
+/* competes with an archetype hue, so "who this is" and "how rare this is"    */
+/* both stay legible even when they'd otherwise clash. */
 
 .rarity--common {
-  --metal-1: #9a9aa2;
-  --metal-2: #3c3c42;
+  --metal-1: #ffffff;
+  --metal-2: #d9d3c4;
 }
 
 .rarity--rare {
-  --metal-1: #e7edf3;
-  --metal-2: #7c8894;
+  --metal-1: #ffffff;
+  --metal-2: #b7c2ce;
 }
 
 .rarity--epic {
-  --metal-1: #e8a866;
-  --metal-2: #7a4a1f;
+  --metal-1: #fbe6c8;
+  --metal-2: #c7903f;
 }
 
 .rarity--legendary {
   /* Gold, tied directly to the site's own brand hue — the tier the brand
      color itself is reserved for. */
-  --metal-1: var(--brand);
-  --metal-2: #9c6d00;
+  --metal-1: #fff3c4;
+  --metal-2: #c9a53c;
 }
 
 .rarity--mythic {
   /* Mythic's spectacle comes from the holo + particle layers below, keyed to
-     the archetype's own --glow; the metal tokens just anchor the medallion
-     and gem to a bright neutral rather than adding a second, competing hue. */
-  --metal-1: #f5f5f2;
-  --metal-2: #4a4a4a;
+     the archetype's own --glow; the metal tokens just anchor the frame to a
+     bright neutral rather than adding a second, competing hue. */
+  --metal-1: #ffffff;
+  --metal-2: #8f8a7e;
 }
 
 .battle-card {
@@ -55,12 +55,12 @@
   border-radius: var(--radius-card);
   border: 3px solid var(--metal-2);
   box-shadow:
-    inset 0 1.5px 0 color-mix(in srgb, var(--metal-1) 65%, transparent),
-    inset 0 -3px 6px rgba(0, 0, 0, 0.55),
-    0 24px 60px rgba(0, 0, 0, 0.55),
-    0 0 0 1px rgba(0, 0, 0, 0.6),
-    0 0 calc(60px + var(--lift) * 40px)
-      color-mix(in srgb, var(--glow) calc(16% + var(--lift) * 18%), transparent);
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.7),
+    0 20px 44px -16px color-mix(in srgb, var(--glow) 45%, transparent),
+    0 10px 28px rgba(23, 21, 15, 0.1),
+    0 0 0 1px rgba(23, 21, 15, 0.04),
+    0 0 calc(40px + var(--lift) * 30px)
+      color-mix(in srgb, var(--glow) calc(14% + var(--lift) * 16%), transparent);
   transform: perspective(1000px) rotateX(var(--rx)) rotateY(var(--ry))
     scale(calc(1 + var(--lift) * 0.028));
   transform-style: preserve-3d;
@@ -93,7 +93,19 @@
      aspect-ratio parent together, so nothing after the expanded stat gets cut off. */
   min-height: 100%;
   border-radius: var(--radius-card);
-  background: linear-gradient(165deg, var(--surface-alt) 0%, #0c0c0c 100%);
+  /* The holographic foil: a soft pastel band running diagonally through the
+     archetype's own accent/accent-soft hues, washed toward white so sixteen
+     archetypes read as sixteen distinct tints rather than sixteen loud
+     colors — the same restraint the reference card uses. */
+  background: linear-gradient(
+    140deg,
+    color-mix(in srgb, var(--accent) 40%, white) 0%,
+    color-mix(in srgb, var(--accent-soft) 34%, white) 18%,
+    #ffffff 36%,
+    color-mix(in srgb, var(--accent) 30%, white) 54%,
+    color-mix(in srgb, var(--accent-soft) 42%, white) 74%,
+    color-mix(in srgb, var(--accent) 36%, white) 100%
+  );
   /* clip-path, not overflow: hidden — this element has no transform of its
      own, but it still lives inside .battle-card's tilted preserve-3d space,
      and Chromium's overflow-hidden rounded-corner mask is still computed
@@ -113,7 +125,7 @@
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  box-shadow: inset 0 0 40px color-mix(in srgb, var(--glow) 30%, transparent);
+  box-shadow: inset 0 0 44px color-mix(in srgb, var(--glow) 32%, transparent);
   animation: cornerPulse 4.5s ease-in-out infinite;
 }
 
@@ -139,7 +151,7 @@
     filter: brightness(1);
   }
   50% {
-    filter: brightness(1.08);
+    filter: brightness(1.05);
   }
 }
 
@@ -151,11 +163,11 @@
   z-index: 1;
   pointer-events: none;
   background-image: radial-gradient(
-    color-mix(in srgb, var(--accent) 70%, transparent) 0.8px,
+    color-mix(in srgb, var(--accent) 80%, black) 0.8px,
     transparent 1px
   );
   background-size: 26px 26px;
-  opacity: 0.22;
+  opacity: 0.16;
   animation: particleDrift 26s linear infinite;
 }
 
@@ -179,139 +191,22 @@
 }
 
 /* ── BattleCard's own layout ──────────────────────────────────────────────── */
-
-.card-head {
-  display: flex;
-  align-items: flex-start;
-  gap: 1.8cqw;
-  padding: 2.4cqw 3.2cqw 1.4cqw;
-  border-bottom: 1px solid var(--line);
-}
-
-.card-head-left {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9cqw;
-  min-width: 0;
-  flex: 1;
-}
-
-.card-head-tags {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1.4cqw;
-}
-
-.card-identity {
-  overflow: hidden;
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 2.3cqw;
-  letter-spacing: 0.01em;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.chain-pips {
-  display: flex;
-  gap: 0.9cqw;
-  font-family: var(--font-mono);
-  font-size: 2.1cqw;
-  letter-spacing: 0.04em;
-  color: var(--accent);
-}
-
-.chain-pip {
-  padding: 0.6cqw 1.4cqw;
-  border: 1.5px solid color-mix(in srgb, var(--accent) 40%, transparent);
-  border-radius: 0.9cqw;
-  background: color-mix(in srgb, var(--accent) 10%, transparent);
-}
-
-/* Level medallion: a coin overlapping the header seam, its material set by
-   the same --metal-1/--metal-2 tokens as the rarity gem, with a --bg ring
-   cut around it so it reads as sitting ON the header rather than in it. */
-.level-medallion {
-  position: relative;
-  flex-shrink: 0;
-  margin-top: -1.4cqw;
-  margin-bottom: -3cqw;
-  width: 12cqw;
-  height: 12cqw;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 32% 28%,
-    color-mix(in srgb, var(--metal-1) 50%, transparent),
-    var(--surface-alt) 72%
-  );
-  border: 1.6px solid var(--metal-2);
-  box-shadow:
-    0 0 0 2.5px var(--bg),
-    0 4px 10px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 color-mix(in srgb, var(--metal-1) 55%, transparent);
-  z-index: 5;
-}
-
-.level-medallion__label {
-  color: color-mix(in srgb, var(--metal-1) 80%, var(--text));
-  font-size: 1.7cqw;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  line-height: 1;
-}
-
-.level-medallion__value {
-  margin-top: 0.2cqw;
-  color: var(--text);
-  font-size: 5.4cqw;
-  font-weight: 700;
-  line-height: 1;
-}
-
-@container (max-width: 210px) {
-  .level-medallion__label {
-    display: none;
-  }
-}
-
-.card-art {
-  position: relative;
-  /* cqw, not %: .battle-card__inner's own height is a `min-height` now (see
-     its rule above), not a definite `height`, and a percentage height on a
-     child of a non-definite-height box resolves to auto — collapsing this to
-     nothing — rather than an error, so it fails silently. cqw sidesteps that
-     entirely: it reads .battle-card's width, which stays definite regardless
-     of how tall the card grows. 26.6cqw = the same 19% this used to be, of
-     the card's resting 140cqw (5:7 at 100cqw wide) height. */
-  height: 26.6cqw;
-  margin: 1.6cqw 2.9cqw 0;
-  border: 1.5px solid var(--line-strong);
-  border-radius: var(--radius-inner);
-  background-size: cover;
-  background-position: center;
-  box-shadow: inset 0 -30px 40px -20px rgba(8, 8, 11, 0.95);
-  overflow: hidden;
-}
+/* The top ~third of the card is left bare — pure foil — before the copy
+   begins, the same held-back composition the reference card uses. */
 
 .card-body {
   display: flex;
   flex-direction: column;
   flex: 1;
-  padding: 2.6cqw 3.7cqw 3.2cqw;
+  padding: 34cqw 3.8cqw 3.4cqw;
   min-height: 0;
 }
 
 .card-archetype {
-  margin: 1.6cqw 0 0;
-  color: var(--accent);
+  margin: 0;
+  color: var(--text);
   font-family: var(--font-display);
-  font-size: 7.4cqw;
+  font-size: 7.6cqw;
   letter-spacing: 0;
   line-height: 0.95;
 }
@@ -319,86 +214,47 @@
 .card-tagline {
   margin: 0.9cqw 0 0;
   color: var(--muted);
-  font-size: 2.4cqw;
-  line-height: 1.35;
+  font-size: 2.5cqw;
+  line-height: 1.4;
 }
 
 .card-vitals {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 1.4cqw;
-  margin: 1.6cqw 0;
+  margin: 2.2cqw 0 2.4cqw;
 }
 
-.vital {
+.vital-box {
   display: flex;
-  align-items: center;
-  gap: 1.8cqw;
-  padding: 1.2cqw 2.2cqw;
-  border: 1.5px solid var(--line);
+  flex-direction: column;
+  gap: 0.5cqw;
+  padding: 1.5cqw 2cqw;
+  border: 1.5px solid color-mix(in srgb, var(--text) 14%, transparent);
   border-radius: var(--radius-inner);
-  background: rgba(255, 255, 255, 0.025);
+  background: color-mix(in srgb, white 55%, transparent);
 }
 
-.vital__icon {
-  display: grid;
-  flex-shrink: 0;
-  place-items: center;
-  width: 5.2cqw;
-  height: 5.2cqw;
-  border-radius: 1.4cqw;
-  background: color-mix(in srgb, var(--accent) 16%, transparent);
-  color: var(--accent);
+.vital-box__label {
+  color: color-mix(in srgb, var(--text) 48%, transparent);
+  font-size: 1.8cqw;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.vital__icon svg {
-  width: 3cqw;
-  height: 3cqw;
-}
-
-.vital__text {
-  display: grid;
-  gap: 0.2cqw;
-}
-
-.vital__label {
-  color: #7a7a7a;
-  font-size: 1.9cqw;
+.vital-box__value {
+  color: var(--text);
+  font-size: 5.6cqw;
   font-weight: 700;
-  letter-spacing: 0.03em;
-}
-
-.vital__value {
-  font-size: 3.9cqw;
   font-variant-numeric: tabular-nums;
   line-height: 1.1;
 }
 
-.section-label {
-  display: flex;
-  align-items: center;
-  gap: 1.2cqw;
-  /* Absorbs any extra height left in .card-body's flex column, so the ability
-     box and footer always sit flush against the card's bottom edge instead of
-     floating wherever the stats happen to end. */
-  margin: auto 0 0.9cqw;
-  color: #6e6e6e;
-  font-size: 1.8cqw;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.section-label::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: var(--line);
-}
-
 .stat-list {
   display: grid;
-  gap: 0.55cqw;
+  gap: 0.2cqw;
+  margin-bottom: 0.4cqw;
 }
 
 .card-foot {
@@ -407,8 +263,10 @@
   align-items: center;
   margin-top: 1.8cqw;
   padding-top: 1.4cqw;
-  border-top: 1px solid var(--line);
-  color: #6a6a6a;
-  font-size: 2cqw;
-  letter-spacing: 0.04em;
+  border-top: 1px solid color-mix(in srgb, var(--text) 14%, transparent);
+  color: color-mix(in srgb, var(--text) 55%, transparent);
+  font-size: 1.9cqw;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }

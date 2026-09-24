@@ -139,9 +139,12 @@ export function RevealSequence({ card, children }: { card: Card; children?: Reac
                 zIndex: 12,
                 pointerEvents: "none",
                 borderRadius: "var(--radius-card)",
+                // soft-light, not color-dodge: the card face is now a light
+                // foil, and color-dodge over a pale background just blows the
+                // sweep out to solid white instead of reading as a gleam.
                 background:
-                  "linear-gradient(110deg, transparent 35%, rgba(255,255,255,0.5) 50%, transparent 65%)",
-                mixBlendMode: "color-dodge",
+                  "linear-gradient(110deg, transparent 35%, rgba(255,255,255,0.85) 50%, transparent 65%)",
+                mixBlendMode: "soft-light",
               }}
               initial={{ x: "-120%", opacity: 0 }}
               animate={{ x: "120%", opacity: [0, 1, 0] }}

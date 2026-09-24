@@ -13,59 +13,65 @@ import "./CardSkeleton.css";
 export function CardSkeleton() {
   return (
     <div className="w-[min(100%,380px)] mx-auto overflow-visible">
-      <div className="battle-card rarity--common" aria-hidden style={{ "--accent": "#5a5a5a" } as React.CSSProperties}>
+      <div
+        className="battle-card rarity--common"
+        aria-hidden
+        style={
+          {
+            "--accent": "#c9c3b3",
+            "--accent-soft": "#e7e2d2",
+            "--glow": "#c9c3b3",
+          } as React.CSSProperties
+        }
+      >
         <div className="battle-card__inner">
-          <div className="card-head">
-            <div className="card-head-left">
-              <span className="card-head-tags">
-                <span className="skeleton-line" style={{ width: "18cqw", height: "5cqw", borderRadius: 999 }} />
-                <span className="skeleton-line" style={{ width: "14cqw", height: "5cqw", borderRadius: "1.4cqw", animationDelay: "0.08s" }} />
-              </span>
-              <span className="skeleton-line" style={{ width: "60%", height: "2.3cqw", animationDelay: "0.16s" }} />
-            </div>
-            <div className="skeleton-line" style={{ width: "12cqw", height: "12cqw", borderRadius: "50%", flexShrink: 0, marginTop: "-1.4cqw", marginBottom: "-3cqw", animationDelay: "0.24s" }} />
-          </div>
-
-          <div className="card-art">
-            <div className="skeleton-line" style={{ width: "100%", height: "100%", borderRadius: 0, animationDelay: "0.1s" }} />
-          </div>
-
           <div className="card-body">
-            <div className="skeleton-line" style={{ width: "72%", height: "7cqw", marginTop: "1.6cqw", animationDelay: "0.2s" }} />
-            <div className="skeleton-line" style={{ width: "90%", height: "2.4cqw", marginTop: "1.4cqw", animationDelay: "0.28s" }} />
+            <div className="skeleton-line" style={{ width: "70%", height: "7.6cqw", animationDelay: "0.1s" }} />
+            <div className="skeleton-line" style={{ width: "88%", height: "2.5cqw", marginTop: "1.4cqw", animationDelay: "0.18s" }} />
 
             <div className="card-vitals">
-              <div className="vital">
-                <span className="skeleton-line" style={{ width: "5.2cqw", height: "5.2cqw", borderRadius: "1.4cqw", flexShrink: 0, animationDelay: "0.34s" }} />
-                <span className="vital__text" style={{ width: "100%" }}>
-                  <span className="skeleton-line" style={{ width: "40%", height: "1.9cqw", animationDelay: "0.4s" }} />
-                  <span className="skeleton-line" style={{ width: "55%", height: "3.9cqw", marginTop: "0.4cqw", animationDelay: "0.46s" }} />
-                </span>
+              <div className="vital-box">
+                <span className="skeleton-line" style={{ width: "50%", height: "1.8cqw" }} />
+                <span className="skeleton-line" style={{ width: "40%", height: "5.6cqw", marginTop: "0.6cqw", animationDelay: "0.06s" }} />
+              </div>
+              <div className="vital-box">
+                <span className="skeleton-line" style={{ width: "60%", height: "1.8cqw", animationDelay: "0.12s" }} />
+                <span className="skeleton-line" style={{ width: "35%", height: "5.6cqw", marginTop: "0.6cqw", animationDelay: "0.18s" }} />
               </div>
             </div>
 
-            <div className="skeleton-line" style={{ width: "30%", height: "1.8cqw", marginBottom: "0.9cqw", animationDelay: "0.52s" }} />
-
             <div className="stat-list">
               {[0, 1, 2, 3, 4].map((row) => (
-                <div key={row} className="stat-box" style={{ padding: "0.85cqw 1.9cqw" }}>
+                <div key={row} className="stat-row">
                   <div style={{ display: "flex", alignItems: "center", gap: "1.6cqw" }}>
-                    <span className="skeleton-line" style={{ width: "4.4cqw", height: "4.4cqw", borderRadius: "1.2cqw", flexShrink: 0, animationDelay: `${0.58 + row * 0.06}s` }} />
-                    <span className="skeleton-line" style={{ width: `${52 - row * 4}%`, height: "2.1cqw", animationDelay: `${0.62 + row * 0.06}s` }} />
+                    <span
+                      className="skeleton-line"
+                      style={{ width: "20cqw", height: "2.1cqw", flexShrink: 0, animationDelay: `${0.4 + row * 0.06}s` }}
+                    />
+                    <span
+                      className="skeleton-line"
+                      style={{ flex: 1, height: "2px", borderRadius: "2px", animationDelay: `${0.44 + row * 0.06}s` }}
+                    />
+                    <span
+                      className="skeleton-line"
+                      style={{ width: "8cqw", height: "2.3cqw", flexShrink: 0, animationDelay: `${0.48 + row * 0.06}s` }}
+                    />
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="ability" style={{ marginTop: "1.6cqw" }}>
-              <div className="skeleton-line" style={{ width: "34%", height: "1.7cqw", animationDelay: "0.94s" }} />
-              <div className="skeleton-line" style={{ width: "50%", height: "3cqw", marginTop: "0.9cqw", animationDelay: "1s" }} />
-              <div className="skeleton-line" style={{ width: "80%", height: "2cqw", marginTop: "0.6cqw", animationDelay: "1.06s" }} />
+            <div className="ability">
+              <div style={{ display: "flex", alignItems: "center", gap: "1.2cqw" }}>
+                <span className="skeleton-line" style={{ width: "42%", height: "2.9cqw", animationDelay: "0.9s" }} />
+                <span className="skeleton-line" style={{ width: "18%", height: "1.6cqw", animationDelay: "0.94s" }} />
+              </div>
+              <div className="skeleton-line" style={{ width: "78%", height: "2.2cqw", marginTop: "0.7cqw", animationDelay: "1s" }} />
             </div>
 
             <div className="card-foot">
-              <span className="skeleton-line" style={{ width: "30%", height: "2cqw", animationDelay: "1.12s" }} />
-              <span className="skeleton-line" style={{ width: "24%", height: "2cqw", animationDelay: "1.16s" }} />
+              <span className="skeleton-line" style={{ width: "42%", height: "1.9cqw", animationDelay: "1.08s" }} />
+              <span className="skeleton-line" style={{ width: "16%", height: "1.9cqw", animationDelay: "1.12s" }} />
             </div>
           </div>
 

@@ -14,24 +14,28 @@
 }
 
 .holo {
+  /* multiply, not color-dodge: the card face is now a light foil, and
+     color-dodge over a pale background just blows every stripe out to white
+     instead of tinting it. Multiply keeps the rainbow hues visible while
+     still reading as a sheen rather than a printed pattern. */
   background: repeating-linear-gradient(
     110deg,
     transparent 0%,
-    rgba(255, 212, 0, 0.55) 6%,
-    rgba(255, 56, 158, 0.45) 12%,
-    rgba(120, 255, 92, 0.35) 18%,
+    rgba(255, 200, 0, 0.5) 6%,
+    rgba(255, 56, 158, 0.4) 12%,
+    rgba(80, 210, 255, 0.35) 18%,
     transparent 26%
   );
   background-size: 260% 260%;
   background-position: var(--mx) var(--my);
-  mix-blend-mode: color-dodge;
+  mix-blend-mode: multiply;
 }
 
 .holo-sparkle {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.55) 0.5px, transparent 0.6px);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.8) 0.5px, transparent 0.6px);
   background-size: 4px 4px;
   background-position: var(--mx) var(--my);
-  mix-blend-mode: overlay;
+  mix-blend-mode: soft-light;
 }
 
 .rarity--rare .holo {
