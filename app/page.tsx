@@ -14,21 +14,21 @@ const STEPS = [
     title: "Scan",
     body: "Connect a wallet or point it at any address or ENS name. We read Ethereum and Base history — never a signature.",
     icon: ScanLine,
-    accent: "#6FD3FF",
+    accent: "#dc581e",
   },
   {
     n: "02",
     title: "Forge",
     body: "Trades, holdings, protocol use and time onchain compress into five stats, an archetype, a rarity and an ability.",
     icon: Hammer,
-    accent: "#E8C56A",
+    accent: "#5f2aab",
   },
   {
     n: "03",
     title: "Battle",
     body: "Five rounds, seeded from both addresses. Same match every time it's opened — nothing is rolled behind the scenes.",
     icon: Swords,
-    accent: "#FF3B5C",
+    accent: "#021fcd",
   },
 ];
 
@@ -38,36 +38,32 @@ const STAT_SECTIONS = [
     label: "archetypes to land on",
     title: "No two wallets forge the same card",
     body: "Every address is scored across five stats and matched against sixteen distinct archetypes — from DeFi warlords to genesis relics. Yours is decided by what you actually did onchain, not chosen.",
-    image:
-      "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=1200&q=80",
-    alt: "Abstract render of a voxel cube structure linked by glowing lines, suggesting a network of distinct nodes",
+    image: "/images/file_00000000bbe481f8b7e758d70846a198.png",
+    alt: "Glass-rendered Ethereum and Base tokens linked by glowing loops around a wallet activity panel",
   },
   {
     value: "30",
     label: "abilities, rarest wins",
     title: "Rarity is earned, not rolled",
     body: "Thirty abilities are seeded straight from onchain behavior — the rarer the pattern behind a wallet, the rarer the ability it forges. Nothing here comes from a loot table.",
-    image:
-      "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80",
-    alt: "Macro shot of a green circuit board",
+    image: "/images/file_00000000aa3c824682d459338eac7b90.png",
+    alt: "A glass Legendary battle card, Market Monarch, surrounded by four other cards of varying rarity",
   },
   {
     value: "5",
     label: "stats read from real activity",
     title: "Five numbers, one honest read",
     body: "Trades, holdings, protocol depth, risk and time onchain compress into five stats that describe how a wallet actually behaves — not how it wants to look.",
-    image:
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80",
-    alt: "Analytics dashboard with charts displayed on a laptop screen",
+    image: "/images/file_00000000051882469724eca14480f3ac.png",
+    alt: "A wallet profile card surrounded by glass panels showing trades, holdings, protocol depth, risk and time onchain",
   },
   {
     value: "2",
     label: "chains scanned per card",
     title: "Ethereum and Base, read together",
     body: "Every card pulls history from both chains at once, so a wallet's full footprint counts — not just whichever chain it happened to be scanned on.",
-    image:
-      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80",
-    alt: "Earth viewed from space at night, city lights connected by light",
+    image: "/images/file_0000000028788230a5c53fdb95471001.png",
+    alt: "Glass Ethereum and Base tokens orbited by connecting arrows and wallet panels",
   },
 ];
 
