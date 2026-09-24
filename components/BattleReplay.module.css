@@ -4,18 +4,20 @@
   position: relative;
   max-width: 1040px;
   margin: 0 auto;
-  margin-top: 4%;
 }
 
-/* Centers the arena vertically within roughly the opening viewport — a
-   min-height flex box the arena sits in the middle of, not a share of the
-   page's total content height. Whatever commentary/log follows below still
-   flows normally underneath, however tall it ends up being. */
+/* Fills the opening viewport on its own — the arena is the whole story on
+   load, and the commentary/verdict/round log below only come into view once
+   the visitor scrolls, the same "one screen, then scroll for the rest" split
+   the rest of the site uses for its hero sections. 140px approximates the
+   sticky header plus .page's own top padding so the arena isn't taller than
+   the actual space left under them. */
 .replayStage {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: min(620px, calc(100dvh - 260px));
+  min-height: calc(100dvh - 140px);
 }
 
 .replayArena {
@@ -89,6 +91,41 @@
 
 .replaySide :global(.battle-card) {
   max-width: 320px;
+}
+
+/* The flip's two faces, used only during the settled merge/recap choreography
+   (see the note on resultTransform in BattleReplay.tsx). .replayCardStack is
+   its own relatively-positioned box sized to just the card (not the whole
+   .replaySide column, which also carries the scoreboard row below it) so
+   .replayCardBack's inset:0 lines up with the card itself. Both faces carry
+   backface-visibility: hidden as a defensive baseline (the flip itself is
+   actually driven by an opacity crossfade — see BattleReplay.tsx).
+   transform-style: flat, not preserve-3d — .replayArena's own `perspective`
+   would otherwise keep applying to .battle-card's hover tilt once it becomes
+   interactive in the recap stage, compounding with the card's own local
+   perspective(1000px) and making the tilt read as noticeably flatter than
+   the same card on its standalone page, where no such ancestor exists. Flat
+   here cuts that inheritance without affecting the flip, which lives one
+   level up on .replaySide itself. */
+.replayCardStack {
+  position: relative;
+  width: 100%;
+  transform-style: flat;
+}
+
+.replayCardFace {
+  backface-visibility: hidden;
+}
+
+.replayCardBack {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  transform: rotateY(180deg);
+  border-radius: var(--radius-card);
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--line-strong);
 }
 
 .replayScore {
@@ -185,6 +222,111 @@
   gap: 7px;
 }
 
+/* The victory banner held above the merged cards — see the note in
+   BattleReplay.tsx on why this is anchored to .replayStage rather than
+   .replayArena: the arena is only as tall as the cards themselves and sits
+   vertically centered within the taller, full-height stage, so a small top
+   offset here is measured against the stage's much larger box and clears the
+   card comfortably instead of landing right on top of it. */
+.replayVerdictBanner {
+  position: absolute;
+  top: 6%;
+  left: 50%;
+  z-index: 8;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.replayVerdictHeadline {
+  font-size: clamp(28px, 4vw, 44px);
+  color: var(--text);
+  white-space: nowrap;
+}
+
+/* The win breakdown that fills the space the loser's card vacates once the
+   winner has broken from the merge and settled on the left. */
+.replayRecap {
+  position: absolute;
+  top: 50%;
+  left: 54%;
+  right: 4%;
+  z-index: 8;
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.replayRecapTitle {
+  font-size: clamp(20px, 2.6vw, 30px);
+  color: var(--text);
+}
+
+/* Styled after the card's own stat rows (StatBar.css) rather than a generic
+   pill list, so the win breakdown reads as part of the same object as the
+   card it's now standing next to. */
+.replayRecapList {
+  display: grid;
+  width: 100%;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.replayRecapList li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 4px 12px 14px;
+  border-bottom: 1px solid var(--line);
+  border-left: 3px solid transparent;
+}
+
+/* Every category shows, win or lose — the winner's own accent (the same one
+   painting its card) picks out the rounds it actually won; a lost round
+   stays on the plain line-colored border, present but unremarkable. */
+.replayRecapWon {
+  border-left-color: var(--accent);
+}
+
+.replayRecapLost {
+  border-left-color: var(--line-strong);
+}
+
+.replayRecapLost .replayRecapCategory {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.replayRecapCategory {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.replayRecapScore {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+@media (max-width: 860px) {
+  .replayRecap {
+    left: 8%;
+    right: 8%;
+    top: auto;
+    bottom: 6%;
+    transform: none;
+  }
+}
+
 .replayPip {
   width: 9px;
   height: 9px;
@@ -207,11 +349,14 @@
     color-mix(in srgb, var(--ability-color, var(--brand)) 55%, transparent);
   border-bottom: 1px solid
     color-mix(in srgb, var(--ability-color, var(--brand)) 55%, transparent);
+  /* A light surface, not the old near-black gradient — this site is a light
+     editorial theme now, and dark ink text on that old background was
+     rendering as black-on-black. */
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(10, 10, 10, 0.94) 18%,
-    rgba(10, 10, 10, 0.94) 82%,
+    color-mix(in srgb, var(--surface) 94%, transparent) 18%,
+    color-mix(in srgb, var(--surface) 94%, transparent) 82%,
     transparent
   );
   color: var(--text);

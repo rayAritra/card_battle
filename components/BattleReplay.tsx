@@ -4,6 +4,7 @@ import confetti from "canvas-confetti";
 import { AnimatePresence, motion, useAnimate, useReducedMotion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import type { BattleResult, Card, RoundLog } from "@/types";
+import { cardArtDataUri } from "@/lib/art/generate";
 import { paletteFor } from "@/lib/art/palettes";
 import { truncateAddress } from "@/lib/utils/format";
 import { BattleCard } from "./BattleCard";
@@ -29,6 +30,14 @@ interface Beat {
   /** Cumulative ms at which this round starts. */
   at: number;
 }
+
+// Stable array references (not recreated per render) for the flip crossfade
+// below — Framer Motion treats a fresh array literal as a fresh target and
+// would otherwise risk restarting the keyframe animation on every re-render
+// during the merge stage.
+const FLIP_FACE_OPACITY = [1, 1, 0, 0, 1];
+const FLIP_BACK_OPACITY = [0, 0, 1, 0, 0];
+const FLIP_OPACITY_TIMES = [0, 0.42, 0.5, 0.58, 1];
 
 const BATTLE_CATEGORY_NAMES: Record<RoundLog["category"], string> = {
   experience: "Legacy clash",
@@ -61,6 +70,14 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
   const firstGlow = paletteFor(first.archetype).glow;
   const secondGlow = paletteFor(second.archetype).glow;
 
+  const winnerCard = result.winner === cardA.address ? cardA : cardB;
+  // The overall match winner's roll and its opponent's roll for a given
+  // round — keyed to `result.winner` (the match), not `round.winner` (that
+  // round alone), so a round the winner actually lost still shows its own
+  // (lower) roll first rather than borrowing the round-winner's.
+  const matchWinnerRoll = (round: RoundLog) => (result.winner === cardA.address ? round.rollA : round.rollB);
+  const matchLoserRoll = (round: RoundLog) => (result.winner === cardA.address ? round.rollB : round.rollA);
+
   const beats = useMemo<Beat[]>(() => {
     let cursor = 500; // entrance
     return result.rounds.map((round, index) => {
@@ -89,6 +106,21 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
 
   const settled = phase === "result";
   const current = visibleRounds > 0 ? result.rounds[visibleRounds - 1] : null;
+
+  // The choreographed victory sequence — spin-and-merge at center, then the
+  // winner slides left and the win breakdown appears — is a progressive
+  // enhancement on top of the plain settle (scale + desaturate) below.
+  // Reduced motion always gets the plain settle, so this stage is never
+  // entered for those users and the merge/recap markup below never mounts.
+  const [resultStage, setResultStage] = useState<"merge" | "recap">(() => (reduced ? "recap" : "merge"));
+  const showMerge = settled && !reduced;
+
+  useEffect(() => {
+    if (!settled || reduced) return;
+    setResultStage("merge");
+    const timer = window.setTimeout(() => setResultStage("recap"), 1000);
+    return () => window.clearTimeout(timer);
+  }, [settled, reduced]);
 
   // Every round result lands with an impact frame: a brief arena jolt plus a
   // flash, so a win reads as a hit rather than a number changing. The flash
@@ -162,6 +194,97 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
     };
   };
 
+  /**
+   * Position/rotation for a side during the merge/recap choreography. `x`/`y`
+   * are percentages of the card's own box (Framer Motion's convention), not
+   * of the arena — cheap to compute, and precise pixel centering isn't worth
+   * the extra measurement machinery for a one-off flourish.
+   *
+   * The spin is a horizontal flip (`rotateY`), like a coin turned edge-on and
+   * over — landing on a full-turn multiple of 360 so the card always ends up
+   * facing the viewer. `backface-visibility: hidden` on the face/back pair
+   * below (the same pairing RevealSequence uses for its own flip) is set as a
+   * defensive baseline, but doesn't reliably hide the front face through
+   * BattleCard's own nested `container-type`/`transform-style` — the mirrored
+   * text was still visible mid-flip in testing. What actually prevents it is
+   * the explicit opacity crossfade on the face/back pair (FLIP_FACE_OPACITY /
+   * FLIP_BACK_OPACITY below), timed to the same duration as this rotateY
+   * sweep: the front fades out just before the card goes edge-on and the back
+   * fades in, regardless of how the 3D rendering resolves.
+   *
+   * Merge: both cards flip in and overlap at the arena's center, the winner
+   * on top at full strength, the loser scaled down, dimmed and peeking out
+   * from behind (a small residual `rotate` — the in-plane axis — gives it a
+   * tilted, shoved-aside look once it lands). Recap: the winner settles on
+   * the left facing forward (regardless of which side it started on) while
+   * the loser fades away entirely, clearing the right side for the
+   * win-breakdown list.
+   */
+  const resultTransform = (card: Card) => {
+    const isWinner = card.address === result.winner;
+    const isFirstSlot = card.address === first.address;
+    const sign = isFirstSlot ? 1 : -1;
+
+    if (resultStage === "merge") {
+      if (isWinner) {
+        return {
+          x: `${sign * 92}%`,
+          y: "0%",
+          rotate: 0,
+          rotateY: sign * 360,
+          scale: 1.1,
+          opacity: 1,
+          filter: "saturate(1)",
+          zIndex: 5,
+        };
+      }
+      return {
+        x: `${sign * 86}%`,
+        y: "4%",
+        rotate: sign * -7, // the peek tilt it lands on, shoved aside behind the winner
+        rotateY: sign * 360,
+        scale: 0.8,
+        opacity: 0.5,
+        filter: "saturate(0.2) brightness(0.75)",
+        zIndex: 2,
+      };
+    }
+
+    // recap — the winner holds its landed flip (no new spin) while it slides
+    // left; the loser is invisible by now, so its rotation is moot.
+    if (isWinner) {
+      return {
+        x: isFirstSlot ? "14%" : "-186%",
+        y: "0%",
+        rotate: 0,
+        rotateY: sign * 360,
+        scale: 1,
+        opacity: 1,
+        filter: "saturate(1)",
+        zIndex: 5,
+      };
+    }
+    return {
+      x: `${sign * 86}%`,
+      y: "4%",
+      rotate: sign * -7,
+      rotateY: sign * 360,
+      scale: 0.7,
+      opacity: 0,
+      filter: "saturate(0.15) brightness(0.7)",
+      zIndex: 1,
+    };
+  };
+
+  const resultTransition = { duration: resultStage === "merge" ? 0.9 : 0.75, ease: [0.22, 1, 0.36, 1] as const };
+
+  /** Only the winner, and only once it's broken from the merge and settled on
+      the left, gets the same hover tilt/foil sheen as the standalone card page —
+      the rest of the sequence keeps every card non-interactive so the layout
+      transforms above aren't fighting a live pointer-driven tilt. */
+  const cardInteractive = (card: Card) =>
+    showMerge && resultStage === "recap" && card.address === result.winner;
+
   return (
     <div className={styles.replay}>
       {/* The stage centers the arena vertically within roughly the opening */}
@@ -192,16 +315,40 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
         <motion.div
           className={styles.replaySide}
           initial={reduced ? false : { x: -80, opacity: 0, rotateY: 0 }}
-          animate={{ x: 0, rotateY: 19, ...cardState(first) }}
-          transition={{ duration: reduced ? 0.12 : 0.5, ease: [0.22, 1, 0.36, 1] }}
+          animate={showMerge ? resultTransform(first) : { x: 0, rotateY: 19, ...cardState(first) }}
+          transition={showMerge ? resultTransition : { duration: reduced ? 0.12 : 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
-          <BattleCard card={first} animate={false} interactive={false} />
-          <Scoreboard
-            card={first}
-            score={scoreFor(first.address)}
-            total={result.rounds.length}
-            streak={settled ? 0 : streakFor(first.address)}
-          />
+          <div className={styles.replayCardStack}>
+            <motion.div
+              className={styles.replayCardFace}
+              animate={showMerge ? { opacity: FLIP_FACE_OPACITY } : { opacity: 1 }}
+              transition={
+                showMerge
+                  ? { duration: resultTransition.duration, times: FLIP_OPACITY_TIMES, ease: "linear" }
+                  : { duration: 0.2 }
+              }
+            >
+              <BattleCard card={first} animate={false} interactive={cardInteractive(first)} />
+            </motion.div>
+            {showMerge && (
+              <motion.div
+                className={styles.replayCardBack}
+                style={{ backgroundImage: `url("${cardArtDataUri(first.address, paletteFor(first.archetype), first.rarity)}")` }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: FLIP_BACK_OPACITY }}
+                transition={{ duration: resultTransition.duration, times: FLIP_OPACITY_TIMES, ease: "linear" }}
+                aria-hidden
+              />
+            )}
+          </div>
+          {!showMerge && (
+            <Scoreboard
+              card={first}
+              score={scoreFor(first.address)}
+              total={result.rounds.length}
+              streak={settled ? 0 : streakFor(first.address)}
+            />
+          )}
           {settled && first.address === result.winner && (
             <motion.div
               className={styles.replayVictoryBurst}
@@ -264,7 +411,7 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
             </motion.div>
           )}
 
-          {settled && (
+          {settled && !showMerge && (
             <motion.div
               className={`${styles.replayVerdict} display`}
               initial={reduced ? false : { scale: 1.25, opacity: 0 }}
@@ -272,52 +419,116 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
               transition={{ duration: reduced ? 0.12 : 0.2, ease: [0.22, 1, 0.36, 1] }}
             >
               Arena victory
-              <span className={styles.replayVerdictName}>
-                {(result.winner === cardA.address ? cardA : cardB).archetype}
-              </span>
+              <span className={styles.replayVerdictName}>{winnerCard.archetype}</span>
             </motion.div>
           )}
 
-          <div className={styles.replayPips} aria-label="rounds won">
-            {result.rounds.map((round, index) => {
-              const roundWinnerCard = round.winner === cardA.address ? cardA : cardB;
-              const active = index === visibleRounds - 1 && !settled;
-              return (
-                <motion.span
-                  key={index}
-                  className={styles.replayPip}
-                  initial={false}
-                  animate={{
-                    backgroundColor:
-                      index < visibleRounds
-                        ? paletteFor(roundWinnerCard.archetype).accent
-                        : "rgba(255,255,255,0.12)",
-                    scale: active ? 1.35 : 1,
-                    boxShadow:
-                      index < visibleRounds
-                        ? `0 0 10px 1px color-mix(in srgb, ${paletteFor(roundWinnerCard.archetype).glow} ${active ? 70 : 0}%, transparent)`
-                        : "0 0 0 0 transparent",
-                  }}
-                  transition={{ duration: 0.3 }}
-                />
-              );
-            })}
-          </div>
+          {!showMerge && (
+            <div className={styles.replayPips} aria-label="rounds won">
+              {result.rounds.map((round, index) => {
+                const roundWinnerCard = round.winner === cardA.address ? cardA : cardB;
+                const active = index === visibleRounds - 1 && !settled;
+                return (
+                  <motion.span
+                    key={index}
+                    className={styles.replayPip}
+                    initial={false}
+                    animate={{
+                      backgroundColor:
+                        index < visibleRounds
+                          ? paletteFor(roundWinnerCard.archetype).accent
+                          : "rgba(255,255,255,0.12)",
+                      scale: active ? 1.35 : 1,
+                      boxShadow:
+                        index < visibleRounds
+                          ? `0 0 10px 1px color-mix(in srgb, ${paletteFor(roundWinnerCard.archetype).glow} ${active ? 70 : 0}%, transparent)`
+                          : "0 0 0 0 transparent",
+                    }}
+                    transition={{ duration: 0.3 }}
+                  />
+                );
+              })}
+            </div>
+          )}
         </div>
+
+        {/* The round breakdown: once the winner has broken from the merge and
+            settled on the left, every category appears here, one at a time,
+            filling the space its opponent used to occupy — the ones it won
+            picked out with its own accent, the ones it lost left plain. */}
+        <AnimatePresence>
+          {showMerge && resultStage === "recap" && (
+            <motion.div
+              className={styles.replayRecap}
+              style={{ "--accent": paletteFor(winnerCard.archetype).accent } as React.CSSProperties}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <span className={`${styles.replayRecapTitle} display`}>Round breakdown</span>
+              <ul className={styles.replayRecapList}>
+                {result.rounds.map((round, index) => {
+                  const won = round.winner === result.winner;
+                  return (
+                    <motion.li
+                      key={`${round.category}-${index}`}
+                      className={won ? styles.replayRecapWon : styles.replayRecapLost}
+                      initial={{ opacity: 0, x: 22, scale: 0.97 }}
+                      animate={{ opacity: 1, x: 0, scale: 1 }}
+                      transition={{ delay: 0.15 + index * 0.14, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      <span className={styles.replayRecapCategory}>
+                        {BATTLE_CATEGORY_NAMES[round.category]}
+                      </span>
+                      <span className={`${styles.replayRecapScore} mono`}>
+                        {matchWinnerRoll(round)} – {matchLoserRoll(round)}
+                      </span>
+                    </motion.li>
+                  );
+                })}
+              </ul>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <motion.div
           className={styles.replaySide}
           initial={reduced ? false : { x: 80, opacity: 0, rotateY: 0 }}
-          animate={{ x: 0, rotateY: -19, ...cardState(second) }}
-          transition={{ duration: reduced ? 0.12 : 0.5, ease: [0.22, 1, 0.36, 1] }}
+          animate={showMerge ? resultTransform(second) : { x: 0, rotateY: -19, ...cardState(second) }}
+          transition={showMerge ? resultTransition : { duration: reduced ? 0.12 : 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
-          <BattleCard card={second} animate={false} interactive={false} />
-          <Scoreboard
-            card={second}
-            score={scoreFor(second.address)}
-            total={result.rounds.length}
-            streak={settled ? 0 : streakFor(second.address)}
-          />
+          <div className={styles.replayCardStack}>
+            <motion.div
+              className={styles.replayCardFace}
+              animate={showMerge ? { opacity: FLIP_FACE_OPACITY } : { opacity: 1 }}
+              transition={
+                showMerge
+                  ? { duration: resultTransition.duration, times: FLIP_OPACITY_TIMES, ease: "linear" }
+                  : { duration: 0.2 }
+              }
+            >
+              <BattleCard card={second} animate={false} interactive={cardInteractive(second)} />
+            </motion.div>
+            {showMerge && (
+              <motion.div
+                className={styles.replayCardBack}
+                style={{ backgroundImage: `url("${cardArtDataUri(second.address, paletteFor(second.archetype), second.rarity)}")` }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: FLIP_BACK_OPACITY }}
+                transition={{ duration: resultTransition.duration, times: FLIP_OPACITY_TIMES, ease: "linear" }}
+                aria-hidden
+              />
+            )}
+          </div>
+          {!showMerge && (
+            <Scoreboard
+              card={second}
+              score={scoreFor(second.address)}
+              total={result.rounds.length}
+              streak={settled ? 0 : streakFor(second.address)}
+            />
+          )}
           {settled && second.address === result.winner && (
             <motion.div
               className={styles.replayVictoryBurst}
@@ -349,6 +560,45 @@ export function BattleReplay({ cardA, cardB, result, commentary, children }: Bat
             )}
           </AnimatePresence>
         </div>
+
+        {/* The victory banner: "Arena victory", the winner's archetype, and
+            the round pips. A sibling of .replayArena (not nested inside it)
+            positioned against the full-height .replayStage instead — the
+            arena itself is only as tall as the cards and sits vertically
+            centered within that taller stage, so anchoring the banner to the
+            arena put it right on top of the merged card. Anchoring it to the
+            stage keeps it near the true top of the viewport, clear of the
+            card regardless of how the arena ends up sized. */}
+        <AnimatePresence>
+          {showMerge && (
+            <motion.div
+              className={styles.replayVerdictBanner}
+              initial={{ opacity: 0, y: -16, x: "-50%" }}
+              animate={{ opacity: 1, y: 0, x: "-50%" }}
+              exit={{ opacity: 0, y: -10, x: "-50%" }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <span className={`${styles.replayVerdictHeadline} display`}>Arena victory</span>
+              <span className={styles.replayVerdictName}>{winnerCard.archetype}</span>
+              <div className={styles.replayPips} aria-label="rounds won">
+                {result.rounds.map((round, index) => {
+                  const roundWinnerCard = round.winner === cardA.address ? cardA : cardB;
+                  const palette = paletteFor(roundWinnerCard.archetype);
+                  return (
+                    <span
+                      key={index}
+                      className={styles.replayPip}
+                      style={{
+                        backgroundColor: palette.accent,
+                        boxShadow: `0 0 10px 1px color-mix(in srgb, ${palette.glow} 40%, transparent)`,
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <motion.div
